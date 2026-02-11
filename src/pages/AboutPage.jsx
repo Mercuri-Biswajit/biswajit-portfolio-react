@@ -1,23 +1,24 @@
 import { useEffect } from 'react';
-import SkillCard from '../components/SkillCard';
-import EducationItem from '../components/EducationItem';
-import { skills } from '../data/skills';
-import { education } from '../data/education';
 
-function About() {
+import { SkillCard, EducationItem } from '../components/ui';
+import { skills }    from '../data/skills';
+import { education } from '../data/education';
+import { SITE }      from '../config/constants';
+
+function AboutPage() {
   useEffect(() => {
     if (window.AOS) window.AOS.init({ duration: 800, once: true });
   }, []);
 
   return (
     <>
-      {/* Page Header */}
+      {/* ── Page Header ──────────────────────────────── */}
       <section className="page-header">
         <div className="hero-animated-bg">
-          <div className="animated-shape shape-1"></div>
-          <div className="animated-shape shape-2"></div>
-          <div className="animated-shape shape-3"></div>
-          <div className="animated-grid"></div>
+          <div className="animated-shape shape-1" />
+          <div className="animated-shape shape-2" />
+          <div className="animated-shape shape-3" />
+          <div className="animated-grid" />
         </div>
         <div className="container">
           <h1 className="page-title" data-aos="fade-down">
@@ -30,7 +31,7 @@ function About() {
         </div>
       </section>
 
-      {/* About Content */}
+      {/* ── About Content ────────────────────────────── */}
       <section className="about-page">
         <div className="container">
           <div className="about-grid">
@@ -47,7 +48,7 @@ function About() {
 
             {/* Education */}
             <div className="about-section" data-aos="fade-left">
-              <h2 className="section-subtitle">Education & Certifications</h2>
+              <h2 className="section-subtitle">Education &amp; Certifications</h2>
               <div className="education-timeline">
                 {education.map((item, i) => (
                   <EducationItem key={i} {...item} />
@@ -55,7 +56,7 @@ function About() {
               </div>
             </div>
 
-            {/* Summary */}
+            {/* Professional Summary */}
             <div className="about-main">
               <div className="about-section" data-aos="fade-up">
                 <h2 className="section-subtitle">Professional Summary</h2>
@@ -66,9 +67,9 @@ function About() {
                   building practices.
                 </p>
                 <p className="about-text">
-                  My design philosophy combines traditional engineering principles with modern technologies
-                  like BIM and Vastu Shastra. Committed to delivering safe, cost-effective, and
-                  aesthetically pleasing structures.
+                  My design philosophy combines traditional engineering principles with modern
+                  technologies like BIM and Vastu Shastra. Committed to delivering safe,
+                  cost-effective, and aesthetically pleasing structures.
                 </p>
               </div>
             </div>
@@ -78,18 +79,18 @@ function About() {
               <div className="contact-card" data-aos="flip-left">
                 <h3>Get In Touch</h3>
                 <div className="contact-info">
-                  <a href="mailto:biswajitdebbarman.civil@gmail.com" className="contact-link">
+                  <a href={`mailto:${SITE.email}`} className="contact-link">
                     <span className="contact-icon">✉️</span>
-                    <span>biswajitdebbarman.civil@gmail.com</span>
+                    <span>{SITE.email}</span>
                   </a>
-                  <a href="tel:+917602120054" className="contact-link">
+                  <a href={`tel:${SITE.phone}`} className="contact-link">
                     <span className="contact-icon">📱</span>
-                    <span>+91-7602120054</span>
+                    <span>{SITE.phone}</span>
                   </a>
-                  <a href="#" className="contact-link">
+                  <span className="contact-link">
                     <span className="contact-icon">📍</span>
-                    <span>Chanditala, Raiganj, Uttar Dinajpur</span>
-                  </a>
+                    <span>{SITE.location}</span>
+                  </span>
                 </div>
               </div>
             </div>
@@ -101,4 +102,4 @@ function About() {
   );
 }
 
-export default About;
+export default AboutPage;

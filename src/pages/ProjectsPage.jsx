@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
-import ProjectCard from "../components/ProjectCard";
-import ProjectModal from "../components/ProjectModal";
+
+import { ProjectCard } from "../components/ui";
+import { ProjectModal } from "../components/modals";
 import { projects } from "../data/projects";
 
 const FILTERS = ["all", "RESIDENTIAL", "COMMERCIAL"];
 
-function Projects() {
+function ProjectsPage() {
   const [activeFilter, setActiveFilter] = useState("all");
   const [selectedProject, setSelectedProject] = useState(null);
 
@@ -13,20 +14,20 @@ function Projects() {
     if (window.AOS) window.AOS.init({ duration: 800, once: true });
   }, []);
 
-  const filtered =
+  const filteredProjects =
     activeFilter === "all"
       ? projects
       : projects.filter((p) => p.category === activeFilter);
 
   return (
     <>
-      {/* Page Header */}
+      {/* ── Page Header ──────────────────────────────── */}
       <section className="page-header">
         <div className="hero-animated-bg">
-          <div className="animated-shape shape-1"></div>
-          <div className="animated-shape shape-2"></div>
-          <div className="animated-shape shape-3"></div>
-          <div className="animated-grid"></div>
+          <div className="animated-shape shape-1" />
+          <div className="animated-shape shape-2" />
+          <div className="animated-shape shape-3" />
+          <div className="animated-grid" />
         </div>
         <div className="container">
           <h1 className="page-title" data-aos="fade-down">
@@ -44,7 +45,7 @@ function Projects() {
         </div>
       </section>
 
-      {/* Filter Buttons */}
+      {/* ── Filter Bar ───────────────────────────────── */}
       <section className="filter-section">
         <div className="container">
           <div className="filter-buttons" data-aos="fade-up">
@@ -61,11 +62,11 @@ function Projects() {
         </div>
       </section>
 
-      {/* Projects Grid */}
+      {/* ── Projects Grid ────────────────────────────── */}
       <section className="projects">
         <div className="container">
           <div className="projects-grid">
-            {filtered.map((project) => (
+            {filteredProjects.map((project) => (
               <ProjectCard
                 key={project.id}
                 project={project}
@@ -76,7 +77,7 @@ function Projects() {
         </div>
       </section>
 
-      {/* Modal */}
+      {/* ── Project Modal ────────────────────────────── */}
       {selectedProject && (
         <ProjectModal
           project={selectedProject}
@@ -87,4 +88,4 @@ function Projects() {
   );
 }
 
-export default Projects;
+export default ProjectsPage;

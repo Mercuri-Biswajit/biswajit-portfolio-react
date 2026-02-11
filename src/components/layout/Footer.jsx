@@ -1,5 +1,7 @@
 import { Link } from 'react-router-dom';
 
+import { SITE } from '../../config/constants';
+
 function Footer() {
   return (
     <footer className="footer">
@@ -11,7 +13,7 @@ function Footer() {
               <Link to="/">
                 <img
                   src="/assets/icons/My__Logo.png"
-                  alt="Biswajit Deb Barman"
+                  alt={SITE.name}
                   className="footer-logo-img"
                 />
               </Link>
@@ -28,9 +30,9 @@ function Footer() {
             </div>
             <div className="footer-column">
               <h4>Connect</h4>
-              <a href="https://www.linkedin.com/in/biswajit-deb-barman/" target="_blank" rel="noreferrer">LinkedIn</a>
-              <a href="https://www.facebook.com/profile.php?id=61585030424249" target="_blank" rel="noreferrer">Facebook</a>
-              <a href="https://www.instagram.com/biswajit.deb.barman/" target="_blank" rel="noreferrer">Instagram</a>
+              <a href={SITE.linkedin}  target="_blank" rel="noreferrer">LinkedIn</a>
+              <a href={SITE.facebook}  target="_blank" rel="noreferrer">Facebook</a>
+              <a href={SITE.instagram} target="_blank" rel="noreferrer">Instagram</a>
             </div>
           </div>
 
