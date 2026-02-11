@@ -1,4 +1,4 @@
-export { EducationItem } from "./EducationItem";
-export { ProjectCard } from "./ProjectCard";
-export { ServiceCard } from "./ServiceCard";
-export { SkillCard } from "./SkillCard";
+export { default as EducationItem } from "./EducationItem";
+export { default as ProjectCard } from "./ProjectCard";
+export { default as ServiceCard } from "./ServiceCard";
+export { default as SkillCard } from "./SkillCard";
