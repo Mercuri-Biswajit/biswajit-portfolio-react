@@ -2,6 +2,8 @@ import { Link } from 'react-router-dom';
 
 import { SITE } from '../../config/constants';
 
+import logo from '../../assets/icons/My__Logo.png';
+
 function Footer() {
   return (
     <footer className="footer">
@@ -12,7 +14,7 @@ function Footer() {
             <div className="logo">
               <Link to="/">
                 <img
-                  src="/assets/icons/My__Logo.png"
+                  src={logo}
                   alt={SITE.name}
                   className="footer-logo-img"
                 />

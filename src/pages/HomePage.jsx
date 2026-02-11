@@ -8,6 +8,7 @@ import { services } from "../data/services";
 import { projects } from "../data/projects";
 import { SITE } from "../config/constants";
 
+
 function HomePage() {
   const [selectedProject, setSelectedProject] = useState(null);
 
@@ -47,7 +48,7 @@ function HomePage() {
           <div className="hero-visual">
             <div className="hero-image-container">
               <img
-                src="/assets/images/hero/Hero_Image_Civil_Engineer.png"
+                src="../assets/images/hero/hero.png"
                 alt="Building Plans and Structural Design"
                 className="hero-image"
               />

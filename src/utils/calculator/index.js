@@ -4,7 +4,7 @@
 // Wires UI reads → core logic → UI writes.
 // ===========================
 
-import { calcBuilding, calcSlab } from "./core.js";
+import { calcBuilding, calcSlab } from "./core";
 import {
   readBuildingInputs,
   readSlabInputs,
