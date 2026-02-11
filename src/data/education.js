@@ -13,7 +13,7 @@
 
 export const education = [
   {
-    year: "2020",
+    year: "2016 - 2020",
     degree: "B.Tech Civil Engineering",
     school: "Surendra Institute of Engineering and Management",
   },
@@ -26,5 +26,15 @@ export const education = [
     year: "2022",
     degree: "Learn Practical Building Construction",
     school: "Udemy",
+  },
+  {
+    year: "2023",
+    degree: "Communication Skills",
+    school: "Udemy",
+  },
+  {
+    year: "2024",
+    degree: "Digital Marketing",
+    school: "Google Digital Garage",
   },
 ];

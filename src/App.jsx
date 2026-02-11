@@ -4,7 +4,7 @@ import Footer from './components/Footer';
 import Home from './pages/Home';
 import Projects from './pages/Projects';
 import About from './pages/About';
-import Calculator from './pages/Calculator';
+import Calculator from './pages/Calculators';
 
 function App() {
   return (

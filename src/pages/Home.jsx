@@ -1,13 +1,16 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import SkillCard from '../components/SkillCard';
 import ServiceCard from '../components/ServiceCard';
 import ProjectCard from '../components/ProjectCard';
+import ProjectModal from '../components/ProjectModal';
 import { skills } from '../data/skills';
 import { services } from '../data/services';
 import { projects } from '../data/projects';
 
 function Home() {
+  const [selectedProject, setSelectedProject] = useState(null);
+
   useEffect(() => {
     if (window.AOS) window.AOS.init({ duration: 800, once: true, offset: 100 });
   }, []);
@@ -71,7 +74,11 @@ function Home() {
           </div>
           <div className="projects-preview">
             {projects.slice(0, 4).map((project) => (
-              <ProjectCard key={project.id} project={project} />
+              <ProjectCard 
+                key={project.id} 
+                project={project} 
+                onClick={setSelectedProject}
+              />
             ))}
           </div>
           <div className="section-cta" data-aos="fade-up">
@@ -159,6 +166,14 @@ function Home() {
           </div>
         </div>
       </section>
+
+      {/* Project Modal */}
+      {selectedProject && (
+        <ProjectModal
+          project={selectedProject}
+          onClose={() => setSelectedProject(null)}
+        />
+      )}
     </>
   );
 }

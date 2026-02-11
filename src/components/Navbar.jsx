@@ -50,7 +50,7 @@ function Navbar() {
           <Link to="/calculator" className={isActive('/calculator')}>CALCULATORS</Link>
         </div>
 
-        
+        <a
           href="/assets/files/Biswajit_Deb_Barman__CV.pdf"
           download
           className="btn-nav-cta"
