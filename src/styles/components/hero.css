@@ -1,0 +1,380 @@
+/* ===========================
+   HERO SECTION COMPONENT
+   Homepage hero styles
+   =========================== */
+
+/* ===========================
+   HERO CONTAINER
+   =========================== */
+
+.hero {
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+  padding-top: 80px;
+}
+
+/* ===========================
+   HERO BACKGROUND
+   =========================== */
+
+.hero-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, 
+    var(--color-bg-darker) 0%, 
+    var(--color-bg-dark) 50%, 
+    #E0F2FE 100%);
+  opacity: 1;
+  z-index: 1;
+}
+
+.hero-background::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 50%;
+  height: 100%;
+  background: radial-gradient(circle at top right,
+      rgba(30, 41, 59, 0.05) 0%,
+      transparent 70%);
+}
+
+/* ===========================
+   HERO CONTENT LAYOUT
+   =========================== */
+
+.hero .container {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 4rem;
+  align-items: center;
+}
+
+/* ===========================
+   HERO TEXT CONTENT
+   =========================== */
+
+.hero-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.hero-label {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: var(--font-weight-medium);
+  letter-spacing: 0.3em;
+  color: var(--color-text-dim);
+  margin-bottom: 1rem;
+  animation: fadeInUp 0.8s ease-out;
+  text-transform: uppercase;
+}
+
+.hero-title {
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-tight);
+  margin-bottom: 2rem;
+  color: var(--color-text);
+}
+
+.hero-title .line {
+  display: block;
+  animation: fadeInUp 0.8s ease-out;
+  animation-fill-mode: both;
+}
+
+.hero-title .line:nth-child(1) {
+  animation-delay: 0.2s;
+  color: var(--color-text);
+}
+
+.hero-title .line:nth-child(2) {
+  animation-delay: 0.4s;
+  color: var(--color-text);
+}
+
+.hero-title .line.highlight {
+  color: var(--color-accent);
+  animation-delay: 0.6s;
+}
+
+.hero-description {
+  font-size: clamp(0.95rem, 1.5vw, 1rem);
+  color: var(--color-text-dim);
+  max-width: 600px;
+  margin-bottom: 3rem;
+  animation: fadeInUp 0.8s ease-out 0.8s both;
+  line-height: var(--line-height-relaxed);
+}
+
+.hero-cta {
+  display: flex;
+  gap: 1.5rem;
+  animation: fadeInUp 0.8s ease-out 1s both;
+  flex-wrap: wrap;
+}
+
+/* ===========================
+   HERO VISUAL
+   =========================== */
+
+.hero-visual {
+  position: relative;
+  height: 500px;
+  animation: fadeIn 1.2s ease-out 1.2s both;
+}
+
+.hero-image-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+  z-index: 2;
+}
+
+.hero-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.hero-image-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg,
+      rgba(30, 41, 59, 0.05) 0%,
+      rgba(100, 116, 139, 0.03) 100%);
+  pointer-events: none;
+}
+
+/* Blueprint Grid Effect */
+.blueprint-grid {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image:
+    linear-gradient(var(--color-border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--color-border) 1px, transparent 1px);
+  background-size: 40px 40px;
+  opacity: 0.3;
+  animation: gridPulse 4s ease-in-out infinite;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* ===========================
+   ANIMATIONS
+   =========================== */
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes gridPulse {
+  0%, 100% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* ===========================
+   SCROLL INDICATOR (Optional)
+   =========================== */
+
+.scroll-indicator {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 3;
+  animation: scrollAnimation 2s ease-in-out infinite;
+  color: var(--color-text-dim);
+  font-size: 1.5rem;
+}
+
+@keyframes scrollAnimation {
+  0%, 100% {
+    transform: translateX(-50%) translateY(0);
+    opacity: 0.5;
+  }
+  50% {
+    transform: translateX(-50%) translateY(15px);
+    opacity: 1;
+  }
+}
+
+/* ===========================
+   RESPONSIVE DESIGN
+   =========================== */
+
+@media (max-width: 1200px) {
+  .hero .container {
+    gap: 3rem;
+  }
+  
+  .hero-visual {
+    height: 450px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .hero .container {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .hero-visual {
+    display: none;
+  }
+  
+  .hero-title {
+    font-size: clamp(2.5rem, 6vw, 3.5rem);
+  }
+  
+  .hero-description {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero {
+    padding: 110px 0 50px;
+    min-height: auto;
+  }
+
+  .hero-title {
+    font-size: clamp(2rem, 8vw, 2.5rem);
+    margin-bottom: 1.5rem;
+  }
+
+  .blueprint-grid,
+  .hero-image-overlay {
+    display: none;
+  }
+
+  .hero-description {
+    font-size: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .hero-cta {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .hero-cta .btn {
+    width: 100%;
+    text-align: center;
+  }
+  
+  .scroll-indicator {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero {
+    padding: 100px 0 40px;
+  }
+  
+  .hero-title {
+    font-size: clamp(1.75rem, 10vw, 2rem);
+  }
+  
+  .hero-label {
+    font-size: 0.85rem;
+    letter-spacing: 0.2em;
+  }
+  
+  .hero-description {
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+}
+
+/* ===========================
+   ACCESSIBILITY
+   =========================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-label,
+  .hero-title .line,
+  .hero-description,
+  .hero-cta,
+  .hero-visual {
+    animation: none;
+  }
+  
+  .blueprint-grid {
+    animation: none;
+    opacity: 0.2;
+  }
+  
+  .scroll-indicator {
+    animation: none;
+  }
+}
+
+/* ===========================
+   PRINT STYLES
+   =========================== */
+
+@media print {
+  .hero {
+    min-height: auto;
+    padding: 2rem 0;
+  }
+  
+  .hero-background,
+  .hero-image-overlay,
+  .blueprint-grid,
+  .scroll-indicator {
+    display: none;
+  }
+  
+  .hero .container {
+    grid-template-columns: 1fr;
+  }
+  
+  .hero-cta {
+    display: none;
+  }
+}

@@ -1,0 +1,244 @@
+/* ===========================
+   CSS VARIABLES
+   Design System Tokens
+   =========================== */
+
+:root {
+  /* ===========================
+     PRIMARY COLOR PALETTE
+     =========================== */
+  
+  /* Main Brand Colors */
+  --color-primary: #003366;
+  --color-primary-dark: #0F172A;
+  --color-primary-light: #1E4A7A;
+  
+  /* Accent Colors */
+  --color-accent: #FF8C00;
+  --color-accent-dark: #E07B00;
+  --color-accent-light: #FFA333;
+  
+  /* ===========================
+     BACKGROUND COLORS
+     =========================== */
+  
+  --color-bg-dark: #F4F4F4;
+  --color-bg-darker: #FFFFFF;
+  --color-bg-card: #FFFFFF;
+  --color-bg-overlay: rgba(0, 0, 0, 0.5);
+  
+  /* ===========================
+     TEXT COLORS
+     =========================== */
+  
+  --color-text: #1E293B;
+  --color-text-dim: #64748B;
+  --color-text-light: #94A3B8;
+  --color-text-white: #FFFFFF;
+  
+  /* ===========================
+     BORDER COLORS
+     =========================== */
+  
+  --color-border: #E2E8F0;
+  --color-border-dark: #CBD5E1;
+  --color-border-light: #F1F5F9;
+
+  /* ===========================
+     BUTTON COLORS
+     =========================== */
+  
+  /* Primary Button */
+  --btn-primary-bg: var(--color-primary);
+  --btn-primary-bg-hover: var(--color-primary-dark);
+  --btn-primary-text: #FFFFFF;
+  --btn-primary-border: var(--color-primary);
+  --btn-primary-border-hover: var(--color-primary-dark);
+  
+  /* Secondary Button */
+  --btn-secondary-bg: transparent;
+  --btn-secondary-bg-hover: var(--color-primary);
+  --btn-secondary-text: var(--color-primary);
+  --btn-secondary-text-hover: #FFFFFF;
+  --btn-secondary-border: var(--color-primary);
+  --btn-secondary-border-hover: var(--color-primary);
+  
+  /* Outline Button */
+  --btn-outline-bg: transparent;
+  --btn-outline-bg-hover: rgba(30, 41, 59, 0.05);
+  --btn-outline-text: var(--color-text);
+  --btn-outline-text-hover: var(--color-primary);
+  --btn-outline-border: var(--color-border);
+  --btn-outline-border-hover: var(--color-primary);
+  
+  /* Ghost Button */
+  --btn-ghost-bg: transparent;
+  --btn-ghost-bg-hover: var(--color-bg-dark);
+  --btn-ghost-text: var(--color-text);
+  --btn-ghost-text-hover: var(--color-primary);
+  
+  /* Link Button */
+  --btn-link-text: var(--color-primary);
+  --btn-link-text-hover: var(--color-primary-dark);
+  
+  /* Gradient Button */
+  --btn-gradient-from: var(--color-primary);
+  --btn-gradient-to: var(--color-accent);
+  --btn-gradient-from-hover: var(--color-primary-dark);
+  --btn-gradient-to-hover: var(--color-primary);
+  
+  /* Nav CTA Button */
+  --btn-nav-cta-bg: var(--color-primary);
+  --btn-nav-cta-bg-hover: var(--color-primary-dark);
+  --btn-nav-cta-text: #FFFFFF;
+  --btn-nav-cta-border: var(--color-primary);
+  --btn-nav-cta-border-hover: var(--color-primary-dark);
+
+  /* ===========================
+     STATE COLORS
+     =========================== */
+  
+  --color-success: #10B981;
+  --color-success-light: #D1FAE5;
+  --color-warning: #F59E0B;
+  --color-warning-light: #FEF3C7;
+  --color-error: #EF4444;
+  --color-error-light: #FEE2E2;
+  --color-info: #3B82F6;
+  --color-info-light: #DBEAFE;
+
+  /* ===========================
+     TYPOGRAPHY
+     =========================== */
+  
+  --font-display: "lexend", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-body: "popping", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  
+  /* Font Sizes */
+  --font-size-xs: 0.75rem;      /* 12px */
+  --font-size-sm: 0.875rem;     /* 14px */
+  --font-size-base: 1rem;       /* 16px */
+  --font-size-lg: 1.125rem;     /* 18px */
+  --font-size-xl: 1.25rem;      /* 20px */
+  --font-size-2xl: 1.5rem;      /* 24px */
+  --font-size-3xl: 1.875rem;    /* 30px */
+  --font-size-4xl: 2.25rem;     /* 36px */
+  --font-size-5xl: 3rem;        /* 48px */
+  --font-size-6xl: 4rem;        /* 64px */
+  
+  /* Font Weights */
+  --font-weight-light: 300;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  
+  /* Line Heights */
+  --line-height-tight: 1.25;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.6;
+  --line-height-loose: 1.8;
+
+  /* ===========================
+     SPACING SYSTEM
+     =========================== */
+  
+  --spacing-xs: 0.5rem;         /* 8px */
+  --spacing-sm: 1rem;           /* 16px */
+  --spacing-md: 2rem;           /* 32px */
+  --spacing-lg: 4rem;           /* 64px */
+  --spacing-xl: 5rem;           /* 80px */
+  --spacing-2xl: 6rem;          /* 96px */
+  --spacing-3xl: 8rem;          /* 128px */
+
+  /* ===========================
+     LAYOUT
+     =========================== */
+  
+  --container-max-width: 1300px;
+  --container-padding: 2rem;
+  
+  /* Grid Gaps */
+  --gap-xs: 0.5rem;             /* 8px */
+  --gap-sm: 1rem;               /* 16px */
+  --gap-md: 2rem;               /* 32px */
+  --gap-lg: 3rem;               /* 48px */
+  --gap-xl: 4rem;               /* 64px */
+
+  /* ===========================
+     EFFECTS
+     =========================== */
+  
+  /* Transitions */
+  --transition-duration: 0.3s;
+  --transition-timing: cubic-bezier(0.4, 0, 0.2, 1);
+  --transition: all var(--transition-duration) var(--transition-timing);
+  --transition-fast: all 0.15s ease;
+  --transition-slow: all 0.5s ease;
+  
+  /* Shadows */
+  --shadow-sm: 0 2px 8px rgba(30, 41, 59, 0.08);
+  --shadow-md: 0 4px 16px rgba(30, 41, 59, 0.12);
+  --shadow-lg: 0 8px 32px rgba(30, 41, 59, 0.15);
+  --shadow-xl: 0 16px 48px rgba(30, 41, 59, 0.20);
+  --shadow-inner: inset 0 2px 4px rgba(0, 0, 0, 0.06);
+  
+  /* Border Radius */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+  --radius-2xl: 16px;
+  --radius-full: 9999px;
+  
+  /* Z-index Scale */
+  --z-base: 0;
+  --z-dropdown: 1000;
+  --z-sticky: 1020;
+  --z-fixed: 1030;
+  --z-modal-backdrop: 1040;
+  --z-modal: 1050;
+  --z-popover: 1060;
+  --z-tooltip: 1070;
+  --z-max: 9999;
+}
+
+/* ===========================
+   DARK MODE (Optional)
+   =========================== */
+
+:root[data-theme="dark"] {
+  /* Primary Colors */
+  --color-primary: #3B82F6;
+  --color-primary-dark: #2563EB;
+  --color-primary-light: #60A5FA;
+  
+  /* Accent Colors */
+  --color-accent: #94A3B8;
+  --color-accent-dark: #64748B;
+  --color-accent-light: #CBD5E1;
+  
+  /* Background Colors */
+  --color-bg-dark: #1E293B;
+  --color-bg-darker: #0F172A;
+  --color-bg-card: #334155;
+  
+  /* Text Colors */
+  --color-text: #F1F5F9;
+  --color-text-dim: #94A3B8;
+  --color-text-light: #CBD5E1;
+  
+  /* Border Colors */
+  --color-border: #475569;
+  --color-border-dark: #334155;
+  --color-border-light: #64748B;
+  
+  /* Button Colors - Dark Mode */
+  --btn-primary-bg: var(--color-primary);
+  --btn-primary-bg-hover: var(--color-primary-dark);
+  --btn-secondary-bg-hover: var(--color-primary);
+  --btn-outline-bg-hover: rgba(59, 130, 246, 0.1);
+  --btn-ghost-bg-hover: var(--color-bg-card);
+  --btn-nav-cta-bg: var(--color-primary);
+  --btn-nav-cta-bg-hover: var(--color-primary-dark);
+}
