@@ -3,7 +3,6 @@ import { Link, useLocation } from 'react-router-dom';
 
 import { NAVBAR, SITE } from '../../config/constants';
 
-import logo from '../../assets/icons/My__Logo.png';
 
 function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -37,7 +36,7 @@ function Navbar() {
         <div className="logo">
           <Link to="/">
             <img
-              src={logo}
+              src="/assets/icons/My__Logo.png"
               alt={SITE.name}
               className="logo-img"
             />

@@ -28,7 +28,7 @@ export const projects = [
       "Staircase Block",
       "Compact Housing",
     ],
-    image: "../assets/images/projects/G-Floor_Model_28_x_41__foot.png",
+    image: "/assets/images/projects/G-Floor_Model_28_x_41__foot.png",
   },
   {
     id: 2,
@@ -44,7 +44,7 @@ export const projects = [
       "Open Span Planning",
     ],
     image:
-      "../assets/images/projects/Warehouse_cum_Residential_(G+1)_57_x_47_foot.png",
+      "/assets/images/projects/Warehouse_cum_Residential_(G+1)_57_x_47_foot.png",
   },
   {
     id: 3,
@@ -59,8 +59,7 @@ export const projects = [
       "RCC Frame",
       "Staircase Block",
     ],
-    image:
-      "../assets/images/projects/Warehouse_cum_Residential_46_x_30_foot.png",
+    image: "/assets/images/projects/Warehouse_cum_Residential_46_x_30_foot.png",
   },
   {
     id: 4,
@@ -75,6 +74,6 @@ export const projects = [
       "Staircase Block",
       "Compact Housing",
     ],
-    image: "../assets/images/projects/Ground_Floor_28_x_41_foot.png",
+    image: "/assets/images/projects/Ground_Floor_28_x_41_foot.png",
   },
 ];
