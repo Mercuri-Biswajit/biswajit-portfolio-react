@@ -8,6 +8,7 @@ import { services } from "../../data/services";
 import { projects } from "../../data/projects";
 import { SITE } from "../../config/constants";
 
+// STANDALONE CSS - No dependencies on other CSS files
 import "./HomePage.css";
 
 function HomePage() {
@@ -18,7 +19,7 @@ function HomePage() {
   }, []);
 
   return (
-    <>
+    <div className="home-page">
       {/* ── Hero ─────────────────────────────────────── */}
       <section className="hero">
         <div className="hero-background" />
@@ -208,7 +209,7 @@ function HomePage() {
           onClose={() => setSelectedProject(null)}
         />
       )}
-    </>
+    </div>
   );
 }
 

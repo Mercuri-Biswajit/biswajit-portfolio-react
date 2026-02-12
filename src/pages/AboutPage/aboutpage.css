@@ -4,6 +4,53 @@
    =========================== */
 
 /* ===========================
+   PAGE HEADER
+   =========================== */
+
+.page-header {
+  min-height: 40vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  background: var(--color-bg-darker);
+  padding: 6rem 0 4rem;
+}
+
+.page-title {
+  font-family: var(--font-display);
+  font-size: 3.5rem;
+  font-weight: 700;
+  color: var(--color-text);
+  text-align: center;
+  margin-bottom: 1rem;
+  position: relative;
+  z-index: 2;
+}
+
+.page-label {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  color: var(--color-primary);
+  margin-bottom: 0.75rem;
+}
+
+.page-description {
+  font-size: 1.125rem;
+  color: var(--color-text-dim);
+  text-align: center;
+  max-width: 700px;
+  margin: 0 auto;
+  line-height: 1.7;
+  position: relative;
+  z-index: 2;
+}
+
+/* ===========================
    ABOUT PAGE LAYOUT
    =========================== */
 
@@ -22,6 +69,10 @@
   margin-bottom: 2rem;
 }
 
+.about-main {
+  grid-column: 1 / -1;
+}
+
 /* ===========================
    ABOUT TEXT CONTENT
    =========================== */
@@ -31,9 +82,6 @@
   line-height: 1.8;
   color: var(--color-text-dim);
   margin-bottom: 1.5rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
 }
 
 .about-text strong {
@@ -77,7 +125,6 @@
   overflow: hidden;
 }
 
-/* Original gradient animation */
 .education-item::before {
   content: '';
   position: absolute;
@@ -94,7 +141,6 @@
   left: 100%;
 }
 
-/* Mirror effect */
 .education-item::after {
   content: '';
   position: absolute;
@@ -102,10 +148,7 @@
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, 
-    transparent, 
-    rgba(255, 255, 255, 0.4), 
-    transparent);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
   transition: left 0.6s ease;
   z-index: 2;
   pointer-events: none;
@@ -168,9 +211,7 @@
   gap: 2rem;
 }
 
-/* Contact Card */
-.contact-card,
-.download-card {
+.contact-card {
   background: var(--color-bg-card);
   border: 1px solid var(--color-border);
   padding: 2rem;
@@ -181,36 +222,28 @@
   overflow: hidden;
 }
 
-/* Mirror effect for cards */
-.contact-card::before,
-.download-card::before {
+.contact-card::before {
   content: '';
   position: absolute;
   top: 0;
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, 
-    transparent, 
-    rgba(255, 255, 255, 0.4), 
-    transparent);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
   transition: left 0.6s ease;
   z-index: 1;
   pointer-events: none;
 }
 
-.contact-card:hover::before,
-.download-card:hover::before {
+.contact-card:hover::before {
   left: 100%;
 }
 
-.contact-card:hover,
-.download-card:hover {
+.contact-card:hover {
   box-shadow: var(--shadow-md);
 }
 
-.contact-card h3,
-.download-card h3 {
+.contact-card h3 {
   font-family: var(--font-display);
   font-size: 1.5rem;
   margin-bottom: 2rem;
@@ -242,7 +275,6 @@
   overflow: hidden;
 }
 
-/* Mirror effect for contact links */
 .contact-link::before {
   content: '';
   position: absolute;
@@ -250,10 +282,7 @@
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, 
-    transparent, 
-    rgba(255, 255, 255, 0.5), 
-    transparent);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
   transition: left 0.5s ease;
   z-index: 1;
   pointer-events: none;
@@ -281,7 +310,7 @@
 
 .contact-link:hover {
   color: var(--color-primary);
-  background: #E0F2FE;
+  background: #e0f2fe;
   transform: translateX(5px);
 }
 
@@ -338,9 +367,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg,
-      rgba(30, 41, 59, 0.1) 0%,
-      rgba(100, 116, 139, 0.05) 100%);
+  background: linear-gradient(135deg, rgba(30, 41, 59, 0.1) 0%, rgba(100, 116, 139, 0.05) 100%);
   pointer-events: none;
 }
 
@@ -395,7 +422,6 @@
   overflow: hidden;
 }
 
-/* Mirror effect for highlight items */
 .highlight-item::before {
   content: '';
   position: absolute;
@@ -403,10 +429,7 @@
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, 
-    transparent, 
-    rgba(255, 255, 255, 0.4), 
-    transparent);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
   transition: left 0.6s ease;
   z-index: 1;
   pointer-events: none;
@@ -429,7 +452,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, var(--color-bg-dark) 0%, #E0F2FE 100%);
+  background: linear-gradient(135deg, var(--color-bg-dark) 0%, #e0f2fe 100%);
   border-radius: 8px;
   position: relative;
   z-index: 2;
@@ -547,50 +570,6 @@
   }
 }
 
-.animated-dots {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
-}
-
-.dot {
-  position: absolute;
-  width: 8px;
-  height: 8px;
-  background: var(--color-primary);
-  border-radius: 50%;
-  opacity: 0;
-  animation: dotPulse 3s ease-in-out infinite;
-}
-
-.dot:nth-child(1) { top: 20%; left: 25%; animation-delay: 0s; }
-.dot:nth-child(2) { top: 40%; right: 30%; animation-delay: 0.6s; }
-.dot:nth-child(3) { bottom: 30%; left: 40%; animation-delay: 1.2s; }
-.dot:nth-child(4) { top: 70%; right: 20%; animation-delay: 1.8s; }
-.dot:nth-child(5) { top: 50%; left: 15%; animation-delay: 2.4s; }
-
-@keyframes dotPulse {
-  0%, 100% {
-    opacity: 0;
-    transform: scale(0);
-  }
-  50% {
-    opacity: 0.6;
-    transform: scale(1.5);
-  }
-}
-
-@keyframes pulse {
-  0%, 100% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.05);
-  }
-}
-
 /* ===========================
    RESPONSIVE DESIGN
    =========================== */
@@ -615,6 +594,14 @@
 }
 
 @media (max-width: 768px) {
+  .page-title {
+    font-size: 2.5rem;
+  }
+
+  .page-description {
+    font-size: 1rem;
+  }
+
   .about-page {
     padding: var(--spacing-lg) 0;
   }
@@ -651,16 +638,14 @@
   }
   
   .animated-shape,
-  .animated-grid,
-  .dot,
-  .blueprint-grid {
-    display: none !important;
+  .animated-grid {
+    display: none;
   }
 }
 
 @media (max-width: 640px) {
   .page-title {
-    font-size: 2.5rem;
+    font-size: 2rem;
   }
 
   .animated-grid {
@@ -671,8 +656,7 @@
     padding: 1rem 0.75rem;
   }
   
-  .contact-card h3,
-  .download-card h3 {
+  .contact-card h3 {
     font-size: 1.25rem;
   }
 }
