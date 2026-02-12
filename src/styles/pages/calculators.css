@@ -23,8 +23,8 @@
 
 .calc-grid {
     display: grid;
-    grid-template-columns: 420px 1fr;
-    gap: 2rem;
+    grid-template-columns: 500PX 1fr;
+    gap: 1rem;
     align-items: start;
 }
 
@@ -69,8 +69,8 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 1.75rem;
-    padding-bottom: 0.75rem;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
     border-bottom: 2px solid var(--color-border);
 }
 
@@ -106,7 +106,7 @@
    Input Groups
    ======================== */
 .calc-input-group {
-    margin-bottom: 1.25rem;
+    margin-bottom: 0.6rem;
 }
 
 .calc-label-primary {
@@ -131,7 +131,7 @@
 
 .calc-input-primary {
     width: 100%;
-    padding: 0.8rem 1rem;
+    padding: 0.5rem 1rem;
     border: 2px solid var(--color-border);
     border-radius: var(--radius-lg);
     font-family: var(--font-display);
@@ -161,7 +161,7 @@
 }
 
 .calc-floor-btn {
-    padding: 0.65rem 0;
+    padding: 0.5rem 0;
     background: var(--color-bg-dark);
     border: 2px solid var(--color-border);
     border-radius: var(--radius-lg);
@@ -210,12 +210,12 @@
     font-size: 0.85rem;
     font-weight: 600;
     color: var(--color-text);
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.3rem;
 }
 
 .calc-input-secondary {
     width: 100%;
-    padding: 0.65rem 0.875rem;
+    padding: 0.6rem 0.6rem;
     border: 1.5px solid var(--color-border);
     border-radius: var(--radius-md);
     font-family: var(--font-display);
@@ -247,7 +247,7 @@
 
 .calc-select-input {
     width: 100%;
-    padding: 0.65rem 0.875rem;
+    padding: 0.6rem 0.875rem;
     border: 1.5px solid var(--color-border);
     border-radius: var(--radius-md);
     font-family: var(--font-display);
@@ -267,7 +267,8 @@
 .calc-material-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 1rem;
+    row-gap: 0.2rem;
+    column-gap: 0.6rem;
 }
 
 /* Labor toggle */

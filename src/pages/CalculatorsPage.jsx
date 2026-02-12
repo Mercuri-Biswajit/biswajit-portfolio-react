@@ -150,7 +150,7 @@ function CalculatorsPage() {
             <div className="calc-section-header">
               <div className="calc-panel-label">
                 <span className="label-icon">▣</span>
-                INPUT PARAMETERS
+                ENTER YOU AREA (SQ.FT.)
               </div>
               <button className="calc-btn-reset" onClick={handleReset}>↺ Reset</button>
             </div>
@@ -171,22 +171,6 @@ function CalculatorsPage() {
               />
             </div>
 
-            {/* Number of Floors */}
-            <div className="calc-input-group">
-              <label className="calc-label-primary">Number of Floors</label>
-              <div className="calc-floor-buttons">
-                {FLOOR_OPTIONS.map(opt => (
-                  <button
-                    key={opt.value}
-                    className={`calc-floor-btn ${floors === opt.value ? "active" : ""}`}
-                    onClick={() => setFloors(opt.value)}
-                  >
-                    {opt.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-
             {/* Rate per sq.ft */}
             <div className="calc-input-group">
               <label className="calc-label-primary">
@@ -201,6 +185,22 @@ function CalculatorsPage() {
                 onChange={e => setRatePerSqft(e.target.value)}
                 onKeyDown={e => e.key === "Enter" && handleCalculate()}
               />
+            </div>
+
+            {/* Number of Floors */}
+            <div className="calc-input-group">
+              <label className="calc-label-primary">Number of Floors</label>
+              <div className="calc-floor-buttons">
+                {FLOOR_OPTIONS.map(opt => (
+                  <button
+                    key={opt.value}
+                    className={`calc-floor-btn ${floors === opt.value ? "active" : ""}`}
+                    onClick={() => setFloors(opt.value)}
+                  >
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
             </div>
 
             {/* Location Factor */}
