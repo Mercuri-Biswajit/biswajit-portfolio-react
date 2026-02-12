@@ -36,16 +36,6 @@ function AboutPage() {
         <div className="container">
           <div className="about-grid">
 
-            {/* Skills */}
-            <div className="about-section" data-aos="fade-right">
-              <h2 className="section-subtitle">Core Skills</h2>
-              <div className="skills-grid">
-                {skills.map((skill, i) => (
-                  <SkillCard key={i} {...skill} />
-                ))}
-              </div>
-            </div>
-
             {/* Education */}
             <div className="about-section" data-aos="fade-left">
               <h2 className="section-subtitle">Education &amp; Certifications</h2>
@@ -56,6 +46,17 @@ function AboutPage() {
               </div>
             </div>
 
+            {/* Skills */}
+            <div className="about-section" data-aos="fade-right">
+              <h2 className="section-subtitle">Core Skills</h2>
+              <div className="skills-grid">
+                {skills.map((skill, i) => (
+                  <SkillCard key={i} {...skill} />
+                ))}
+              </div>
+            </div>
+
+            
             {/* Professional Summary */}
             <div className="about-main">
               <div className="about-section" data-aos="fade-up">
