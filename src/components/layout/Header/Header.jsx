@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
-import { NAVBAR, SITE } from '../../config/constants';
+import { NAVBAR, SITE } from '../../../config/constants';
+
+import "./Header.css";
 
 
 function Navbar() {
