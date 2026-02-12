@@ -128,7 +128,7 @@ function HomePage() {
             <div className="about-image-wrapper" data-aos="fade-right">
               <div className="about-image-container">
                 <img
-                  src="/assets/images/hero/Hero_Image_Civil_Engineer.png"
+                  src="/assets/images/hero/hero.png"
                   alt={SITE.name}
                   className="about-image"
                 />

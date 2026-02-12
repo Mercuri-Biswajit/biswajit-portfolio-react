@@ -13,7 +13,7 @@ function Footer() {
             <div className="logo">
               <Link to="/">
                 <img
-                  src="/assets/icons/My__Logo"
+                  src="/assets/icons/My__Logo.png"
                   alt={SITE.name}
                   className="footer-logo-img"
                 />
