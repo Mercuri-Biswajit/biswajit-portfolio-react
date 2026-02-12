@@ -348,3 +348,216 @@
     font-size: 0.95rem;
   }
 }
+
+/* ===========================
+   HOME PAGE STYLES
+   Hero and About Me sections specific to homepage
+   =========================== */
+
+/* ===========================
+   ABOUT ME SECTION (Homepage)
+   =========================== */
+
+.about-me {
+  padding: 6rem 0;
+  background: var(--color-bg-darker);
+}
+
+.about-content {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  gap: 4rem;
+  align-items: center;
+  margin-top: 3rem;
+}
+
+.about-image-wrapper {
+  position: relative;
+}
+
+.about-image-container {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+}
+
+.about-image {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+  aspect-ratio: 3/4;
+}
+
+.about-image-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg,
+      rgba(30, 41, 59, 0.1) 0%,
+      rgba(100, 116, 139, 0.05) 100%);
+  pointer-events: none;
+}
+
+.about-subtitle {
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  margin-bottom: 0.5rem;
+  position: relative;
+  padding-bottom: 0.5rem;
+}
+
+.about-subtitle::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 60px;
+  height: 3px;
+  background: var(--color-primary);
+  transition: width 0.3s ease;
+}
+
+.about-text:hover .about-subtitle::after {
+  width: 100px;
+}
+
+.about-description {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: var(--color-text);
+  margin-bottom: 1.5rem;
+}
+
+.about-highlights {
+  display: grid;
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+.highlight-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.25rem;
+  padding: 1.5rem;
+  background: var(--color-bg-card);
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Mirror effect for highlight items */
+.highlight-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, 
+    transparent, 
+    rgba(255, 255, 255, 0.4), 
+    transparent);
+  transition: left 0.6s ease;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.highlight-item:hover::before {
+  left: 100%;
+}
+
+.highlight-item:hover {
+  transform: translateX(8px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--color-primary);
+}
+
+.highlight-icon {
+  font-size: 2rem;
+  min-width: 3rem;
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--color-bg-dark) 0%, #E0F2FE 100%);
+  border-radius: 8px;
+  position: relative;
+  z-index: 2;
+}
+
+.highlight-content {
+  position: relative;
+  z-index: 2;
+}
+
+.highlight-content h4 {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: 0.25rem;
+}
+
+.highlight-content p {
+  font-size: 0.95rem;
+  color: var(--color-text-dim);
+  line-height: 1.6;
+}
+
+.about-cta {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+/* ===========================
+   RESPONSIVE DESIGN
+   =========================== */
+
+@media (max-width: 1024px) {
+  .about-content {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+
+  .about-image {
+    aspect-ratio: 4/3;
+  }
+}
+
+@media (max-width: 768px) {
+  .about-me {
+    padding: 4rem 0;
+  }
+
+  .about-subtitle {
+    font-size: 1.5rem;
+  }
+
+  .about-description {
+    font-size: 1rem;
+  }
+
+  .highlight-item {
+    flex-direction: column;
+    text-align: center;
+    align-items: center;
+  }
+
+  .about-cta {
+    flex-direction: column;
+  }
+
+  .about-cta .btn {
+    width: 100%;
+    text-align: center;
+  }
+}

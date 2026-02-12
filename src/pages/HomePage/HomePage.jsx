@@ -8,7 +8,7 @@ import { services } from "../../data/services";
 import { projects } from "../../data/projects";
 import { SITE } from "../../config/constants";
 
-import "./homepage.css";
+import "./HomePage.css";
 
 function HomePage() {
   const [selectedProject, setSelectedProject] = useState(null);
@@ -49,7 +49,7 @@ function HomePage() {
           <div className="hero-visual">
             <div className="hero-image-container">
               <img
-                src="/assets/images/hero/hero.png"
+                src="../assets/images/hero/hero.png"
                 alt="Building Plans and Structural Design"
                 className="hero-image"
               />
@@ -61,13 +61,13 @@ function HomePage() {
       </section>
 
       {/* ── Skills ───────────────────────────────────── */}
-      <section className="home-skills">
+      <section className="skills">
         <div className="container">
-          <div className="home-section-header" data-aos="fade-up">
-            <span className="home-section-number">01</span>
-            <h2 className="home-section-title">SOFTWARE EXPERTISE</h2>
+          <div className="section-header" data-aos="fade-up">
+            <span className="section-number">01</span>
+            <h2 className="section-title">SOFTWARE EXPERTISE</h2>
           </div>
-          <div className="home-skills-grid">
+          <div className="skills-grid">
             {skills.map((skill, i) => (
               <SkillCard key={i} {...skill} />
             ))}
@@ -76,13 +76,13 @@ function HomePage() {
       </section>
 
       {/* ── Featured Projects ────────────────────────── */}
-      <section className="home-projects">
+      <section className="recent-projects">
         <div className="container">
-          <div className="home-section-header" data-aos="fade-up">
-            <span className="home-section-number">02</span>
-            <h2 className="home-section-title">FEATURED WORK</h2>
+          <div className="section-header" data-aos="fade-up">
+            <span className="section-number">02</span>
+            <h2 className="section-title">FEATURED WORK</h2>
           </div>
-          <div className="home-projects-grid">
+          <div className="projects-preview">
             {projects.slice(0, 4).map((project) => (
               <ProjectCard
                 key={project.id}
@@ -91,7 +91,7 @@ function HomePage() {
               />
             ))}
           </div>
-          <div className="home-section-cta" data-aos="fade-up">
+          <div className="section-cta" data-aos="fade-up">
             <Link to="/projects" className="btn btn-primary">
               VIEW ALL PROJECTS
             </Link>
@@ -100,17 +100,17 @@ function HomePage() {
       </section>
 
       {/* ── Services ─────────────────────────────────── */}
-      <section className="home-services">
+      <section className="services">
         <div className="container">
-          <div className="home-section-header" data-aos="fade-up">
-            <span className="home-section-number">03</span>
-            <h2 className="home-section-title">SERVICES PROVIDED</h2>
+          <div className="section-header" data-aos="fade-up">
+            <span className="section-number">03</span>
+            <h2 className="section-title">SERVICES PROVIDED</h2>
           </div>
-          <p className="home-services-subtitle" data-aos="fade-up">
+          <p className="services-subtitle" data-aos="fade-up">
             Professional engineering design services with transparent commitment
             to quality.
           </p>
-          <div className="home-services-grid">
+          <div className="services-grid">
             {services.map((service, i) => (
               <ServiceCard key={i} {...service} />
             ))}
@@ -119,60 +119,72 @@ function HomePage() {
       </section>
 
       {/* ── About Me ─────────────────────────────────── */}
-      <section className="home-about">
+      <section className="about-me">
         <div className="container">
-          <div className="home-section-header" data-aos="fade-up">
-            <span className="home-section-number">04</span>
-            <h2 className="home-section-title">ABOUT ME</h2>
+          <div className="section-header" data-aos="fade-up">
+            <span className="section-number">04</span>
+            <h2 className="section-title">ABOUT ME</h2>
           </div>
-          <div className="home-about-content">
-            <div className="home-about-image-wrapper" data-aos="fade-right">
-              <div className="home-about-image-container">
+          <div className="about-content">
+            <div className="about-image-wrapper" data-aos="fade-right">
+              <div className="about-image-container">
                 <img
-                  src="/assets/images/hero/hero.png"
+                  src="/assets/images/hero/Hero_Image_Civil_Engineer.png"
                   alt={SITE.name}
-                  className="home-about-image"
+                  className="about-image"
                 />
-                <div className="home-about-image-overlay" />
+                <div className="about-image-overlay" />
               </div>
             </div>
 
-            <div className="home-about-text" data-aos="fade-left">
-              <h3 className="home-about-subtitle">Professional Summary</h3>
-              <p className="home-about-description">
+            <div className="about-text" data-aos="fade-left">
+              <h3 className="about-subtitle">Professional Summary</h3>
+              <p className="about-description">
                 Hello! I'm <strong>Er. Biswajit Deb Barman</strong>, a dedicated
                 civil engineer with a passion for creating innovative and
                 sustainable structural solutions.
               </p>
-              <p className="home-about-description">
+              <p className="about-description">
                 My expertise spans across various aspects of civil engineering,
                 from initial conceptual designs to detailed structural analysis.
               </p>
-              <div className="home-highlights">
-                <div className="home-highlight-item" data-aos="zoom-in" data-aos-delay="100">
-                  <div className="home-highlight-icon">🎓</div>
-                  <div className="home-highlight-content">
+              <div className="about-highlights">
+                <div
+                  className="highlight-item"
+                  data-aos="zoom-in"
+                  data-aos-delay="100"
+                >
+                  <div className="highlight-icon">🎓</div>
+                  <div className="highlight-content">
                     <h4>Education</h4>
                     <p>Bachelor of Engineering in Civil Engineering</p>
                   </div>
                 </div>
-                <div className="home-highlight-item" data-aos="zoom-in" data-aos-delay="200">
-                  <div className="home-highlight-icon">💼</div>
-                  <div className="home-highlight-content">
+                <div
+                  className="highlight-item"
+                  data-aos="zoom-in"
+                  data-aos-delay="200"
+                >
+                  <div className="highlight-icon">💼</div>
+                  <div className="highlight-content">
                     <h4>Experience</h4>
                     <p>Specialized in Structural &amp; Architectural Design</p>
                   </div>
                 </div>
-                <div className="home-highlight-item" data-aos="zoom-in" data-aos-delay="300">
-                  <div className="home-highlight-icon">📍</div>
-                  <div className="home-highlight-content">
+                <div
+                  className="highlight-item"
+                  data-aos="zoom-in"
+                  data-aos-delay="300"
+                >
+                  <div className="highlight-icon">📍</div>
+                  <div className="highlight-content">
                     <h4>Location</h4>
                     <p>{SITE.location}, West Bengal, India</p>
                   </div>
                 </div>
               </div>
 
-              <div className="home-about-cta" data-aos="fade-up">
+              <div className="about-cta" data-aos="fade-up">
                 <Link to="/about" className="btn btn-primary">
                   MORE ABOUT ME
                 </Link>
