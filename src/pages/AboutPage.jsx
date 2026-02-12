@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-import { SkillCard, EducationItem } from '../components/ui';
+import { SkillCard, EducationItem } from '../components/cards';
 import { skills }    from '../data/skills';
 import { education } from '../data/education';
 import { SITE }      from '../config/constants';

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
-import { SkillCard, ServiceCard, ProjectCard } from "../components/ui";
+import { SkillCard, ServiceCard, ProjectCard } from "../components/cards";
 import { ProjectModal } from "../components/modals";
 import { skills } from "../data/skills";
 import { services } from "../data/services";
