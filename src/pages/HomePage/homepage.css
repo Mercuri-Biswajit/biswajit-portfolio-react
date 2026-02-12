@@ -1,0 +1,350 @@
+/* ===========================
+   HOME PAGE STYLES
+   Scoped to homepage sections only.
+   All class names prefixed with "home-"
+   to avoid collisions with other pages.
+   =========================== */
+
+/* ===========================
+   SECTION HEADER
+   =========================== */
+
+.home-section-header {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  margin-bottom: 4rem;
+}
+
+.home-section-number {
+  font-family: var(--font-display);
+  font-size: 4rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  opacity: 0.2;
+  line-height: 1;
+}
+
+.home-section-title {
+  font-family: var(--font-display);
+  font-size: 3rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--color-text);
+  line-height: 1.2;
+}
+
+.home-section-cta {
+  text-align: center;
+  margin-top: 4rem;
+}
+
+/* ===========================
+   SKILLS SECTION
+   =========================== */
+
+.home-skills {
+  padding: var(--spacing-xl) 0;
+  background: var(--color-bg-dark);
+}
+
+.home-skills-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+/* ===========================
+   FEATURED PROJECTS SECTION
+   =========================== */
+
+.home-projects {
+  padding: var(--spacing-xl) 0;
+  background: var(--color-bg-darker);
+}
+
+.home-projects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+/* ===========================
+   SERVICES SECTION
+   =========================== */
+
+.home-services {
+  padding: var(--spacing-xl) 0;
+  background: var(--color-bg-dark);
+}
+
+.home-services-subtitle {
+  text-align: left;
+  font-size: 1rem;
+  color: var(--color-text-dim);
+  margin-bottom: 3rem;
+  margin-top: -2rem;
+  line-height: 1.6;
+}
+
+.home-services-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+
+/* ===========================
+   ABOUT ME SECTION
+   =========================== */
+
+.home-about {
+  padding: 6rem 0;
+  background: var(--color-bg-darker);
+}
+
+.home-about-content {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  gap: 4rem;
+  align-items: center;
+  margin-top: 3rem;
+}
+
+.home-about-image-wrapper {
+  position: relative;
+}
+
+.home-about-image-container {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+}
+
+.home-about-image {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+  aspect-ratio: 3/4;
+}
+
+.home-about-image-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    135deg,
+    rgba(30, 41, 59, 0.1) 0%,
+    rgba(100, 116, 139, 0.05) 100%
+  );
+  pointer-events: none;
+}
+
+.home-about-subtitle {
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  margin-bottom: 1rem;
+  position: relative;
+  padding-bottom: 0.5rem;
+}
+
+.home-about-subtitle::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 60px;
+  height: 3px;
+  background: var(--color-primary);
+  transition: width 0.3s ease;
+}
+
+.home-about-text:hover .home-about-subtitle::after {
+  width: 100px;
+}
+
+.home-about-description {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: var(--color-text);
+  margin-bottom: 1.5rem;
+}
+
+.home-about-description strong {
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+/* ===========================
+   HIGHLIGHT ITEMS
+   =========================== */
+
+.home-highlights {
+  display: grid;
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+.home-highlight-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.25rem;
+  padding: 1.5rem;
+  background: var(--color-bg-card);
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+
+.home-highlight-item::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.4),
+    transparent
+  );
+  transition: left 0.6s ease;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.home-highlight-item:hover::before {
+  left: 100%;
+}
+
+.home-highlight-item:hover {
+  transform: translateX(8px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--color-primary);
+}
+
+.home-highlight-icon {
+  font-size: 2rem;
+  min-width: 3rem;
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--color-bg-dark) 0%, #e0f2fe 100%);
+  border-radius: 8px;
+  position: relative;
+  z-index: 2;
+}
+
+.home-highlight-content {
+  position: relative;
+  z-index: 2;
+}
+
+.home-highlight-content h4 {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: 0.25rem;
+}
+
+.home-highlight-content p {
+  font-size: 0.95rem;
+  color: var(--color-text-dim);
+  line-height: 1.6;
+}
+
+.home-about-cta {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+/* ===========================
+   RESPONSIVE
+   =========================== */
+
+@media (max-width: 1024px) {
+  .home-about-content {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+
+  .home-about-image {
+    aspect-ratio: 4/3;
+  }
+}
+
+@media (max-width: 768px) {
+  .home-section-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+    margin-bottom: 3rem;
+  }
+
+  .home-section-title {
+    font-size: 2rem;
+  }
+
+  .home-section-number {
+    font-size: 2.5rem;
+  }
+
+  .home-skills-grid,
+  .home-projects-grid,
+  .home-services-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .home-about {
+    padding: 4rem 0;
+  }
+
+  .home-about-subtitle {
+    font-size: 1.5rem;
+  }
+
+  .home-about-description {
+    font-size: 1rem;
+  }
+
+  .home-highlight-item {
+    flex-direction: column;
+    text-align: center;
+    align-items: center;
+  }
+
+  .home-about-cta {
+    flex-direction: column;
+  }
+
+  .home-about-cta .btn {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .home-section-header {
+    margin-bottom: 2rem;
+  }
+
+  .home-section-title {
+    font-size: 1.5rem;
+  }
+
+  .home-services-subtitle {
+    font-size: 0.95rem;
+  }
+}

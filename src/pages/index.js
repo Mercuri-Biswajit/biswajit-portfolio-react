@@ -1,4 +1,4 @@
-export { default as HomePage } from './HomePage';
-export { default as ProjectsPage } from './ProjectsPage';
-export { default as AboutPage } from './AboutPage';
-export { default as CalculatorsPage } from './CalculatorsPage';
+export { default as HomePage }        from './home/HomePage';
+export { default as ProjectsPage }    from './projects/ProjectsPage';
+export { default as AboutPage }       from './about/AboutPage';
+export { default as CalculatorsPage } from './calculator/CalculatorsPage';

@@ -2,43 +2,35 @@
    MAIN STYLESHEET
    Portfolio of Er. Biswajit Deb Barman
    Civil Engineer & Structural Designer
+
+   Page-specific CSS is now co-located
+   inside each page folder and imported
+   directly by the page component.
    =========================== */
 
 /* ===========================
    BASE STYLES
-   Foundation styles and design tokens
    =========================== */
 @import url("./base/variables.css");
 @import url("./base/reset.css");
 
 /* ===========================
    LAYOUT COMPONENTS
-   Header, footer, and page structure
    =========================== */
 @import url("./layout/header.css");
 @import url("./layout/footer.css");
 
 /* ===========================
-   REUSABLE COMPONENTS
-   UI components used across pages
+   SHARED UI COMPONENTS
+   Used across multiple pages
    =========================== */
 @import url("./components/buttons.css");
 @import url("./components/hero.css");
-
 @import url("./components/services.css");
 @import url("./components/skills.css");
 
 /* ===========================
-   PAGE-SPECIFIC STYLES
-   Styles for individual pages
-   =========================== */
-@import url("./pages/about.css");
-@import url("./pages/projects.css");
-@import url("./pages/calculators.css");
-
-/* ===========================
-   UTILITIES
-   Helper classes and animations
+   SHARED UTILITIES
    =========================== */
 @import url("./utilities/utilities.css");
 @import url("./utilities/helpers.css");
@@ -46,10 +38,8 @@
 
 /* ===========================
    GLOBAL STYLES
-   Base styles applied site-wide
    =========================== */
 
-/* Container */
 .container {
   max-width: var(--container-max-width);
   margin: 0 auto;
@@ -57,66 +47,7 @@
 }
 
 /* ===========================
-   PAGE HEADER (Shared across pages)
-   =========================== */
-
-.page-header {
-  padding: 5rem 5rem;
-  background: linear-gradient(135deg, #F5F7FA 0%, #E0F2FE 100%);
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 70vh;
-  text-align: center;
-  position: relative;
-}
-
-.page-header::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 50%;
-  height: 70%;
-  background: radial-gradient(circle at top right,
-      rgba(30, 41, 59, 0.05) 0%,
-      transparent 70%);
-}
-
-.page-header .container {
-  position: relative;
-  z-index: 2;
-}
-
-.page-label {
-  font-family: var(--font-display);
-  font-size: 0.9rem;
-  letter-spacing: 0.3em;
-  color: var(--color-primary);
-  display: block;
-  margin-bottom: 1rem;
-  text-transform: uppercase;
-}
-
-.page-title {
-  font-family: var(--font-display);
-  font-size: 4rem;
-  font-weight: 700;
-  line-height: 1.1;
-  margin-bottom: 1.5rem;
-  color: var(--color-text);
-}
-
-.page-description {
-  font-size: 1.2rem;
-  color: var(--color-text-dim);
-  max-width: 700px;
-  margin: 0 auto;
-}
-
-/* ===========================
-   RESPONSIVE STYLES
+   RESPONSIVE
    =========================== */
 
 @media (max-width: 1024px) {
@@ -129,22 +60,9 @@
   img, video, iframe {
     max-width: 100%;
   }
-  
-  .page-header {
-    min-height: 50vh;
-    padding: 3rem 2rem;
-  }
-  
-  .page-title {
-    font-size: 2.5rem;
-  }
-  
-  .page-description {
-    font-size: 1rem;
-  }
-  
+
   a, button {
-    min-height: 44px; /* Touch-friendly */
+    min-height: 44px;
   }
 }
 
@@ -152,14 +70,6 @@
   .container {
     padding-left: 1rem;
     padding-right: 1rem;
-  }
-  
-  .page-header {
-    padding: 2rem 1rem;
-  }
-  
-  .page-title {
-    font-size: 2rem;
   }
 }
 
@@ -175,7 +85,7 @@
 }
 
 /* ===========================
-   PRINT STYLES
+   PRINT
    =========================== */
 
 @media print {
@@ -185,12 +95,7 @@
   .cta-section {
     display: none;
   }
-  
-  .page-header {
-    min-height: auto;
-    padding: 1rem;
-  }
-  
+
   body {
     background: white;
     color: black;
