@@ -1,368 +1,392 @@
-import { useCalculator } from "../hooks/useCalculator";
-import { DEFAULT_MATERIAL_RATES } from "../config/constants";
-import { formatCurrency, formatNumber } from "../utils/helpers";
+import { useState } from "react";
+import { MATERIAL_CONSTANTS, DEFAULT_MATERIAL_RATES, SLAB_CONSTANTS, CONVERSIONS, CALCULATOR_DEFAULTS } from "../config/constants";
+import { formatCurrency, formatNumber, safeFloat } from "../utils/helpers";
 
 // ═══════════════════════════════════════════════════════════════════════════
-// CONSTANTS - UI Configuration
+// CONSTANTS
 // ═══════════════════════════════════════════════════════════════════════════
 
-const MATERIAL_FIELDS = [
-  {
-    field: "cementRate",
-    label: "Cement",
-    unit: "per bag",
-    placeholder: String(DEFAULT_MATERIAL_RATES.cement),
-  },
-  {
-    field: "steelRate",
-    label: "Steel",
-    unit: "per kg",
-    placeholder: String(DEFAULT_MATERIAL_RATES.steel),
-  },
-  {
-    field: "sandRate",
-    label: "Sand",
-    unit: "per m³",
-    placeholder: String(DEFAULT_MATERIAL_RATES.sand),
-  },
-  {
-    field: "aggregateRate",
-    label: "Aggregate",
-    unit: "per m³",
-    placeholder: String(DEFAULT_MATERIAL_RATES.aggregate),
-  },
+const FLOOR_OPTIONS = [
+  { label: "G",   value: 1 },
+  { label: "G+1", value: 2 },
+  { label: "G+2", value: 3 },
+  { label: "G+3", value: 4 },
 ];
 
-const BREAKDOWN_ROWS = [
-  { label: "Material Cost", key: "materialCost" },
-  { label: "Labor Cost", key: "laborCost" },
-  { label: "Finishing Cost", key: "finishingCost" },
-  { label: "Contingency", key: "contingencyCost" },
-];
 
-const MATERIAL_RESULT_ROWS = [
-  { icon: "🔨", label: "Cement", key: "cement", unit: "bags", decimals: 0 },
-  { icon: "🗝️", label: "Steel", key: "steel", unit: "kg", decimals: 0 },
-  { icon: "⛰️", label: "Sand", key: "sand", unit: "m³", decimals: 2 },
-  { icon: "🪨", label: "Aggregate", key: "aggregate", unit: "m³", decimals: 2 },
-];
 
 // ═══════════════════════════════════════════════════════════════════════════
-// COMPONENT: CalculatorPage
+// HELPERS
 // ═══════════════════════════════════════════════════════════════════════════
 
-function CalculatorPage() {
-  // ─────────────────────────────────────────────────────────────────────────
-  // HOOKS - Using the custom useCalculator hook
-  // ─────────────────────────────────────────────────────────────────────────
+function calcEstimate({ plotArea, floors, ratePerSqft, locationFactor, cementRate, steelRate, sandRate, aggregateRate, laborPercent, contingency }) {
+  const area        = safeFloat(plotArea, 0) * floors;
+  const userRate    = safeFloat(ratePerSqft, 1650);
+  const locMult     = safeFloat(locationFactor, 1.0);
 
-  const {
-    inputs,
-    buildingResults,
-    slabResults,
-    updateField,
-    calculateBuilding,
-    calculateSlab,
-    reset,
-  } = useCalculator();
+  const cRate   = safeFloat(cementRate,    DEFAULT_MATERIAL_RATES.cement);
+  const sRate   = safeFloat(steelRate,     DEFAULT_MATERIAL_RATES.steel);
+  const sdRate  = safeFloat(sandRate,      DEFAULT_MATERIAL_RATES.sand);
+  const agRate  = safeFloat(aggregateRate, DEFAULT_MATERIAL_RATES.aggregate);
 
-  // ─────────────────────────────────────────────────────────────────────────
-  // EVENT HANDLERS
-  // ─────────────────────────────────────────────────────────────────────────
+  // Quantities
+  const cementQty    = area * MATERIAL_CONSTANTS.cement;
+  const steelQty     = area * MATERIAL_CONSTANTS.steel;
+  const sandQty      = area * MATERIAL_CONSTANTS.sand;
+  const aggregateQty = area * MATERIAL_CONSTANTS.aggregate;
 
-  /**
-   * Handle Enter key press on building inputs
-   */
-  const onEnterBuildingCalc = (e) => {
-    if (e.key === "Enter") calculateBuilding();
+  // Costs
+  const cementCost    = cementQty    * cRate;
+  const steelCost     = steelQty     * sRate;
+  const sandCost      = sandQty      * sdRate;
+  const aggregateCost = aggregateQty * agRate;
+  const materialCost  = cementCost + steelCost + sandCost + aggregateCost;
+
+  const labourCost    = materialCost * (safeFloat(laborPercent, CALCULATOR_DEFAULTS.laborPercent) / 100);
+  const finishingCost = area * userRate;
+  const otherCost     = materialCost * 0.08; // misc / electrical / plumbing rough
+
+  const subtotal        = materialCost + labourCost + finishingCost + otherCost;
+  const contingencyCost = subtotal * (safeFloat(contingency, CALCULATOR_DEFAULTS.contingency) / 100);
+  const totalCost       = subtotal * locMult + contingencyCost;
+
+  const items = [
+    { key: "steel",     label: "Steel",     cost: steelCost,     qty: `${formatNumber(steelQty,     0)} kg`,     barClass: "calc-bar-steel"     },
+    { key: "labour",    label: "Labour",    cost: labourCost,    qty: null,                                       barClass: "calc-bar-labour"    },
+    { key: "cement",    label: "Cement",    cost: cementCost,    qty: `${formatNumber(cementQty,    0)} bags`,    barClass: "calc-bar-cement"    },
+    { key: "sand",      label: "Sand",      cost: sandCost,      qty: `${formatNumber(sandQty,      2)} m³`,      barClass: "calc-bar-sand"      },
+    { key: "aggregate", label: "Aggregate", cost: aggregateCost, qty: `${formatNumber(aggregateQty, 2)} m³`,      barClass: "calc-bar-aggregate" },
+    { key: "other",     label: "Other",     cost: otherCost,     qty: null,                                       barClass: "calc-bar-other"     },
+  ];
+
+  return {
+    totalCost,
+    area,
+    baseRate: Math.round(userRate * locMult),
+    items,
+    cementQty, steelQty, sandQty, aggregateQty,
+  };
+}
+
+function calcSlab(slabArea, slabThickness) {
+  const areaM2      = safeFloat(slabArea, 0)     * CONVERSIONS.sqftToSqm;
+  const thicknessM  = safeFloat(slabThickness, 0) * CONVERSIONS.ftToM;
+  const concreteVol = areaM2 * thicknessM;
+  const cementBags  = concreteVol * SLAB_CONSTANTS.cementPerCubicMeter;
+  const steelKg     = concreteVol * SLAB_CONSTANTS.steelPercent * SLAB_CONSTANTS.steelDensity;
+  return { concreteVol, cementBags, steelKg };
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// COMPONENT
+// ═══════════════════════════════════════════════════════════════════════════
+
+function CalculatorsPage() {
+  // ── Inputs ────────────────────────────────────────
+  const [plotArea,          setPlotArea]          = useState("");
+  const [floors,            setFloors]            = useState(1);
+  const [ratePerSqft,       setRatePerSqft]       = useState("");
+  const [locationFactor,    setLocationFactor]    = useState("1.0");
+  const [cementRate,        setCementRate]        = useState("");
+  const [steelRate,         setSteelRate]         = useState("");
+  const [sandRate,          setSandRate]          = useState("");
+  const [aggregateRate,     setAggregateRate]     = useState("");
+  const [laborPercent,      setLaborPercent]      = useState(String(CALCULATOR_DEFAULTS.laborPercent));
+  const [contingency,       setContingency]       = useState(String(CALCULATOR_DEFAULTS.contingency));
+
+  // Slab
+  const [slabArea,          setSlabArea]          = useState("");
+  const [slabThickness,     setSlabThickness]     = useState(String(CALCULATOR_DEFAULTS.slabThickness));
+
+  // Results
+  const [results,           setResults]           = useState(null);
+  const [slabResults,       setSlabResults]       = useState(null);
+
+  // ── Handlers ──────────────────────────────────────
+
+  const handleCalculate = () => {
+    if (!safeFloat(plotArea, 0)) {
+      alert("Please enter a valid plot area.");
+      return;
+    }
+    if (!safeFloat(ratePerSqft, 0)) {
+      alert("Please enter a valid construction rate per sq.ft.");
+      return;
+    }
+    const r = calcEstimate({ plotArea, floors, ratePerSqft, locationFactor, cementRate, steelRate, sandRate, aggregateRate, laborPercent, contingency });
+    setResults(r);
   };
 
-  /**
-   * Handle Enter key press on slab inputs
-   */
-  const onEnterSlabCalc = (e) => {
-    if (e.key === "Enter") calculateSlab();
+  const handleCalcSlab = () => {
+    if (!safeFloat(slabArea, 0)) { alert("Please enter a valid slab area."); return; }
+    if (!safeFloat(slabThickness, 0)) { alert("Please enter a valid slab thickness."); return; }
+    setSlabResults(calcSlab(slabArea, slabThickness));
   };
 
-  // ─────────────────────────────────────────────────────────────────────────
-  // RENDER
-  // ─────────────────────────────────────────────────────────────────────────
+  const handleReset = () => {
+    setPlotArea(""); setFloors(1); setRatePerSqft(""); setLocationFactor("1.0");
+    setCementRate(""); setSteelRate(""); setSandRate(""); setAggregateRate("");
+    setLaborPercent(String(CALCULATOR_DEFAULTS.laborPercent));
+    setContingency(String(CALCULATOR_DEFAULTS.contingency));
+    setSlabArea(""); setSlabThickness(String(CALCULATOR_DEFAULTS.slabThickness));
+    setResults(null); setSlabResults(null);
+  };
 
+  // Max cost among items (for bar width %)
+  const maxCost = results ? Math.max(...results.items.map(i => i.cost)) : 1;
+
+  // ── Render ────────────────────────────────────────
   return (
     <div className="calc-page">
+
       <main className="calc-main">
         <div className="calc-grid">
-          {/* ══════════════════════════════════════════════════════════════ */}
-          {/* LEFT PANEL: INPUT SECTION                                      */}
-          {/* ══════════════════════════════════════════════════════════════ */}
 
+          {/* ══════════════════════════════════════════ */}
+          {/* LEFT: INPUT PARAMETERS                    */}
+          {/* ══════════════════════════════════════════ */}
           <section className="calc-input-section">
-            {/* Header with Reset Button */}
+
             <div className="calc-section-header">
-              <h2>Project Parameters</h2>
-              <button className="calc-btn-reset" onClick={reset}>
-                ↺ Reset
-              </button>
+              <div className="calc-panel-label">
+                <span className="label-icon">▣</span>
+                INPUT PARAMETERS
+              </div>
+              <button className="calc-btn-reset" onClick={handleReset}>↺ Reset</button>
             </div>
 
-            {/* ────────────────────────────────────────────────────────── */}
-            {/* Primary Building Inputs                                    */}
-            {/* ────────────────────────────────────────────────────────── */}
-
+            {/* Plot Area */}
             <div className="calc-input-group">
               <label className="calc-label-primary">
-                <span>Built-up Area</span>
+                Plot Area
                 <span className="calc-label-unit">sq.ft</span>
               </label>
               <input
                 type="number"
                 className="calc-input-primary"
-                placeholder="1300"
-                value={inputs.area}
-                onChange={updateField("area")}
-                onKeyDown={onEnterBuildingCalc}
+                placeholder="e.g. 1000"
+                value={plotArea}
+                onChange={e => setPlotArea(e.target.value)}
+                onKeyDown={e => e.key === "Enter" && handleCalculate()}
               />
             </div>
 
+            {/* Number of Floors */}
+            <div className="calc-input-group">
+              <label className="calc-label-primary">Number of Floors</label>
+              <div className="calc-floor-buttons">
+                {FLOOR_OPTIONS.map(opt => (
+                  <button
+                    key={opt.value}
+                    className={`calc-floor-btn ${floors === opt.value ? "active" : ""}`}
+                    onClick={() => setFloors(opt.value)}
+                  >
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Rate per sq.ft */}
             <div className="calc-input-group">
               <label className="calc-label-primary">
-                <span>Rate per sq.ft</span>
-                <span className="calc-label-unit">₹</span>
+                Construction Rate
+                <span className="calc-label-unit">₹ / sq.ft</span>
               </label>
               <input
                 type="number"
                 className="calc-input-primary"
-                placeholder="1800"
-                value={inputs.rate}
-                onChange={updateField("rate")}
-                onKeyDown={onEnterBuildingCalc}
+                placeholder="e.g. 1650"
+                value={ratePerSqft}
+                onChange={e => setRatePerSqft(e.target.value)}
+                onKeyDown={e => e.key === "Enter" && handleCalculate()}
               />
             </div>
 
-            <div className="calc-divider" />
-            <h3 className="calc-section-subtitle">Cost Breakdown</h3>
-
-            {/* ────────────────────────────────────────────────────────── */}
-            {/* Labor Cost Input                                           */}
-            {/* ────────────────────────────────────────────────────────── */}
-
+            {/* Location Factor */}
             <div className="calc-input-group">
-              <label className="calc-label-secondary">
-                Labor Cost
-                <span className="calc-toggle-switch">
-                  <input
-                    type="checkbox"
-                    checked={inputs.laborAuto}
-                    onChange={updateField("laborAuto")}
-                  />
-                  <span className="calc-toggle-label">Auto %</span>
-                </span>
+              <label className="calc-label-primary">
+                Location Factor
+                <span className="calc-label-unit">{locationFactor}x</span>
               </label>
-              {inputs.laborAuto ? (
-                <input
-                  type="number"
-                  className="calc-input-secondary"
-                  placeholder="40"
-                  value={inputs.laborPercent}
-                  onChange={updateField("laborPercent")}
-                />
-              ) : (
-                <input
-                  type="number"
-                  className="calc-input-secondary"
-                  placeholder="Manual amount"
-                  value={inputs.laborManual}
-                  onChange={updateField("laborManual")}
-                />
-              )}
-            </div>
-
-            {/* ────────────────────────────────────────────────────────── */}
-            {/* Finishing Quality Selection                                */}
-            {/* ────────────────────────────────────────────────────────── */}
-
-            <div className="calc-input-group">
-              <label className="calc-label-secondary">Finishing Quality</label>
               <select
-                className="calc-input-secondary calc-select-input"
-                value={inputs.finishingQuality}
-                onChange={updateField("finishingQuality")}
+                className="calc-input-primary calc-select-input"
+                value={locationFactor}
+                onChange={e => setLocationFactor(e.target.value)}
               >
-                <option value="basic">Basic — ₹450/sq.ft</option>
-                <option value="standard">Standard — ₹750/sq.ft</option>
-                <option value="premium">Premium — ₹1200/sq.ft</option>
+                <option value="0.8">Rural (0.8x)</option>
+                <option value="1.0">Semi-Urban (1.0x)</option>
+                <option value="1.2">Urban (1.2x)</option>
+                <option value="1.5">Metro (1.5x)</option>
               </select>
             </div>
 
-            {/* ────────────────────────────────────────────────────────── */}
-            {/* Contingency Percentage                                     */}
-            {/* ────────────────────────────────────────────────────────── */}
+            <div className="calc-divider" />
+            <div className="calc-section-subtitle">Material Rates (optional)</div>
 
-            <div className="calc-input-group">
-              <label className="calc-label-secondary">Contingency %</label>
-              <input
-                type="number"
-                className="calc-input-secondary"
-                placeholder="7"
-                value={inputs.contingency}
-                onChange={updateField("contingency")}
-              />
+            {/* Material Rates grid */}
+            <div className="calc-material-grid">
+              <div className="calc-input-group">
+                <label className="calc-label-secondary">
+                  Cement <span style={{fontSize:"0.7rem",color:"#94a3b8"}}>per bag</span>
+                </label>
+                <input type="number" className="calc-input-secondary"
+                  placeholder={String(DEFAULT_MATERIAL_RATES.cement)}
+                  value={cementRate} onChange={e => setCementRate(e.target.value)} />
+              </div>
+              <div className="calc-input-group">
+                <label className="calc-label-secondary">
+                  Steel <span style={{fontSize:"0.7rem",color:"#94a3b8"}}>per kg</span>
+                </label>
+                <input type="number" className="calc-input-secondary"
+                  placeholder={String(DEFAULT_MATERIAL_RATES.steel)}
+                  value={steelRate} onChange={e => setSteelRate(e.target.value)} />
+              </div>
+              <div className="calc-input-group">
+                <label className="calc-label-secondary">
+                  Sand <span style={{fontSize:"0.7rem",color:"#94a3b8"}}>per m³</span>
+                </label>
+                <input type="number" className="calc-input-secondary"
+                  placeholder={String(DEFAULT_MATERIAL_RATES.sand)}
+                  value={sandRate} onChange={e => setSandRate(e.target.value)} />
+              </div>
+              <div className="calc-input-group">
+                <label className="calc-label-secondary">
+                  Aggregate <span style={{fontSize:"0.7rem",color:"#94a3b8"}}>per m³</span>
+                </label>
+                <input type="number" className="calc-input-secondary"
+                  placeholder={String(DEFAULT_MATERIAL_RATES.aggregate)}
+                  value={aggregateRate} onChange={e => setAggregateRate(e.target.value)} />
+              </div>
             </div>
 
             <div className="calc-divider" />
-            <h3 className="calc-section-subtitle">Material Rates</h3>
-
-            {/* ────────────────────────────────────────────────────────── */}
-            {/* Material Rates Grid                                        */}
-            {/* ────────────────────────────────────────────────────────── */}
+            <div className="calc-section-subtitle">Labor & Contingency</div>
 
             <div className="calc-material-grid">
-              {MATERIAL_FIELDS.map(({ field, label, unit, placeholder }) => (
-                <div className="calc-input-group" key={field}>
-                  <label className="calc-label-secondary">
-                    {label}{" "}
-                    <span style={{ fontSize: "0.7rem", color: "#94a3b8" }}>
-                      {unit}
-                    </span>
-                  </label>
-                  <input
-                    type="number"
-                    className="calc-input-secondary"
-                    placeholder={placeholder}
-                    value={inputs[field]}
-                    onChange={updateField(field)}
-                  />
-                </div>
-              ))}
+              <div className="calc-input-group">
+                <label className="calc-label-secondary">
+                  Labor <span style={{fontSize:"0.7rem",color:"#94a3b8"}}>% of material</span>
+                </label>
+                <input type="number" className="calc-input-secondary"
+                  placeholder="40" value={laborPercent}
+                  onChange={e => setLaborPercent(e.target.value)} />
+              </div>
+              <div className="calc-input-group">
+                <label className="calc-label-secondary">
+                  Contingency <span style={{fontSize:"0.7rem",color:"#94a3b8"}}>%</span>
+                </label>
+                <input type="number" className="calc-input-secondary"
+                  placeholder="7" value={contingency}
+                  onChange={e => setContingency(e.target.value)} />
+              </div>
             </div>
 
-            {/* ────────────────────────────────────────────────────────── */}
-            {/* Calculate Building Button                                  */}
-            {/* ────────────────────────────────────────────────────────── */}
-
-            <button className="calc-btn-primary" onClick={calculateBuilding}>
-              <span>Calculate Estimate</span> →
+            <button className="calc-btn-primary" onClick={handleCalculate}>
+              CALCULATE ESTIMATE →
             </button>
 
-            {/* ────────────────────────────────────────────────────────── */}
-            {/* RCC Slab Section                                           */}
-            {/* ────────────────────────────────────────────────────────── */}
-
+            {/* RCC Slab */}
             <div className="calc-divider" />
-            <h3 className="calc-section-subtitle">RCC Slab</h3>
+            <div className="calc-section-subtitle">RCC Slab Calculator</div>
 
             <div className="calc-input-group">
               <label className="calc-label-secondary">
-                Slab Area{" "}
-                <span style={{ fontSize: "0.7rem", color: "#94a3b8" }}>
-                  sq.ft
-                </span>
+                Slab Area <span style={{fontSize:"0.7rem",color:"#94a3b8"}}>sq.ft</span>
               </label>
-              <input
-                type="number"
-                className="calc-input-secondary"
-                placeholder="1300"
-                value={inputs.slabArea}
-                onChange={updateField("slabArea")}
-                onKeyDown={onEnterSlabCalc}
-              />
+              <input type="number" className="calc-input-secondary"
+                placeholder="e.g. 1300" value={slabArea}
+                onChange={e => setSlabArea(e.target.value)}
+                onKeyDown={e => e.key === "Enter" && handleCalcSlab()} />
             </div>
-
             <div className="calc-input-group">
               <label className="calc-label-secondary">
-                Thickness{" "}
-                <span style={{ fontSize: "0.7rem", color: "#94a3b8" }}>ft</span>
+                Thickness <span style={{fontSize:"0.7rem",color:"#94a3b8"}}>ft</span>
               </label>
-              <input
-                type="number"
-                className="calc-input-secondary"
-                placeholder="0.41"
-                value={inputs.slabThickness}
-                onChange={updateField("slabThickness")}
-                onKeyDown={onEnterSlabCalc}
-              />
+              <input type="number" className="calc-input-secondary"
+                placeholder="0.41" value={slabThickness}
+                onChange={e => setSlabThickness(e.target.value)}
+                onKeyDown={e => e.key === "Enter" && handleCalcSlab()} />
             </div>
-
-            <button className="calc-btn-secondary" onClick={calculateSlab}>
-              Calculate Slab
+            <button className="calc-btn-secondary" onClick={handleCalcSlab}>
+              CALCULATE SLAB
             </button>
           </section>
 
-          {/* ══════════════════════════════════════════════════════════════ */}
-          {/* RIGHT PANEL: RESULTS SECTION                                   */}
-          {/* ══════════════════════════════════════════════════════════════ */}
-
+          {/* ══════════════════════════════════════════ */}
+          {/* RIGHT: RESULTS                            */}
+          {/* ══════════════════════════════════════════ */}
           <section className="calc-results-section">
-            {/* ────────────────────────────────────────────────────────── */}
-            {/* Building Estimate Results                                  */}
-            {/* ────────────────────────────────────────────────────────── */}
 
+            {/* Cost Estimate card */}
             <div className="calc-result-card">
               <div className="calc-result-header">
-                <h3>Building Estimate</h3>
-                <div
-                  className={`calc-status-badge ${buildingResults ? "calculated" : ""}`}
-                >
-                  {buildingResults ? "Calculated" : "Pending"}
+                <h3><span className="header-icon">₹</span> COST ESTIMATE</h3>
+                <div className={`calc-status-badge ${results ? "calculated" : ""}`}>
+                  {results ? "Calculated" : "Pending"}
                 </div>
               </div>
 
-              {/* Total Cost */}
-              <div className="calc-result-total">
-                <span className="calc-total-label">Total Project Cost</span>
-                <span className="calc-total-amount">
-                  {buildingResults
-                    ? formatCurrency(buildingResults.totalCost)
-                    : "₹ --"}
-                </span>
-              </div>
-
-              {/* Cost Breakdown */}
-              <div className="calc-cost-breakdown">
-                {BREAKDOWN_ROWS.map(({ label, key }) => (
-                  <div className="calc-breakdown-item" key={key}>
-                    <span className="calc-breakdown-label">{label}</span>
-                    <span className="calc-breakdown-value">
-                      {buildingResults
-                        ? formatCurrency(buildingResults[key])
-                        : "₹ --"}
-                    </span>
+              {/* Big total box */}
+              <div className="calc-estimate-box">
+                <div className="calc-estimate-label">Estimated Total Cost</div>
+                <div className="calc-estimate-amount">
+                  {results ? formatCurrency(results.totalCost) : "₹ --"}
+                </div>
+                {results && (
+                  <div className="calc-estimate-meta">
+                    <span>Rate: <strong>₹{results.baseRate.toLocaleString("en-IN")}/sq.ft</strong></span>
+                    <span>Area: <strong>{results.area.toLocaleString("en-IN")} sq.ft</strong></span>
+                    <span>Floors: <strong>{floors}</strong></span>
                   </div>
-                ))}
+                )}
               </div>
 
-              {/* Material Quantities */}
-              <div className="calc-divider-thin" />
-              <h4 className="calc-subsection-title">Material Quantities</h4>
-              <div className="calc-result-grid">
-                {MATERIAL_RESULT_ROWS.map(
-                  ({ icon, label, key, unit, decimals }) => (
-                    <div className="calc-result-item" key={key}>
-                      <div className="calc-item-icon">{icon}</div>
-                      <div className="calc-item-details">
-                        <span className="calc-item-label">{label}</span>
-                        <span className="calc-item-value">
-                          {buildingResults
-                            ? `${formatNumber(buildingResults.materials[key], decimals)} ${unit}`
-                            : `-- ${unit}`}
+              {/* Material breakdown bar chart */}
+              <div className="calc-breakdown-header">
+                <span>▣</span> MATERIAL BREAKDOWN
+              </div>
+              <div className="calc-breakdown-list">
+                {(results ? results.items : [
+                  { key:"steel",     label:"Steel",     cost:0, qty:null, barClass:"calc-bar-steel"     },
+                  { key:"labour",    label:"Labour",    cost:0, qty:null, barClass:"calc-bar-labour"    },
+                  { key:"cement",    label:"Cement",    cost:0, qty:null, barClass:"calc-bar-cement"    },
+                  { key:"sand",      label:"Sand",      cost:0, qty:null, barClass:"calc-bar-sand"      },
+                  { key:"aggregate", label:"Aggregate", cost:0, qty:null, barClass:"calc-bar-aggregate" },
+                  { key:"other",     label:"Other",     cost:0, qty:null, barClass:"calc-bar-other"     },
+                ]).map(item => {
+                  const pct    = results ? Math.round((item.cost / results.totalCost) * 100) : 0;
+                  const barPct = results ? Math.round((item.cost / maxCost) * 100)           : 0;
+                  return (
+                    <div className="calc-breakdown-row" key={item.key}>
+                      <span className="calc-breakdown-name">
+                        {item.label}{results ? ` (${pct}%)` : ""}
+                      </span>
+                      <div className="calc-breakdown-bar-wrap">
+                        <div
+                          className={`calc-breakdown-bar ${item.barClass}`}
+                          style={{ width: `${barPct}%` }}
+                        />
+                      </div>
+                      <div className="calc-breakdown-right">
+                        <span className="calc-breakdown-cost">
+                          {results ? formatCurrency(item.cost) : "₹ --"}
                         </span>
+                        {item.qty && (
+                          <span className="calc-breakdown-qty">{item.qty}</span>
+                        )}
                       </div>
                     </div>
-                  ),
-                )}
+                  );
+                })}
               </div>
             </div>
 
-            {/* ────────────────────────────────────────────────────────── */}
-            {/* RCC Slab Results                                           */}
-            {/* ────────────────────────────────────────────────────────── */}
-
+            {/* RCC Slab card */}
             <div className="calc-result-card">
               <div className="calc-result-header">
-                <h3>RCC Slab Estimate</h3>
-                <div
-                  className={`calc-status-badge ${slabResults ? "calculated" : ""}`}
-                >
+                <h3>RCC SLAB ESTIMATE</h3>
+                <div className={`calc-status-badge ${slabResults ? "calculated" : ""}`}>
                   {slabResults ? "Calculated" : "Pending"}
                 </div>
               </div>
@@ -371,68 +395,47 @@ function CalculatorPage() {
                 <div className="calc-slab-item">
                   <span className="calc-slab-label">Concrete Volume</span>
                   <span className="calc-slab-value">
-                    {slabResults
-                      ? `${formatNumber(slabResults.concreteVolume, 2)} m³`
-                      : "-- m³"}
+                    {slabResults ? `${formatNumber(slabResults.concreteVol, 2)} m³` : "-- m³"}
                   </span>
                 </div>
                 <div className="calc-slab-item">
                   <span className="calc-slab-label">Cement Required</span>
                   <span className="calc-slab-value">
-                    {slabResults
-                      ? `${formatNumber(slabResults.cementRequired, 0)} bags`
-                      : "-- bags"}
+                    {slabResults ? `${formatNumber(slabResults.cementBags, 0)} bags` : "-- bags"}
                   </span>
                 </div>
                 <div className="calc-slab-item">
                   <span className="calc-slab-label">Steel Required</span>
                   <span className="calc-slab-value">
-                    {slabResults
-                      ? `${formatNumber(slabResults.steelRequired, 0)} kg`
-                      : "-- kg"}
+                    {slabResults ? `${formatNumber(slabResults.steelKg, 0)} kg` : "-- kg"}
                   </span>
                 </div>
               </div>
 
               <div className="calc-slab-note">
-                <span>ℹ️ Based on M20 grade concrete specifications</span>
+                ℹ️ Based on M20 grade concrete — 1% steel by volume, 8 bags cement/m³
               </div>
             </div>
 
-            {/* ────────────────────────────────────────────────────────── */}
-            {/* Methodology Information                                    */}
-            {/* ────────────────────────────────────────────────────────── */}
-
+            {/* Methodology */}
             <div className="calc-info-card">
               <h4>Calculation Methodology</h4>
               <ul>
-                <li>
-                  <strong>Materials:</strong> Cement (0.4 bags/sq.ft), Steel
-                  (4.0 kg/sq.ft), Sand (0.044 m³/sq.ft), Aggregate (0.088
-                  m³/sq.ft)
-                </li>
-                <li>
-                  <strong>Labor:</strong> Auto-calculated at 40% of material
-                  cost or manual input
-                </li>
-                <li>
-                  <strong>Finishing:</strong> Basic (₹450/sq.ft), Standard
-                  (₹750/sq.ft), Premium (₹1200/sq.ft)
-                </li>
-                <li>
-                  <strong>Contingency:</strong> Recommended 5–10% of subtotal
-                </li>
-                <li>
-                  <strong>RCC Slab:</strong> M20 grade concrete, 8 bags
-                  cement/m³, 1% steel by volume
-                </li>
+                <li><strong>Materials:</strong> Cement 0.4 bags/sq.ft · Steel 4.0 kg/sq.ft · Sand 0.044 m³/sq.ft · Aggregate 0.088 m³/sq.ft</li>
+                <li><strong>Rate:</strong> User-entered construction rate per sq.ft, multiplied by location factor</li>
+                <li><strong>Total Area:</strong> Plot area × number of floors</li>
+                <li><strong>Labor:</strong> Calculated as % of material cost (default 40%)</li>
+                <li><strong>Finishing:</strong> Standard ₹750/sq.ft · Premium ₹1,200/sq.ft</li>
+                <li><strong>Location:</strong> Rural 0.8× · Semi-Urban 1.0× · Urban 1.2× · Metro 1.5×</li>
+                <li><strong>Contingency:</strong> Applied on subtotal (recommended 5–10%)</li>
               </ul>
             </div>
           </section>
+
         </div>
       </main>
     </div>
   );
 }
 
-export default CalculatorPage;
+export default CalculatorsPage;
