@@ -84,7 +84,7 @@ function HomePage() {
             <h2 className="section-title">FEATURED WORK</h2>
           </div>
           <div className="projects-preview">
-            {projects.slice(0, 4).map((project) => (
+            {projects.slice(0, 3).map((project) => (
               <ProjectCard
                 key={project.id}
                 project={project}

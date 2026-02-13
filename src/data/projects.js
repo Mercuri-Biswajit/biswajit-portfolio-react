@@ -214,4 +214,61 @@ export const projects = [
     structure: "RCC Frame",
     foundation: "Raft Foundation",
   },
+  {
+    id: 5,
+    category: "RESIDENTIAL",
+    title: "Residential 3BHK Plan (33'6\" x 33'2\")",
+    description: `
+      <p>Ground floor 3BHK residential building measuring approximately 33'-6" x 33'-2" with central staircase and spacious dining hall. Designed as an RCC framed structure suitable for Zone III seismic loading with efficient column grid alignment.</p>
+      
+      <h4>Architectural Highlights</h4>
+      <ul>
+        <li><strong>Bedrooms:</strong> 3 nos. (11'-10" x 11'-10" approx.)</li>
+        <li><strong>Kitchen:</strong> 7'-10" x 8'-7" with dedicated ventilation window</li>
+        <li><strong>Dining Hall:</strong> 20'-5" x 11'-1" large common space</li>
+        <li><strong>Bathrooms:</strong> 2 nos. attached/common (5'-5" x 8'-7" approx.)</li>
+        <li><strong>Staircase:</strong> Central dog-legged RCC staircase</li>
+        <li><strong>Front Verandah:</strong> 16'-1" wide entry projection</li>
+      </ul>
+      
+      <h4>Structural Specifications</h4>
+      <ul>
+        <li><strong>Columns:</strong> 9" x 12" using 6 nos. 12mm TMT bars with 8mm stirrups @ 150mm c/c</li>
+        <li><strong>Beams:</strong> 9" x 12" using 2 nos. 16mm + 2 nos. 12mm bottom bars and 2 nos. 12mm top bars with 8mm stirrups @ 125mm c/c</li>
+        <li><strong>Slab:</strong> 5" thick two-way slab with 10mm TMT bars @ 150mm c/c both directions</li>
+        <li><strong>Staircase:</strong> 6" waist slab with 10mm TMT bars @ 150mm c/c</li>
+        <li><strong>Foundation:</strong> Isolated footings 5'-0" x 5'-0" x 1'-6" with 12mm TMT bars @ 150mm c/c both ways</li>
+        <li><strong>Plinth Beam:</strong> 9" x 12" with 4 nos. 12mm TMT bars and 8mm stirrups @ 200mm c/c</li>
+      </ul>
+      
+      <h4>Concrete Grade & Mix</h4>
+      <ul>
+        <li><strong>Concrete Grade:</strong> M20 (1:1.5:3 nominal mix)</li>
+        <li><strong>Cement:</strong> 43 grade OPC – approximately 85 bags for complete RCC work</li>
+        <li><strong>Fine Aggregate (Sand):</strong> 9.5 cubic meters</li>
+        <li><strong>Coarse Aggregate (20mm & 10mm):</strong> 18.5 cubic meters</li>
+        <li><strong>Concrete Mixer:</strong> 10/7 CFT diesel/electric mixer used for uniform batching</li>
+      </ul>
+      
+      <h4>Additional Materials</h4>
+      <ul>
+        <li><strong>Brickwork:</strong> 9" external & 5" internal partition walls – approximately 18,000 nos. bricks</li>
+        <li><strong>Plastering:</strong> 12mm internal and 15mm external cement plaster</li>
+        <li><strong>Flooring:</strong> Vitrified/ceramic tiles with 40mm PCC base</li>
+        <li><strong>Doors & Windows:</strong> Standard flush doors with aluminium sliding windows</li>
+      </ul>
+    `,
+    tags: [
+      "3BHK Plan",
+      "Central Staircase",
+      "RCC Residential",
+      "Ground Floor Design",
+      "Zone III Structure",
+    ],
+    image: "../assets/images/projects/Ground_Floor__33_x_33.5__Foot.png",
+    plotArea: "1,115 sq.ft",
+    estimatedCost: "₹22 Lakhs",
+    structure: "RCC Frame",
+    foundation: "Isolated Footing",
+  },
 ];
