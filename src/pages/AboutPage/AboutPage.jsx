@@ -5,7 +5,7 @@ import { skills }    from '../../data/skills';
 import { education } from '../../data/education';
 import { SITE }      from '../../config/constants';
 
-import './AboutPage.css';
+import './aboutpage.css';
 
 function AboutPage() {
   useEffect(() => {

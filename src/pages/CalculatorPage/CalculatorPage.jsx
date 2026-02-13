@@ -9,7 +9,7 @@ import {
 } from "../../config/constants";
 import { formatCurrency, formatNumber, safeFloat } from "../../utils/helpers";
 
-import "./CalculatorPage.css";
+import "./calculatorpage.css";
 
 // ═══════════════════════════════════════════════════════════════════════════
 // CONSTANTS
