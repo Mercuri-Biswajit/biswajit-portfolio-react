@@ -4,7 +4,7 @@ import { ProjectCard } from "../../components/cards";
 import { ProjectModal } from "../../components/modals";
 import { projects } from "../../data/projects";
 
-import "./ProjectsPage.css";
+import "./ProjectPage.css";
 
 const FILTERS = ["all", "RESIDENTIAL", "COMMERCIAL"];
 
