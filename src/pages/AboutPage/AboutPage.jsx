@@ -9,7 +9,7 @@ import './AboutPage.css';
 
 function AboutPage() {
   useEffect(() => {
-    if (window.AOS) window.AOS.init({ duration: 800, once: true });
+    if (window.Aos) window.Aos.init({ duration: 800, once: true });
   }, []);
 
   return (
