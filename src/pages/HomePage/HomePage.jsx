@@ -18,6 +18,9 @@ function HomePage() {
     if (window.AOS) window.AOS.init({ duration: 800, once: true, offset: 100 });
   }, []);
 
+  // Sort projects by ID (highest/latest first)
+  const sortedProjects = [...projects].sort((a, b) => b.id - a.id);
+
   return (
     <div className="home-page">
       {/* ── Hero ─────────────────────────────────────── */}
@@ -84,7 +87,7 @@ function HomePage() {
             <h2 className="section-title">FEATURED WORK</h2>
           </div>
           <div className="projects-preview">
-            {projects.slice(0, 3).map((project) => (
+            {sortedProjects.slice(0, 3).map((project) => (
               <ProjectCard
                 key={project.id}
                 project={project}

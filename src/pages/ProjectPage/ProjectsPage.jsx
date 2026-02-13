@@ -16,10 +16,13 @@ function ProjectsPage() {
     if (window.AOS) window.AOS.init({ duration: 800, once: true });
   }, []);
 
+  // Sort projects by ID (highest/latest first)
+  const sortedProjects = [...projects].sort((a, b) => b.id - a.id);
+
   const filteredProjects =
     activeFilter === "all"
-      ? projects
-      : projects.filter((p) => p.category === activeFilter);
+      ? sortedProjects
+      : sortedProjects.filter((p) => p.category === activeFilter);
 
   return (
     <>
