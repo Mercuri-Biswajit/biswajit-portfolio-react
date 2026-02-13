@@ -30,7 +30,6 @@ function ProjectCard({ project, onClick }) {
         </div>
 
         <h3 className="project-card-title">{project.title}</h3>
-        <p className="project-card-description">{project.description}</p>
 
         <div className="project-card-footer">
           <div className="project-card-info-grid">

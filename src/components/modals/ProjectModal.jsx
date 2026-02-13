@@ -54,7 +54,31 @@ function ProjectModal({ project, onClose }) {
             <h2 className="project-modal-title">{project.title}</h2>
           </div>
 
-          <p className="project-modal-description">{project.description}</p>
+          {/* Project Info Grid */}
+          <div className="project-modal-info-grid">
+            <div className="project-modal-info-item">
+              <span className="project-modal-info-label">Plot Area</span>
+              <span className="project-modal-info-value">{project.plotArea || 'N/A'}</span>
+            </div>
+            <div className="project-modal-info-item">
+              <span className="project-modal-info-label">Estimated Cost</span>
+              <span className="project-modal-info-value">{project.estimatedCost || 'N/A'}</span>
+            </div>
+            <div className="project-modal-info-item">
+              <span className="project-modal-info-label">Structure Type</span>
+              <span className="project-modal-info-value">{project.structure || 'N/A'}</span>
+            </div>
+            <div className="project-modal-info-item">
+              <span className="project-modal-info-label">Foundation</span>
+              <span className="project-modal-info-value">{project.foundation || 'N/A'}</span>
+            </div>
+          </div>
+
+          {/* Combined Description with HTML rendering */}
+          <div 
+            className="project-modal-description"
+            dangerouslySetInnerHTML={{ __html: project.description }}
+          />
 
           <div className="project-modal-tags">
             {project.tags.map((tag, i) => (
