@@ -9,7 +9,7 @@ import { projects } from "../../data/projects";
 import { SITE } from "../../config/constants";
 
 // STANDALONE CSS - No dependencies on other CSS files
-import "./homepage.css";
+import "./HomePage.css";
 
 function HomePage() {
   const [selectedProject, setSelectedProject] = useState(null);
