@@ -1,11 +1,11 @@
-import { useEffect } from 'react';
+import { useEffect } from "react";
 
-import { SkillCard, EducationItem } from '../../components/cards';
-import { skills }    from '../../data/skills';
-import { education } from '../../data/education';
-import { SITE }      from '../../config/constants';
+import { SkillCard, EducationItem } from "../../components/cards";
+import { skills } from "../../data/skills";
+import { education } from "../../data/education";
+import { SITE } from "../../config/constants";
 
-import './AboutPage.css';
+import "./AboutPage.css";
 
 function AboutPage() {
   useEffect(() => {
@@ -27,8 +27,13 @@ function AboutPage() {
             <span className="page-label">PROFILE</span>
             ABOUT ME
           </h1>
-          <p className="page-description" data-aos="fade-up" data-aos-delay="200">
-            Passionate about creating sustainable infrastructure that serves communities.
+          <p
+            className="page-description"
+            data-aos="fade-up"
+            data-aos-delay="200"
+          >
+            Passionate about creating sustainable infrastructure that serves
+            communities.
           </p>
         </div>
       </section>
@@ -37,7 +42,6 @@ function AboutPage() {
       <section className="about-page">
         <div className="container">
           <div className="about-grid">
-
             {/* Skills */}
             <div className="about-section" data-aos="fade-right">
               <h2 className="section-subtitle">Core Skills</h2>
@@ -50,7 +54,9 @@ function AboutPage() {
 
             {/* Education */}
             <div className="about-section" data-aos="fade-left">
-              <h2 className="section-subtitle">Education &amp; Certifications</h2>
+              <h2 className="section-subtitle">
+                Education &amp; Certifications
+              </h2>
               <div className="education-timeline">
                 {education.map((item, i) => (
                   <EducationItem key={i} {...item} />
@@ -63,15 +69,17 @@ function AboutPage() {
               <div className="about-section" data-aos="fade-up">
                 <h2 className="section-subtitle">Professional Summary</h2>
                 <p className="about-text">
-                  Civil engineer with 5+ years of experience specializing in residential and commercial
-                  structural design. Completed B.Tech from Surendra Institute of Engineering and
-                  Management in 2020. Expert in AutoCAD 2D, structural analysis, and sustainable
+                  Civil engineer with 5+ years of experience specializing in
+                  residential and commercial structural design. Completed B.Tech
+                  from Surendra Institute of Engineering and Management in 2020.
+                  Expert in AutoCAD 2D, structural analysis, and sustainable
                   building practices.
                 </p>
                 <p className="about-text">
-                  My design philosophy combines traditional engineering principles with modern
-                  technologies like BIM and Vastu Shastra. Committed to delivering safe,
-                  cost-effective, and aesthetically pleasing structures.
+                  My design philosophy combines traditional engineering
+                  principles with modern technologies like BIM and Vastu
+                  Shastra. Committed to delivering safe, cost-effective, and
+                  aesthetically pleasing structures.
                 </p>
               </div>
             </div>
@@ -96,7 +104,6 @@ function AboutPage() {
                 </div>
               </div>
             </div>
-
           </div>
         </div>
       </section>
