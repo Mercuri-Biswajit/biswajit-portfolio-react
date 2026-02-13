@@ -15,7 +15,7 @@ function HomePage() {
   const [selectedProject, setSelectedProject] = useState(null);
 
   useEffect(() => {
-    if (window.Aos) window.Aos.init({ duration: 800, once: true, offset: 100 });
+    if (window.AOS) window.AOS.init({ duration: 800, once: true, offset: 100 });
   }, []);
 
   // Sort projects by ID (highest/latest first)
