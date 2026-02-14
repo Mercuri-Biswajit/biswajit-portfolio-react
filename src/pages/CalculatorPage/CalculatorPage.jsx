@@ -1,379 +1,878 @@
 import { useState } from "react";
 
 import {
-  MATERIAL_CONSTANTS,
-  DEFAULT_MATERIAL_RATES,
-  SLAB_CONSTANTS,
-  CONVERSIONS,
-  CALCULATOR_DEFAULTS,
-} from "../../config/constants";
-import { formatCurrency, formatNumber, safeFloat } from "../../utils/helpers";
+  BUILDING_TYPES,
+  FINISH_GRADES,
+  SOIL_CONDITIONS,
+  REGIONS,
+  MATERIAL_RATES,
+} from "../../config/calculatorConstants";
+import {
+  calcBuildingCost,
+  calcStairDesign,
+  calcFooting,
+  calcBarBending,
+  calcProjectTimeline,
+  calcStructureDesign,
+} from "../../utils/calculator/advanced";
+import { formatCurrency } from "../../utils/helpers";
 
 import "./CalculatorPage.css";
 
-// ═══════════════════════════════════════════════════════════════════════════
-// CONSTANTS
-// ═══════════════════════════════════════════════════════════════════════════
-
-const FLOOR_OPTIONS = [
-  { label: "G",   value: 1 },
-  { label: "G+1", value: 2 },
-  { label: "G+2", value: 3 },
-  { label: "G+3", value: 4 },
-];
-
-// ═══════════════════════════════════════════════════════════════════════════
-// HELPERS
-// ═══════════════════════════════════════════════════════════════════════════
-
-function calcEstimate({
-  plotArea, floors, ratePerSqft, locationFactor,
-  cementRate, steelRate, sandRate, aggregateRate,
-  laborPercent, contingency,
-}) {
-  const area     = safeFloat(plotArea, 0) * floors;
-  const userRate = safeFloat(ratePerSqft, 1650);
-  const locMult  = safeFloat(locationFactor, 1.0);
-
-  const cRate  = safeFloat(cementRate,    DEFAULT_MATERIAL_RATES.cement);
-  const sRate  = safeFloat(steelRate,     DEFAULT_MATERIAL_RATES.steel);
-  const sdRate = safeFloat(sandRate,      DEFAULT_MATERIAL_RATES.sand);
-  const agRate = safeFloat(aggregateRate, DEFAULT_MATERIAL_RATES.aggregate);
-
-  const cementQty    = area * MATERIAL_CONSTANTS.cement;
-  const steelQty     = area * MATERIAL_CONSTANTS.steel;
-  const sandQty      = area * MATERIAL_CONSTANTS.sand;
-  const aggregateQty = area * MATERIAL_CONSTANTS.aggregate;
-
-  const cementCost    = cementQty    * cRate;
-  const steelCost     = steelQty     * sRate;
-  const sandCost      = sandQty      * sdRate;
-  const aggregateCost = aggregateQty * agRate;
-  const materialCost  = cementCost + steelCost + sandCost + aggregateCost;
-
-  const labourCost    = materialCost * (safeFloat(laborPercent, CALCULATOR_DEFAULTS.laborPercent) / 100);
-  const finishingCost = area * userRate;
-  const otherCost     = materialCost * 0.08;
-
-  const subtotal        = materialCost + labourCost + finishingCost + otherCost;
-  const contingencyCost = subtotal * (safeFloat(contingency, CALCULATOR_DEFAULTS.contingency) / 100);
-  const totalCost       = subtotal * locMult + contingencyCost;
-
-  const items = [
-    { key: "steel",     label: "Steel",     cost: steelCost,     qty: `${formatNumber(steelQty,     0)} kg`,   barClass: "calc-bar-steel"     },
-    { key: "labour",    label: "Labour",    cost: labourCost,    qty: null,                                     barClass: "calc-bar-labour"    },
-    { key: "cement",    label: "Cement",    cost: cementCost,    qty: `${formatNumber(cementQty,    0)} bags`,  barClass: "calc-bar-cement"    },
-    { key: "sand",      label: "Sand",      cost: sandCost,      qty: `${formatNumber(sandQty,      2)} m³`,    barClass: "calc-bar-sand"      },
-    { key: "aggregate", label: "Aggregate", cost: aggregateCost, qty: `${formatNumber(aggregateQty, 2)} m³`,    barClass: "calc-bar-aggregate" },
-    { key: "other",     label: "Other",     cost: otherCost,     qty: null,                                     barClass: "calc-bar-other"     },
-  ];
-
-  return {
-    totalCost,
-    area,
-    baseRate: Math.round(userRate * locMult),
-    items,
-    cementQty, steelQty, sandQty, aggregateQty,
-  };
-}
-
-function calcSlab(slabArea, slabThickness) {
-  const areaM2      = safeFloat(slabArea, 0)      * CONVERSIONS.sqftToSqm;
-  const thicknessM  = safeFloat(slabThickness, 0) * CONVERSIONS.ftToM;
-  const concreteVol = areaM2 * thicknessM;
-  const cementBags  = concreteVol * SLAB_CONSTANTS.cementPerCubicMeter;
-  const steelKg     = concreteVol * SLAB_CONSTANTS.steelPercent * SLAB_CONSTANTS.steelDensity;
-  return { concreteVol, cementBags, steelKg };
-}
-
-// ═══════════════════════════════════════════════════════════════════════════
-// COMPONENT
-// ═══════════════════════════════════════════════════════════════════════════
-
 function CalculatorsPage() {
-  const [plotArea,       setPlotArea]       = useState("");
-  const [floors,         setFloors]         = useState(1);
-  const [ratePerSqft,    setRatePerSqft]    = useState("");
-  const [locationFactor, setLocationFactor] = useState("1.0");
-  const [cementRate,     setCementRate]     = useState("");
-  const [steelRate,      setSteelRate]      = useState("");
-  const [sandRate,       setSandRate]       = useState("");
-  const [aggregateRate,  setAggregateRate]  = useState("");
-  const [laborPercent,   setLaborPercent]   = useState(String(CALCULATOR_DEFAULTS.laborPercent));
-  const [contingency,    setContingency]    = useState(String(CALCULATOR_DEFAULTS.contingency));
-  const [slabArea,       setSlabArea]       = useState("");
-  const [slabThickness,  setSlabThickness]  = useState(String(CALCULATOR_DEFAULTS.slabThickness));
-  const [results,        setResults]        = useState(null);
-  const [slabResults,    setSlabResults]    = useState(null);
+  // ── Input State ────────────────────────────────────────────────────────
+  const [inputs, setInputs] = useState({
+    // Basic Dimensions
+    length: "",
+    breadth: "",
+    floors: 1,
+    floorHeight: "10",
+    
+    // Building Characteristics
+    buildingType: "residential",
+    finishGrade: "standard",
+    soilCondition: "normal",
+    region: "tier3",
+    
+    // Advanced Options
+    includeBasement: false,
+    basementDepth: "8",
+    includeStaircase: true,
+    columnSize: "9x12",
+    avgColumnSpan: "12",
+    
+    // Custom Material Rates (optional)
+    customCementRate: "",
+    customSteelRate: "",
+    customSandRate: "",
+    customAggregateRate: "",
+  });
 
+  const [results, setResults] = useState(null);
+  const [activeTab, setActiveTab] = useState("cost"); // cost, stair, footing, bbs, timeline
+
+  // ── Input Handlers ─────────────────────────────────────────────────────
+  const updateField = (field) => (e) => {
+    const value = e.target.type === "checkbox" ? e.target.checked : e.target.value;
+    setInputs((prev) => ({ ...prev, [field]: value }));
+  };
+
+  // ── Calculate ──────────────────────────────────────────────────────────
   const handleCalculate = () => {
-    if (!safeFloat(plotArea, 0)) { alert("Please enter a valid plot area."); return; }
-    if (!safeFloat(ratePerSqft, 0)) { alert("Please enter a valid construction rate per sq.ft."); return; }
-    setResults(calcEstimate({ plotArea, floors, ratePerSqft, locationFactor, cementRate, steelRate, sandRate, aggregateRate, laborPercent, contingency }));
+    const { length, breadth, floors, floorHeight } = inputs;
+    
+    // Validate inputs
+    if (!length || !breadth || parseFloat(length) <= 0 || parseFloat(breadth) <= 0) {
+      alert("Please enter valid building dimensions (length and breadth must be greater than 0).");
+      return;
+    }
+
+    // Prepare calculation inputs
+    const calcInputs = {
+      ...inputs,
+      length: parseFloat(length),
+      breadth: parseFloat(breadth),
+      floors: parseInt(floors),
+      floorHeight: parseFloat(floorHeight),
+      basementDepth: parseFloat(inputs.basementDepth),
+      avgColumnSpan: parseFloat(inputs.avgColumnSpan),
+      customRates: {
+        cement: inputs.customCementRate ? parseFloat(inputs.customCementRate) : null,
+        steel: inputs.customSteelRate ? parseFloat(inputs.customSteelRate) : null,
+        sand: inputs.customSandRate ? parseFloat(inputs.customSandRate) : null,
+        aggregate: inputs.customAggregateRate ? parseFloat(inputs.customAggregateRate) : null,
+      },
+    };
+
+    // Calculate all results
+    const buildingCost = calcBuildingCost(calcInputs);
+    const stairDesign = calcInputs.includeStaircase
+      ? calcStairDesign(calcInputs.length, calcInputs.breadth, calcInputs.floorHeight, calcInputs.floors, calcInputs.buildingType)
+      : null;
+    const footing = calcFooting(calcInputs);
+    const barBending = calcBarBending(calcInputs);
+    const timeline = calcProjectTimeline(calcInputs);
+    const structureDesign = calcStructureDesign(calcInputs);
+
+    setResults({
+      buildingCost,
+      stairDesign,
+      footing,
+      barBending,
+      timeline,
+      structureDesign,
+    });
   };
 
-  const handleCalcSlab = () => {
-    if (!safeFloat(slabArea, 0)) { alert("Please enter a valid slab area."); return; }
-    if (!safeFloat(slabThickness, 0)) { alert("Please enter a valid slab thickness."); return; }
-    setSlabResults(calcSlab(slabArea, slabThickness));
-  };
-
+  // ── Reset ──────────────────────────────────────────────────────────────
   const handleReset = () => {
-    setPlotArea(""); setFloors(1); setRatePerSqft(""); setLocationFactor("1.0");
-    setCementRate(""); setSteelRate(""); setSandRate(""); setAggregateRate("");
-    setLaborPercent(String(CALCULATOR_DEFAULTS.laborPercent));
-    setContingency(String(CALCULATOR_DEFAULTS.contingency));
-    setSlabArea(""); setSlabThickness(String(CALCULATOR_DEFAULTS.slabThickness));
-    setResults(null); setSlabResults(null);
+    setInputs({
+      length: "",
+      breadth: "",
+      floors: 1,
+      floorHeight: "10",
+      buildingType: "residential",
+      finishGrade: "standard",
+      soilCondition: "normal",
+      region: "tier3",
+      includeBasement: false,
+      basementDepth: "8",
+      includeStaircase: true,
+      columnSize: "9x12",
+      avgColumnSpan: "12",
+      customCementRate: "",
+      customSteelRate: "",
+      customSandRate: "",
+      customAggregateRate: "",
+    });
+    setResults(null);
+    setActiveTab("cost");
   };
-
-  const maxCost = results ? Math.max(...results.items.map((i) => i.cost)) : 1;
-
-  const EMPTY_ITEMS = [
-    { key: "steel",     label: "Steel",     cost: 0, qty: null, barClass: "calc-bar-steel"     },
-    { key: "labour",    label: "Labour",    cost: 0, qty: null, barClass: "calc-bar-labour"    },
-    { key: "cement",    label: "Cement",    cost: 0, qty: null, barClass: "calc-bar-cement"    },
-    { key: "sand",      label: "Sand",      cost: 0, qty: null, barClass: "calc-bar-sand"      },
-    { key: "aggregate", label: "Aggregate", cost: 0, qty: null, barClass: "calc-bar-aggregate" },
-    { key: "other",     label: "Other",     cost: 0, qty: null, barClass: "calc-bar-other"     },
-  ];
 
   return (
     <div className="calc-page">
       <main className="calc-main">
-        <div className="calc-grid">
+        <div className="calc-header">
+          <div className="calc-header-content">
+            <div className="calc-header-left">
+              <span className="calc-step">STEP 1</span>
+              <h1 className="calc-title">Construction Cost Calculator</h1>
+            </div>
+            <span className="calc-badge">Pro Version</span>
+          </div>
+          <div className="calc-intro">
+            <span className="calc-intro-icon">ℹ️</span>
+            <p>
+              Professional construction estimation tool based on IS 456:2000, NBC 2016, and current market rates. 
+              Enter your building dimensions and specifications to get a detailed cost breakdown with material quantities, 
+              structural design parameters, and project timeline.
+            </p>
+          </div>
+        </div>
 
-          {/* ══════════ LEFT: INPUTS ══════════ */}
-          <section className="calc-input-section">
+        {/* Input Section */}
+        <section className="calc-input-section">
+          <div className="calc-section-header">
+            <div className="calc-panel-label">
+              <span className="label-icon">▣</span>
+              BUILDING SPECIFICATIONS
+            </div>
+            <button className="calc-btn-reset" onClick={handleReset}>
+              ↺ Reset All
+            </button>
+          </div>
 
-            <div className="calc-section-header">
-              <div className="calc-panel-label">
-                <span className="label-icon">▣</span>
-                ENTER YOUR AREA (SQ.FT.)
+          {/* Basic Dimensions */}
+          <div className="calc-card">
+            <h3 className="calc-card-subtitle">Basic Dimensions</h3>
+            <div className="calc-grid-3">
+              <div className="calc-input-group">
+                <label className="calc-label-primary">
+                  Length <span className="calc-label-unit">feet</span>
+                </label>
+                <input
+                  type="number"
+                  className="calc-input-primary"
+                  placeholder="e.g. 40"
+                  value={inputs.length}
+                  onChange={updateField("length")}
+                />
               </div>
-              <button className="calc-btn-reset" onClick={handleReset}>↺ Reset</button>
-            </div>
 
-            <div className="calc-input-group">
-              <label className="calc-label-primary">
-                Plot Area <span className="calc-label-unit">sq.ft</span>
-              </label>
-              <input type="number" className="calc-input-primary"
-                placeholder="e.g. 1000" value={plotArea}
-                onChange={(e) => setPlotArea(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && handleCalculate()} />
-            </div>
+              <div className="calc-input-group">
+                <label className="calc-label-primary">
+                  Breadth <span className="calc-label-unit">feet</span>
+                </label>
+                <input
+                  type="number"
+                  className="calc-input-primary"
+                  placeholder="e.g. 30"
+                  value={inputs.breadth}
+                  onChange={updateField("breadth")}
+                />
+              </div>
 
-            <div className="calc-input-group">
-              <label className="calc-label-primary">
-                Construction Rate <span className="calc-label-unit">₹ / sq.ft</span>
-              </label>
-              <input type="number" className="calc-input-primary"
-                placeholder="e.g. 1650" value={ratePerSqft}
-                onChange={(e) => setRatePerSqft(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && handleCalculate()} />
+              <div className="calc-input-group">
+                <label className="calc-label-primary">
+                  Floor Height <span className="calc-label-unit">feet</span>
+                </label>
+                <input
+                  type="number"
+                  className="calc-input-primary"
+                  placeholder="10"
+                  value={inputs.floorHeight}
+                  onChange={updateField("floorHeight")}
+                />
+              </div>
             </div>
 
             <div className="calc-input-group">
               <label className="calc-label-primary">Number of Floors</label>
               <div className="calc-floor-buttons">
-                {FLOOR_OPTIONS.map((opt) => (
-                  <button key={opt.value}
-                    className={`calc-floor-btn ${floors === opt.value ? "active" : ""}`}
-                    onClick={() => setFloors(opt.value)}>
-                    {opt.label}
+                {[1, 2, 3, 4, 5].map((num) => (
+                  <button
+                    key={num}
+                    className={`calc-floor-btn ${inputs.floors === num ? "active" : ""}`}
+                    onClick={() => setInputs((prev) => ({ ...prev, floors: num }))}
+                  >
+                    {num === 1 ? "G" : `G+${num - 1}`}
                   </button>
                 ))}
               </div>
             </div>
+          </div>
 
-            <div className="calc-input-group">
-              <label className="calc-label-primary">
-                Location Factor <span className="calc-label-unit">{locationFactor}x</span>
+          {/* Building Type & Specifications */}
+          <div className="calc-card">
+            <h3 className="calc-card-subtitle">Building Type & Specifications</h3>
+            <div className="calc-grid-2">
+              <div className="calc-input-group">
+                <label className="calc-label-primary">Building Type</label>
+                <select
+                  className="calc-input-primary calc-select-input"
+                  value={inputs.buildingType}
+                  onChange={updateField("buildingType")}
+                >
+                  {Object.entries(BUILDING_TYPES).map(([key, { label }]) => (
+                    <option key={key} value={key}>
+                      {label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="calc-input-group">
+                <label className="calc-label-primary">Finish Grade</label>
+                <select
+                  className="calc-input-primary calc-select-input"
+                  value={inputs.finishGrade}
+                  onChange={updateField("finishGrade")}
+                >
+                  {Object.entries(FINISH_GRADES).map(([key, { label }]) => (
+                    <option key={key} value={key}>
+                      {label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="calc-input-group">
+                <label className="calc-label-primary">Soil Condition</label>
+                <select
+                  className="calc-input-primary calc-select-input"
+                  value={inputs.soilCondition}
+                  onChange={updateField("soilCondition")}
+                >
+                  {Object.entries(SOIL_CONDITIONS).map(([key, { label }]) => (
+                    <option key={key} value={key}>
+                      {label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="calc-input-group">
+                <label className="calc-label-primary">Region / Location</label>
+                <select
+                  className="calc-input-primary calc-select-input"
+                  value={inputs.region}
+                  onChange={updateField("region")}
+                >
+                  {Object.entries(REGIONS).map(([key, { label }]) => (
+                    <option key={key} value={key}>
+                      {label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          </div>
+
+          {/* Advanced Options */}
+          <div className="calc-card">
+            <h3 className="calc-card-subtitle">Advanced Options</h3>
+            
+            <div className="calc-toggle-group">
+              <label className="calc-toggle-label">
+                <input
+                  type="checkbox"
+                  className="calc-checkbox"
+                  checked={inputs.includeBasement}
+                  onChange={updateField("includeBasement")}
+                />
+                <span>Include Basement</span>
               </label>
-              <select className="calc-input-primary calc-select-input"
-                value={locationFactor} onChange={(e) => setLocationFactor(e.target.value)}>
-                <option value="0.8">Rural (0.8x)</option>
-                <option value="1.0">Semi-Urban (1.0x)</option>
-                <option value="1.2">Urban (1.2x)</option>
-                <option value="1.5">Metro (1.5x)</option>
-              </select>
+
+              <label className="calc-toggle-label">
+                <input
+                  type="checkbox"
+                  className="calc-checkbox"
+                  checked={inputs.includeStaircase}
+                  onChange={updateField("includeStaircase")}
+                />
+                <span>Include Staircase Design</span>
+              </label>
             </div>
 
-            <div className="calc-divider" />
-            <div className="calc-section-subtitle">Material Rates (optional)</div>
+            {inputs.includeBasement && (
+              <div className="calc-grid-3" style={{ marginTop: "1rem" }}>
+                <div className="calc-input-group">
+                  <label className="calc-label-primary">
+                    Basement Depth <span className="calc-label-unit">feet</span>
+                  </label>
+                  <input
+                    type="number"
+                    className="calc-input-primary"
+                    placeholder="8"
+                    value={inputs.basementDepth}
+                    onChange={updateField("basementDepth")}
+                  />
+                </div>
+              </div>
+            )}
+          </div>
 
+          {/* Custom Material Rates (Optional) */}
+          <div className="calc-card">
+            <h3 className="calc-card-subtitle">
+              Custom Material Rates <span style={{ fontSize: "0.8rem", color: "var(--color-text-dim)", fontWeight: 400 }}>(Optional - Leave blank for default rates)</span>
+            </h3>
             <div className="calc-material-grid">
               <div className="calc-input-group">
-                <label className="calc-label-secondary">Cement <span className="calc-rate-hint">per bag</span></label>
-                <input type="number" className="calc-input-secondary"
-                  placeholder={String(DEFAULT_MATERIAL_RATES.cement)}
-                  value={cementRate} onChange={(e) => setCementRate(e.target.value)} />
+                <label className="calc-label-secondary">
+                  Cement <span className="calc-rate-hint">₹/bag (default: {MATERIAL_RATES.cement.rate})</span>
+                </label>
+                <input
+                  type="number"
+                  className="calc-input-secondary"
+                  placeholder={MATERIAL_RATES.cement.rate}
+                  value={inputs.customCementRate}
+                  onChange={updateField("customCementRate")}
+                />
               </div>
+
               <div className="calc-input-group">
-                <label className="calc-label-secondary">Steel <span className="calc-rate-hint">per kg</span></label>
-                <input type="number" className="calc-input-secondary"
-                  placeholder={String(DEFAULT_MATERIAL_RATES.steel)}
-                  value={steelRate} onChange={(e) => setSteelRate(e.target.value)} />
+                <label className="calc-label-secondary">
+                  Steel <span className="calc-rate-hint">₹/kg (default: {MATERIAL_RATES.steel.rate})</span>
+                </label>
+                <input
+                  type="number"
+                  className="calc-input-secondary"
+                  placeholder={MATERIAL_RATES.steel.rate}
+                  value={inputs.customSteelRate}
+                  onChange={updateField("customSteelRate")}
+                />
               </div>
+
               <div className="calc-input-group">
-                <label className="calc-label-secondary">Sand <span className="calc-rate-hint">per m³</span></label>
-                <input type="number" className="calc-input-secondary"
-                  placeholder={String(DEFAULT_MATERIAL_RATES.sand)}
-                  value={sandRate} onChange={(e) => setSandRate(e.target.value)} />
+                <label className="calc-label-secondary">
+                  Sand <span className="calc-rate-hint">₹/cft (default: {MATERIAL_RATES.sand.rate})</span>
+                </label>
+                <input
+                  type="number"
+                  className="calc-input-secondary"
+                  placeholder={MATERIAL_RATES.sand.rate}
+                  value={inputs.customSandRate}
+                  onChange={updateField("customSandRate")}
+                />
               </div>
+
               <div className="calc-input-group">
-                <label className="calc-label-secondary">Aggregate <span className="calc-rate-hint">per m³</span></label>
-                <input type="number" className="calc-input-secondary"
-                  placeholder={String(DEFAULT_MATERIAL_RATES.aggregate)}
-                  value={aggregateRate} onChange={(e) => setAggregateRate(e.target.value)} />
+                <label className="calc-label-secondary">
+                  Aggregate <span className="calc-rate-hint">₹/cft (default: {MATERIAL_RATES.aggregate.rate})</span>
+                </label>
+                <input
+                  type="number"
+                  className="calc-input-secondary"
+                  placeholder={MATERIAL_RATES.aggregate.rate}
+                  value={inputs.customAggregateRate}
+                  onChange={updateField("customAggregateRate")}
+                />
               </div>
             </div>
+          </div>
 
-            <div className="calc-divider" />
-            <div className="calc-section-subtitle">Labor & Contingency</div>
+          <button className="calc-btn-primary" onClick={handleCalculate}>
+            CALCULATE ESTIMATE →
+          </button>
+        </section>
 
-            <div className="calc-material-grid">
-              <div className="calc-input-group">
-                <label className="calc-label-secondary">Labor <span className="calc-rate-hint">% of material</span></label>
-                <input type="number" className="calc-input-secondary"
-                  placeholder="40" value={laborPercent}
-                  onChange={(e) => setLaborPercent(e.target.value)} />
-              </div>
-              <div className="calc-input-group">
-                <label className="calc-label-secondary">Contingency <span className="calc-rate-hint">%</span></label>
-                <input type="number" className="calc-input-secondary"
-                  placeholder="7" value={contingency}
-                  onChange={(e) => setContingency(e.target.value)} />
-              </div>
-            </div>
-
-            <button className="calc-btn-primary" onClick={handleCalculate}>
-              CALCULATE ESTIMATE →
-            </button>
-
-            <div className="calc-divider" />
-            <div className="calc-section-subtitle">RCC Slab Calculator</div>
-
-            <div className="calc-input-group">
-              <label className="calc-label-secondary">Slab Area <span className="calc-rate-hint">sq.ft</span></label>
-              <input type="number" className="calc-input-secondary"
-                placeholder="e.g. 1300" value={slabArea}
-                onChange={(e) => setSlabArea(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && handleCalcSlab()} />
-            </div>
-            <div className="calc-input-group">
-              <label className="calc-label-secondary">Thickness <span className="calc-rate-hint">ft</span></label>
-              <input type="number" className="calc-input-secondary"
-                placeholder="0.41" value={slabThickness}
-                onChange={(e) => setSlabThickness(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && handleCalcSlab()} />
-            </div>
-            <button className="calc-btn-secondary" onClick={handleCalcSlab}>
-              CALCULATE SLAB
-            </button>
-          </section>
-
-          {/* ══════════ RIGHT: RESULTS ══════════ */}
+        {/* Results Section */}
+        {results && (
           <section className="calc-results-section">
-
-            {/* Cost Estimate */}
-            <div className="calc-result-card">
-              <div className="calc-result-header">
-                <h3><span className="header-icon">₹</span> COST ESTIMATE</h3>
-                <div className={`calc-status-badge ${results ? "calculated" : ""}`}>
-                  {results ? "Calculated" : "Pending"}
+            {/* Cost Banner */}
+            <div className="calc-cost-banner">
+              <div className="calc-banner-left">
+                <div className="calc-estimate-label">Total Estimated Cost</div>
+                <div className="calc-estimate-amount">
+                  {formatCurrency(results.buildingCost.totalCost)}
+                </div>
+                <div className="calc-estimate-meta">
+                  <span>
+                    Rate: <strong>₹{Math.round(results.buildingCost.costPerSqft).toLocaleString("en-IN")}/sq.ft</strong>
+                  </span>
+                  <span>
+                    Area: <strong>{results.buildingCost.totalArea.toLocaleString("en-IN")} sq.ft</strong>
+                  </span>
+                  <span>
+                    Floors: <strong>{inputs.floors}</strong>
+                  </span>
                 </div>
               </div>
+            </div>
 
-              <div className="calc-estimate-box">
-                <div className="calc-estimate-label">Estimated Total Cost</div>
-                <div className="calc-estimate-amount">
-                  {results ? formatCurrency(results.totalCost) : "₹ --"}
-                </div>
-                {results && (
-                  <div className="calc-estimate-meta">
-                    <span>Rate: <strong>₹{results.baseRate.toLocaleString("en-IN")}/sq.ft</strong></span>
-                    <span>Area: <strong>{results.area.toLocaleString("en-IN")} sq.ft</strong></span>
-                    <span>Floors: <strong>{floors}</strong></span>
-                  </div>
+            {/* Tabs */}
+            <div className="calc-tabs">
+              <button
+                className={`calc-tab ${activeTab === "cost" ? "active" : ""}`}
+                onClick={() => setActiveTab("cost")}
+              >
+                💰 Cost Breakdown
+              </button>
+              <button
+                className={`calc-tab ${activeTab === "structure" ? "active" : ""}`}
+                onClick={() => setActiveTab("structure")}
+              >
+                🏛️ Structure Design
+              </button>
+              {results.stairDesign && (
+                <button
+                  className={`calc-tab ${activeTab === "stair" ? "active" : ""}`}
+                  onClick={() => setActiveTab("stair")}
+                >
+                  🪜 Staircase Design
+                </button>
+              )}
+              <button
+                className={`calc-tab ${activeTab === "footing" ? "active" : ""}`}
+                onClick={() => setActiveTab("footing")}
+              >
+                🏗️ Foundation Design
+              </button>
+              <button
+                className={`calc-tab ${activeTab === "bbs" ? "active" : ""}`}
+                onClick={() => setActiveTab("bbs")}
+              >
+                📊 Bar Bending Schedule
+              </button>
+              <button
+                className={`calc-tab ${activeTab === "timeline" ? "active" : ""}`}
+                onClick={() => setActiveTab("timeline")}
+              >
+                📅 Project Timeline
+              </button>
+            </div>
+
+            {/* Tab Content */}
+            <div className="calc-tab-content">
+              {activeTab === "cost" && (
+                <CostBreakdown results={results.buildingCost} />
+              )}
+              {activeTab === "structure" && (
+                <StructureDesign design={results.structureDesign} />
+              )}
+              {activeTab === "stair" && results.stairDesign && (
+                <StaircaseDesign design={results.stairDesign} />
+              )}
+              {activeTab === "footing" && (
+                <FoundationDesign footing={results.footing} />
+              )}
+              {activeTab === "bbs" && (
+                <BarBendingSchedule bbs={results.barBending} />
+              )}
+              {activeTab === "timeline" && (
+                <ProjectTimeline timeline={results.timeline} />
+              )}
+            </div>
+
+            <div style={{ textAlign: "center", paddingTop: "2rem" }}>
+              <button onClick={handleReset} className="calc-btn-secondary">
+                ← New Estimate
+              </button>
+            </div>
+          </section>
+        )}
+      </main>
+    </div>
+  );
+}
+
+// ── Sub-Components ─────────────────────────────────────────────────────────
+
+function StructureDesign({ design }) {
+  return (
+    <div className="calc-result-card">
+      <h3 className="calc-breakdown-header">
+        <span>🏛️</span> Structural Design Specifications
+      </h3>
+      
+      {/* Columns */}
+      <div className="calc-struct-section">
+        <h4 className="calc-struct-section-title">Column Design</h4>
+        <div className="calc-struct-grid">
+          <div className="calc-struct-card">
+            <div className="calc-struct-icon">📐</div>
+            <div className="calc-struct-title">Column Size</div>
+            <div className="calc-struct-value">{design.columns.size}</div>
+            <div className="calc-struct-sub">RCC Frame</div>
+          </div>
+
+          <div className="calc-struct-card">
+            <div className="calc-struct-icon">🔢</div>
+            <div className="calc-struct-title">Total Columns</div>
+            <div className="calc-struct-value">{design.columns.count}</div>
+            <div className="calc-struct-sub">{design.columns.spacing}</div>
+          </div>
+
+          <div className="calc-struct-card">
+            <div className="calc-struct-icon">⚙️</div>
+            <div className="calc-struct-title">Main Bars</div>
+            <div className="calc-struct-value">{design.columns.mainBars}</div>
+            <div className="calc-struct-sub">TMT Fe500</div>
+          </div>
+
+          <div className="calc-struct-card">
+            <div className="calc-struct-icon">🔗</div>
+            <div className="calc-struct-title">Stirrups</div>
+            <div className="calc-struct-value">{design.columns.stirrup}</div>
+            <div className="calc-struct-sub">Lateral ties</div>
+          </div>
+        </div>
+      </div>
+
+      {/* Beams */}
+      <div className="calc-struct-section">
+        <h4 className="calc-struct-section-title">Beam Design</h4>
+        <div className="calc-struct-grid">
+          <div className="calc-struct-card">
+            <div className="calc-struct-icon">📏</div>
+            <div className="calc-struct-title">Beam Size</div>
+            <div className="calc-struct-value">{design.beams.size}</div>
+            <div className="calc-struct-sub">Main beam</div>
+          </div>
+
+          <div className="calc-struct-card">
+            <div className="calc-struct-icon">⬆️</div>
+            <div className="calc-struct-title">Top Bars</div>
+            <div className="calc-struct-value">{design.beams.topBars}</div>
+            <div className="calc-struct-sub">Negative moment</div>
+          </div>
+
+          <div className="calc-struct-card">
+            <div className="calc-struct-icon">⬇️</div>
+            <div className="calc-struct-title">Bottom Bars</div>
+            <div className="calc-struct-value">{design.beams.bottomBars}</div>
+            <div className="calc-struct-sub">Positive moment</div>
+          </div>
+
+          <div className="calc-struct-card">
+            <div className="calc-struct-icon">🔗</div>
+            <div className="calc-struct-title">Stirrups</div>
+            <div className="calc-struct-value">{design.beams.stirrup}</div>
+            <div className="calc-struct-sub">Shear reinforcement</div>
+          </div>
+        </div>
+      </div>
+
+      {/* Slab */}
+      <div className="calc-struct-section">
+        <h4 className="calc-struct-section-title">Slab Design</h4>
+        <div className="calc-struct-grid">
+          <div className="calc-struct-card">
+            <div className="calc-struct-icon">📊</div>
+            <div className="calc-struct-title">Slab Thickness</div>
+            <div className="calc-struct-value">{design.slab.thickness}</div>
+            <div className="calc-struct-sub">{design.slab.type}</div>
+          </div>
+
+          <div className="calc-struct-card">
+            <div className="calc-struct-icon">⚙️</div>
+            <div className="calc-struct-title">Main Bars</div>
+            <div className="calc-struct-value">{design.slab.mainBars}</div>
+            <div className="calc-struct-sub">Main steel</div>
+          </div>
+
+          <div className="calc-struct-card">
+            <div className="calc-struct-icon">🔗</div>
+            <div className="calc-struct-title">Distribution Bars</div>
+            <div className="calc-struct-value">{design.slab.distributionBars}</div>
+            <div className="calc-struct-sub">Secondary steel</div>
+          </div>
+
+          <div className="calc-struct-card">
+            <div className="calc-struct-icon">🧱</div>
+            <div className="calc-struct-title">Concrete Grade</div>
+            <div className="calc-struct-value">{design.concrete.grade}</div>
+            <div className="calc-struct-sub">{design.concrete.mix}</div>
+          </div>
+        </div>
+      </div>
+
+      {/* Plinth Beam & Walls */}
+      <div className="calc-struct-section">
+        <h4 className="calc-struct-section-title">Other Elements</h4>
+        <div className="calc-struct-grid">
+          <div className="calc-struct-card">
+            <div className="calc-struct-icon">🔲</div>
+            <div className="calc-struct-title">Plinth Beam</div>
+            <div className="calc-struct-value">{design.plinthBeam.size}</div>
+            <div className="calc-struct-sub">{design.plinthBeam.bars}</div>
+          </div>
+
+          <div className="calc-struct-card">
+            <div className="calc-struct-icon">🧱</div>
+            <div className="calc-struct-title">External Wall</div>
+            <div className="calc-struct-value">{design.walls.external}</div>
+            <div className="calc-struct-sub">Outer walls</div>
+          </div>
+
+          <div className="calc-struct-card">
+            <div className="calc-struct-icon">🧱</div>
+            <div className="calc-struct-title">Internal Wall</div>
+            <div className="calc-struct-value">{design.walls.internal}</div>
+            <div className="calc-struct-sub">Partition walls</div>
+          </div>
+
+          <div className="calc-struct-card">
+            <div className="calc-struct-icon">📐</div>
+            <div className="calc-struct-title">Built-up Area</div>
+            <div className="calc-struct-value">{design.totalBuiltArea.toLocaleString("en-IN")} sq.ft</div>
+            <div className="calc-struct-sub">Total area</div>
+          </div>
+        </div>
+      </div>
+
+      <div className="calc-note">
+        <strong>📋 Design Note:</strong> All structural elements designed as per IS 456:2000. 
+        Use {design.concrete.cement} for all concrete work. Ensure minimum concrete cover: 
+        Columns 40mm, Beams 25mm, Slabs 20mm.
+      </div>
+    </div>
+  );
+}
+
+function CostBreakdown({ results }) {
+  const maxCost = Math.max(...Object.values(results.breakdown));
+
+  return (
+    <div className="calc-result-card">
+      <h3 className="calc-breakdown-header">
+        <span>💰</span> Detailed Cost Breakdown
+      </h3>
+      
+      <div className="calc-breakdown-list">
+        {Object.entries(results.breakdown).map(([key, cost]) => {
+          const percentage = Math.round((cost / results.totalCost) * 100);
+          const barWidth = Math.round((cost / maxCost) * 100);
+          
+          return (
+            <div key={key} className="calc-breakdown-row">
+              <span className="calc-breakdown-name">
+                {key.replace(/([A-Z])/g, ' $1').trim()} ({percentage}%)
+              </span>
+              <div className="calc-breakdown-bar-wrap">
+                <div
+                  className="calc-breakdown-bar calc-bar-primary"
+                  style={{ width: `${barWidth}%` }}
+                />
+              </div>
+              <div className="calc-breakdown-right">
+                <span className="calc-breakdown-cost">{formatCurrency(cost)}</span>
+                {results.quantities && results.quantities[key] && (
+                  <span className="calc-breakdown-qty">{results.quantities[key]}</span>
                 )}
               </div>
-
-              <div className="calc-breakdown-header"><span>▣</span> MATERIAL BREAKDOWN</div>
-              <div className="calc-breakdown-list">
-                {(results ? results.items : EMPTY_ITEMS).map((item) => {
-                  const pct    = results ? Math.round((item.cost / results.totalCost) * 100) : 0;
-                  const barPct = results ? Math.round((item.cost / maxCost) * 100) : 0;
-                  return (
-                    <div className="calc-breakdown-row" key={item.key}>
-                      <span className="calc-breakdown-name">
-                        {item.label}{results ? ` (${pct}%)` : ""}
-                      </span>
-                      <div className="calc-breakdown-bar-wrap">
-                        <div className={`calc-breakdown-bar ${item.barClass}`}
-                          style={{ width: `${barPct}%` }} />
-                      </div>
-                      <div className="calc-breakdown-right">
-                        <span className="calc-breakdown-cost">
-                          {results ? formatCurrency(item.cost) : "₹ --"}
-                        </span>
-                        {item.qty && <span className="calc-breakdown-qty">{item.qty}</span>}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
             </div>
+          );
+        })}
+      </div>
 
-            {/* RCC Slab */}
-            <div className="calc-result-card">
-              <div className="calc-result-header">
-                <h3>RCC SLAB ESTIMATE</h3>
-                <div className={`calc-status-badge ${slabResults ? "calculated" : ""}`}>
-                  {slabResults ? "Calculated" : "Pending"}
-                </div>
-              </div>
-              <div className="calc-slab-grid">
-                <div className="calc-slab-item">
-                  <span className="calc-slab-label">Concrete Volume</span>
-                  <span className="calc-slab-value">
-                    {slabResults ? `${formatNumber(slabResults.concreteVol, 2)} m³` : "-- m³"}
-                  </span>
-                </div>
-                <div className="calc-slab-item">
-                  <span className="calc-slab-label">Cement Required</span>
-                  <span className="calc-slab-value">
-                    {slabResults ? `${formatNumber(slabResults.cementBags, 0)} bags` : "-- bags"}
-                  </span>
-                </div>
-                <div className="calc-slab-item">
-                  <span className="calc-slab-label">Steel Required</span>
-                  <span className="calc-slab-value">
-                    {slabResults ? `${formatNumber(slabResults.steelKg, 0)} kg` : "-- kg"}
-                  </span>
-                </div>
-              </div>
-              <div className="calc-slab-note">
-                ℹ️ Based on M20 grade concrete — 1% steel by volume, 8 bags cement/m³
-              </div>
-            </div>
+      <div className="calc-note">
+        <strong>📌 Note:</strong> Costs are estimated based on current market rates and standard specifications. 
+        Actual costs may vary based on site conditions, material quality, and local factors.
+      </div>
+    </div>
+  );
+}
 
-            {/* Methodology */}
-            <div className="calc-info-card">
-              <h4>Calculation Methodology</h4>
-              <ul>
-                <li><strong>Materials:</strong> Cement 0.4 bags/sq.ft · Steel 4.0 kg/sq.ft · Sand 0.044 m³/sq.ft · Aggregate 0.088 m³/sq.ft</li>
-                <li><strong>Rate:</strong> User-entered construction rate per sq.ft, multiplied by location factor</li>
-                <li><strong>Total Area:</strong> Plot area × number of floors</li>
-                <li><strong>Labor:</strong> Calculated as % of material cost (default 40%)</li>
-                <li><strong>Location:</strong> Rural 0.8× · Semi-Urban 1.0× · Urban 1.2× · Metro 1.5×</li>
-                <li><strong>Contingency:</strong> Applied on subtotal (recommended 5–10%)</li>
-              </ul>
-            </div>
-          </section>
+function StaircaseDesign({ design }) {
+  return (
+    <div className="calc-result-card">
+      <h3 className="calc-breakdown-header">
+        <span>🪜</span> Staircase Design Specifications
+      </h3>
+      
+      <div className="calc-struct-grid">
+        <div className="calc-struct-card">
+          <div className="calc-struct-icon">📏</div>
+          <div className="calc-struct-title">Riser Height</div>
+          <div className="calc-struct-value">{design.riser}mm</div>
+          <div className="calc-struct-sub">NBC 2016 Compliant</div>
         </div>
-      </main>
+
+        <div className="calc-struct-card">
+          <div className="calc-struct-icon">📐</div>
+          <div className="calc-struct-title">Tread Width</div>
+          <div className="calc-struct-value">{design.tread}mm</div>
+          <div className="calc-struct-sub">{design.checkPass}</div>
+        </div>
+
+        <div className="calc-struct-card">
+          <div className="calc-struct-icon">🔢</div>
+          <div className="calc-struct-title">Steps Per Flight</div>
+          <div className="calc-struct-value">{design.risersPerFlight}</div>
+          <div className="calc-struct-sub">{design.totalFlights} total flights</div>
+        </div>
+
+        <div className="calc-struct-card">
+          <div className="calc-struct-icon">⚡</div>
+          <div className="calc-struct-title">Waist Slab</div>
+          <div className="calc-struct-value">{design.waistSlab}mm</div>
+          <div className="calc-struct-sub">Structural thickness</div>
+        </div>
+
+        <div className="calc-struct-card">
+          <div className="calc-struct-icon">📊</div>
+          <div className="calc-struct-title">Stair Width</div>
+          <div className="calc-struct-value">{design.stairWidth}mm</div>
+          <div className="calc-struct-sub">Clear width</div>
+        </div>
+
+        <div className="calc-struct-card">
+          <div className="calc-struct-icon">📏</div>
+          <div className="calc-struct-title">Headroom</div>
+          <div className="calc-struct-value">{design.headroom}</div>
+          <div className="calc-struct-sub">Vertical clearance</div>
+        </div>
+      </div>
+
+      <div className="calc-note">
+        <strong>🔧 Reinforcement:</strong> Main bars {design.mainBarDia}mm @ {design.mainBarSpacing}mm c/c, 
+        Distribution bars {design.distBarDia}mm @ {design.distBarSpacing}mm c/c
+      </div>
+    </div>
+  );
+}
+
+function FoundationDesign({ footing }) {
+  return (
+    <div className="calc-result-card">
+      <h3 className="calc-breakdown-header">
+        <span>🏗️</span> Foundation Design Details
+      </h3>
+      
+      <div className="calc-struct-grid">
+        <div className="calc-struct-card">
+          <div className="calc-struct-icon">📐</div>
+          <div className="calc-struct-title">Footing Size</div>
+          <div className="calc-struct-value">{footing.size}</div>
+          <div className="calc-struct-sub">Isolated footing</div>
+        </div>
+
+        <div className="calc-struct-card">
+          <div className="calc-struct-icon">📏</div>
+          <div className="calc-struct-title">Footing Depth</div>
+          <div className="calc-struct-value">{footing.depth}mm</div>
+          <div className="calc-struct-sub">Structural depth</div>
+        </div>
+
+        <div className="calc-struct-card">
+          <div className="calc-struct-icon">⚖️</div>
+          <div className="calc-struct-title">Column Load</div>
+          <div className="calc-struct-value">{footing.columnLoad.toFixed(1)}kN</div>
+          <div className="calc-struct-sub">Factored load</div>
+        </div>
+
+        <div className="calc-struct-card">
+          <div className="calc-struct-icon">🌍</div>
+          <div className="calc-struct-title">SBC</div>
+          <div className="calc-struct-value">{footing.sbc}kN/m²</div>
+          <div className="calc-struct-sub">Safe bearing capacity</div>
+        </div>
+      </div>
+
+      <div className="calc-note">
+        <strong>💡 Design Note:</strong> Foundation designed as per IS 1904 and IS 456:2000. 
+        Use M20 grade concrete with {footing.reinforcement || "12mm bars @ 150mm c/c both ways"}.
+      </div>
+    </div>
+  );
+}
+
+function BarBendingSchedule({ bbs }) {
+  return (
+    <div className="calc-result-card">
+      <h3 className="calc-breakdown-header">
+        <span>📊</span> Bar Bending Schedule Summary
+      </h3>
+      
+      <div className="calc-bbs-summary">
+        <div className="calc-bbs-total">
+          <div className="calc-bbs-total-label">Total Steel Weight</div>
+          <div className="calc-bbs-total-value">{bbs.totalWeight.toFixed(0)} kg</div>
+        </div>
+
+        <div className="calc-bbs-grid">
+          {Object.entries(bbs.breakdown).map(([dia, weight]) => (
+            <div key={dia} className="calc-bbs-card">
+              <div className="calc-bbs-weight">{weight.toFixed(0)} kg</div>
+              <div className="calc-bbs-label">{dia}</div>
+              <div className="calc-bbs-pct">
+                {((weight / bbs.totalWeight) * 100).toFixed(1)}%
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="calc-note">
+        <strong>📦 Ordering:</strong> Add 5-7% wastage for cutting and lapping. 
+        Use Fe500 grade TMT bars for all reinforcement.
+      </div>
+    </div>
+  );
+}
+
+function ProjectTimeline({ timeline }) {
+  return (
+    <div className="calc-result-card">
+      <h3 className="calc-breakdown-header">
+        <span>📅</span> Project Timeline & Milestones
+      </h3>
+      
+      <div className="calc-timeline-summary">
+        <div className="calc-timeline-total">
+          Total Duration: <strong>{timeline.totalDays} days</strong> (~{timeline.totalMonths} months)
+        </div>
+      </div>
+
+      <div className="calc-timeline-table">
+        <table className="calc-table">
+          <thead>
+            <tr>
+              <th>Phase</th>
+              <th>Duration</th>
+              <th>Start</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {timeline.phases.map((phase, idx) => (
+              <tr key={idx}>
+                <td>{phase.name}</td>
+                <td>{phase.duration} days</td>
+                <td>Day {phase.startDay}</td>
+                <td className="calc-status-pending">Pending</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <div className="calc-note">
+        <strong>⏱️ Note:</strong> Timeline is indicative and assumes good weather conditions, 
+        material availability, and adequate workforce. Actual duration may vary ±20%.
+      </div>
     </div>
   );
 }
