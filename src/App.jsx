@@ -5,7 +5,7 @@ import Footer from "./components/layout/Footer/Footer";
 import HomePage from "./pages/HomePage/HomePage";
 import ProjectPage from "./pages/ProjectPage/ProjectPage";
 import AboutPage from "./pages/AboutPage/AboutPage";
-import CalculatorsPage from "./pages/CalculatorPage/CalculatorPage";
+import CalculatorPage from "./pages/CalculatorPage/CalculatorPage";
 
 function App() {
   return (
@@ -15,7 +15,7 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/projects" element={<ProjectPage />} />
         <Route path="/about" element={<AboutPage />} />
-        <Route path="/calculator" element={<CalculatorsPage />} />
+        <Route path="/calculator" element={<CalculatorPage />} />
       </Routes>
       <Footer />
     </BrowserRouter>
