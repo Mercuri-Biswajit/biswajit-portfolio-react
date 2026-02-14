@@ -1,25 +1,83 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
-import { SkillCard, ServiceCard, ProjectCard } from "../../components/cards";
+import { SkillCard, ProjectCard } from "../../components/cards";
 import { ProjectModal } from "../../components/modals";
 import { skills } from "../../data/skills";
-import { services } from "../../data/services";
 import { projects } from "../../data/projects";
-import { SITE } from "../../config/constants";
+import { SITE, MATERIAL_CONSTANTS } from "../../config/constants";
+import { formatCurrency, formatNumber, safeFloat } from "../../utils/helpers";
 
 // STANDALONE CSS - No dependencies on other CSS files
 import "./HomePage.css";
 
 function HomePage() {
   const [selectedProject, setSelectedProject] = useState(null);
+  
+  // Calculator state
+  const [calcArea, setCalcArea] = useState("");
+  const [calcRate, setCalcRate] = useState("");
+  const [calcTotal, setCalcTotal] = useState(null);
+  const [showMaterials, setShowMaterials] = useState(false);
+  const [materials, setMaterials] = useState(null);
 
   useEffect(() => {
     if (window.AOS) window.AOS.init({ duration: 800, once: true, offset: 100 });
   }, []);
 
+  // Lock body scroll when materials modal is open
+  useEffect(() => {
+    if (showMaterials) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [showMaterials]);
+
   // Sort projects by ID (highest/latest first)
   const sortedProjects = [...projects].sort((a, b) => b.id - a.id);
+
+  // Calculator functions
+  const handleCalculate = () => {
+    const area = safeFloat(calcArea, 0);
+    const rate = safeFloat(calcRate, 0);
+
+    if (area <= 0 || rate <= 0) {
+      alert("Please enter valid area and rate values.");
+      return;
+    }
+
+    const total = area * rate;
+    setCalcTotal(total);
+    setShowMaterials(false);
+    setMaterials(null);
+  };
+
+  const handleShowMaterials = () => {
+    const area = safeFloat(calcArea, 0);
+    
+    if (area <= 0 || !calcTotal) {
+      alert("Please calculate the total first.");
+      return;
+    }
+
+    const cementQty = area * MATERIAL_CONSTANTS.cement;
+    const steelQty = area * MATERIAL_CONSTANTS.steel;
+    const sandQty = area * MATERIAL_CONSTANTS.sand;
+    const aggregateQty = area * MATERIAL_CONSTANTS.aggregate;
+
+    setMaterials({
+      cement: cementQty,
+      steel: steelQty,
+      sand: sandQty,
+      aggregate: aggregateQty
+    });
+    setShowMaterials(true);
+  };
 
   return (
     <div className="home-page">
@@ -64,19 +122,127 @@ function HomePage() {
         </div>
       </section>
 
-      {/* ── Skills ───────────────────────────────────── */}
-      <section className="skills">
+      {/* ── Quick Calculator ─────────────────────────── */}
+      <section className="quick-calculator">
         <div className="container">
           <div className="section-header" data-aos="fade-up">
             <span className="section-number">01</span>
-            <h2 className="section-title">SOFTWARE EXPERTISE</h2>
+            <h2 className="section-title">QUICK ESTIMATE</h2>
           </div>
-          <div className="skills-grid">
-            {skills.map((skill, i) => (
-              <SkillCard key={i} {...skill} />
-            ))}
+          
+          <div className="calculator-card" data-aos="fade-up">
+            <div className="calculator-inputs">
+              <div className="calc-input-group">
+                <label className="calc-label">Built-up Area (sq.ft)</label>
+                <input 
+                  type="number" 
+                  className="calc-input"
+                  placeholder="Enter area in sq.ft"
+                  value={calcArea}
+                  onChange={(e) => setCalcArea(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && handleCalculate()}
+                />
+              </div>
+              
+              <div className="calc-input-group">
+                <label className="calc-label">Construction Rate (₹/sq.ft)</label>
+                <input 
+                  type="number" 
+                  className="calc-input"
+                  placeholder="Enter rate per sq.ft"
+                  value={calcRate}
+                  onChange={(e) => setCalcRate(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && handleCalculate()}
+                />
+              </div>
+            </div>
+
+            <div className="calc-btn-wrapper">
+              <button className="btn btn-primary calc-btn" onClick={handleCalculate}>
+                CALCULATE TOTAL
+              </button>
+            </div>
+
+            {calcTotal !== null && (
+              <div className="calculator-results" data-aos="zoom-in">
+                <div className="total-cost-display">
+                  <span className="total-label">Estimated Total Cost</span>
+                  <span className="total-amount">{formatCurrency(calcTotal)}</span>
+                  <span className="total-meta">
+                    {safeFloat(calcArea, 0).toLocaleString("en-IN")} sq.ft × ₹{safeFloat(calcRate, 0).toLocaleString("en-IN")}/sq.ft
+                  </span>
+                  
+                  <button className="btn btn-secondary calc-materials-btn" onClick={handleShowMaterials}>
+                    CLICK FOR MATERIAL
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
+
+        {/* Material Popup Modal */}
+        {showMaterials && materials && (
+          <div 
+            className="materials-modal"
+            role="dialog"
+            aria-modal="true"
+          >
+            <div 
+              className="materials-modal-overlay"
+              onClick={() => setShowMaterials(false)}
+            />
+            <div className="materials-modal-content">
+              <button 
+                className="materials-modal-close" 
+                onClick={() => setShowMaterials(false)}
+                aria-label="Close modal"
+              >
+                &times;
+              </button>
+              
+              <h3 className="materials-title">Material Requirements</h3>
+              
+              <div className="materials-grid">
+                <div className="material-item">
+                  <span className="material-icon">🏗️</span>
+                  <div className="material-info">
+                    <span className="material-name">Cement</span>
+                    <span className="material-qty">{formatNumber(materials.cement, 0)} bags</span>
+                  </div>
+                </div>
+                
+                <div className="material-item">
+                  <span className="material-icon">⚙️</span>
+                  <div className="material-info">
+                    <span className="material-name">Steel</span>
+                    <span className="material-qty">{formatNumber(materials.steel, 0)} kg</span>
+                  </div>
+                </div>
+                
+                <div className="material-item">
+                  <span className="material-icon">🏖️</span>
+                  <div className="material-info">
+                    <span className="material-name">Sand</span>
+                    <span className="material-qty">{formatNumber(materials.sand, 2)} m³</span>
+                  </div>
+                </div>
+                
+                <div className="material-item">
+                  <span className="material-icon">🪨</span>
+                  <div className="material-info">
+                    <span className="material-name">Aggregate</span>
+                    <span className="material-qty">{formatNumber(materials.aggregate, 2)} m³</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="materials-note">
+                <p>💡 <strong>Note:</strong> Material quantities are based on standard RCC construction. For detailed cost breakdown, visit our <Link to="/calculator">Advanced Calculator</Link>.</p>
+              </div>
+            </div>
+          </div>
+        )}
       </section>
 
       {/* ── Featured Projects ────────────────────────── */}
@@ -103,45 +269,15 @@ function HomePage() {
         </div>
       </section>
 
-      {/* ── Services ─────────────────────────────────── */}
-      <section className="services">
-        <div className="container">
-          <div className="section-header" data-aos="fade-up">
-            <span className="section-number">03</span>
-            <h2 className="section-title">SERVICES PROVIDED</h2>
-          </div>
-          <p className="services-subtitle" data-aos="fade-up">
-            Professional engineering design services with transparent commitment
-            to quality.
-          </p>
-          <div className="services-grid">
-            {services.map((service, i) => (
-              <ServiceCard key={i} {...service} />
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* ── About Me ─────────────────────────────────── */}
       <section className="about-me">
         <div className="container">
           <div className="section-header" data-aos="fade-up">
-            <span className="section-number">04</span>
+            <span className="section-number">03</span>
             <h2 className="section-title">ABOUT ME</h2>
           </div>
           <div className="about-content">
-            <div className="about-image-wrapper" data-aos="fade-right">
-              <div className="about-image-container">
-                <img
-                  src="/assets/images/hero/hero.png"
-                  alt={SITE.name}
-                  className="about-image"
-                />
-                <div className="about-image-overlay" />
-              </div>
-            </div>
-
-            <div className="about-text" data-aos="fade-left">
+            <div className="about-text" data-aos="fade-right">
               <h3 className="about-subtitle">Professional Summary</h3>
               <p className="about-description">
                 Hello! I'm <strong>Er. Biswajit Deb Barman</strong>, a dedicated
@@ -199,6 +335,15 @@ function HomePage() {
                 >
                   DOWNLOAD RESUME
                 </a>
+              </div>
+            </div>
+
+            <div className="about-skills" data-aos="fade-left">
+              <h3 className="skills-subtitle">Core Skills</h3>
+              <div className="skills-grid">
+                {skills.map((skill, i) => (
+                  <SkillCard key={i} {...skill} />
+                ))}
               </div>
             </div>
           </div>
