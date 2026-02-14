@@ -14,8 +14,20 @@ import {
   calcBarBending,
   calcProjectTimeline,
   calcStructureDesign,
+  calcCompleteBBS,
+  calcFullBOQ,
 } from "../../utils/calculator/advanced";
 import { formatCurrency } from "../../utils/helpers";
+
+// Import all tab components
+import {
+  CostBreakdown,
+  StructureDesign,
+  StaircaseDesign,
+  FoundationDesign,
+  CompleteBBS,
+  FullBOQ,
+} from "./TabComponents";
 
 import "./CalculatorPage.css";
 
@@ -49,7 +61,7 @@ function CalculatorsPage() {
   });
 
   const [results, setResults] = useState(null);
-  const [activeTab, setActiveTab] = useState("cost"); // cost, stair, footing, bbs, timeline
+  const [activeTab, setActiveTab] = useState("cost");
 
   // ── Input Handlers ─────────────────────────────────────────────────────
   const updateField = (field) => (e) => {
@@ -93,6 +105,8 @@ function CalculatorsPage() {
     const barBending = calcBarBending(calcInputs);
     const timeline = calcProjectTimeline(calcInputs);
     const structureDesign = calcStructureDesign(calcInputs);
+    const completeBBS = calcCompleteBBS(calcInputs);
+    const fullBOQ = calcFullBOQ(calcInputs);
 
     setResults({
       buildingCost,
@@ -101,6 +115,8 @@ function CalculatorsPage() {
       barBending,
       timeline,
       structureDesign,
+      completeBBS,
+      fullBOQ,
     });
   };
 
@@ -145,7 +161,7 @@ function CalculatorsPage() {
             <p>
               Professional construction estimation tool based on IS 456:2000, NBC 2016, and current market rates. 
               Enter your building dimensions and specifications to get a detailed cost breakdown with material quantities, 
-              structural design parameters, and project timeline.
+              structural design parameters, and complete bill of quantities.
             </p>
           </div>
         </div>
@@ -400,7 +416,7 @@ function CalculatorsPage() {
         {/* Results Section */}
         {results && (
           <section className="calc-results-section">
-            {/* Cost Banner */}
+            {/* Cost Banner with Timeline */}
             <div className="calc-cost-banner">
               <div className="calc-banner-left">
                 <div className="calc-estimate-label">Total Estimated Cost</div>
@@ -416,6 +432,9 @@ function CalculatorsPage() {
                   </span>
                   <span>
                     Floors: <strong>{inputs.floors}</strong>
+                  </span>
+                  <span>
+                    Duration: <strong>{results.timeline.totalDays} days (~{results.timeline.totalMonths} months)</strong>
                   </span>
                 </div>
               </div>
@@ -453,13 +472,13 @@ function CalculatorsPage() {
                 className={`calc-tab ${activeTab === "bbs" ? "active" : ""}`}
                 onClick={() => setActiveTab("bbs")}
               >
-                📊 Bar Bending Schedule
+                📋 Bar Bending Schedule
               </button>
               <button
-                className={`calc-tab ${activeTab === "timeline" ? "active" : ""}`}
-                onClick={() => setActiveTab("timeline")}
+                className={`calc-tab ${activeTab === "boq" ? "active" : ""}`}
+                onClick={() => setActiveTab("boq")}
               >
-                📅 Project Timeline
+                📄 Bill of Quantities
               </button>
             </div>
 
@@ -478,10 +497,13 @@ function CalculatorsPage() {
                 <FoundationDesign footing={results.footing} />
               )}
               {activeTab === "bbs" && (
-                <BarBendingSchedule bbs={results.barBending} />
+                <CompleteBBS 
+                  barBending={results.barBending} 
+                  completeBBS={results.completeBBS} 
+                />
               )}
-              {activeTab === "timeline" && (
-                <ProjectTimeline timeline={results.timeline} />
+              {activeTab === "boq" && (
+                <FullBOQ boq={results.fullBOQ} />
               )}
             </div>
 
@@ -493,386 +515,6 @@ function CalculatorsPage() {
           </section>
         )}
       </main>
-    </div>
-  );
-}
-
-// ── Sub-Components ─────────────────────────────────────────────────────────
-
-function StructureDesign({ design }) {
-  return (
-    <div className="calc-result-card">
-      <h3 className="calc-breakdown-header">
-        <span>🏛️</span> Structural Design Specifications
-      </h3>
-      
-      {/* Columns */}
-      <div className="calc-struct-section">
-        <h4 className="calc-struct-section-title">Column Design</h4>
-        <div className="calc-struct-grid">
-          <div className="calc-struct-card">
-            <div className="calc-struct-icon">📐</div>
-            <div className="calc-struct-title">Column Size</div>
-            <div className="calc-struct-value">{design.columns.size}</div>
-            <div className="calc-struct-sub">RCC Frame</div>
-          </div>
-
-          <div className="calc-struct-card">
-            <div className="calc-struct-icon">🔢</div>
-            <div className="calc-struct-title">Total Columns</div>
-            <div className="calc-struct-value">{design.columns.count}</div>
-            <div className="calc-struct-sub">{design.columns.spacing}</div>
-          </div>
-
-          <div className="calc-struct-card">
-            <div className="calc-struct-icon">⚙️</div>
-            <div className="calc-struct-title">Main Bars</div>
-            <div className="calc-struct-value">{design.columns.mainBars}</div>
-            <div className="calc-struct-sub">TMT Fe500</div>
-          </div>
-
-          <div className="calc-struct-card">
-            <div className="calc-struct-icon">🔗</div>
-            <div className="calc-struct-title">Stirrups</div>
-            <div className="calc-struct-value">{design.columns.stirrup}</div>
-            <div className="calc-struct-sub">Lateral ties</div>
-          </div>
-        </div>
-      </div>
-
-      {/* Beams */}
-      <div className="calc-struct-section">
-        <h4 className="calc-struct-section-title">Beam Design</h4>
-        <div className="calc-struct-grid">
-          <div className="calc-struct-card">
-            <div className="calc-struct-icon">📏</div>
-            <div className="calc-struct-title">Beam Size</div>
-            <div className="calc-struct-value">{design.beams.size}</div>
-            <div className="calc-struct-sub">Main beam</div>
-          </div>
-
-          <div className="calc-struct-card">
-            <div className="calc-struct-icon">⬆️</div>
-            <div className="calc-struct-title">Top Bars</div>
-            <div className="calc-struct-value">{design.beams.topBars}</div>
-            <div className="calc-struct-sub">Negative moment</div>
-          </div>
-
-          <div className="calc-struct-card">
-            <div className="calc-struct-icon">⬇️</div>
-            <div className="calc-struct-title">Bottom Bars</div>
-            <div className="calc-struct-value">{design.beams.bottomBars}</div>
-            <div className="calc-struct-sub">Positive moment</div>
-          </div>
-
-          <div className="calc-struct-card">
-            <div className="calc-struct-icon">🔗</div>
-            <div className="calc-struct-title">Stirrups</div>
-            <div className="calc-struct-value">{design.beams.stirrup}</div>
-            <div className="calc-struct-sub">Shear reinforcement</div>
-          </div>
-        </div>
-      </div>
-
-      {/* Slab */}
-      <div className="calc-struct-section">
-        <h4 className="calc-struct-section-title">Slab Design</h4>
-        <div className="calc-struct-grid">
-          <div className="calc-struct-card">
-            <div className="calc-struct-icon">📊</div>
-            <div className="calc-struct-title">Slab Thickness</div>
-            <div className="calc-struct-value">{design.slab.thickness}</div>
-            <div className="calc-struct-sub">{design.slab.type}</div>
-          </div>
-
-          <div className="calc-struct-card">
-            <div className="calc-struct-icon">⚙️</div>
-            <div className="calc-struct-title">Main Bars</div>
-            <div className="calc-struct-value">{design.slab.mainBars}</div>
-            <div className="calc-struct-sub">Main steel</div>
-          </div>
-
-          <div className="calc-struct-card">
-            <div className="calc-struct-icon">🔗</div>
-            <div className="calc-struct-title">Distribution Bars</div>
-            <div className="calc-struct-value">{design.slab.distributionBars}</div>
-            <div className="calc-struct-sub">Secondary steel</div>
-          </div>
-
-          <div className="calc-struct-card">
-            <div className="calc-struct-icon">🧱</div>
-            <div className="calc-struct-title">Concrete Grade</div>
-            <div className="calc-struct-value">{design.concrete.grade}</div>
-            <div className="calc-struct-sub">{design.concrete.mix}</div>
-          </div>
-        </div>
-      </div>
-
-      {/* Plinth Beam & Walls */}
-      <div className="calc-struct-section">
-        <h4 className="calc-struct-section-title">Other Elements</h4>
-        <div className="calc-struct-grid">
-          <div className="calc-struct-card">
-            <div className="calc-struct-icon">🔲</div>
-            <div className="calc-struct-title">Plinth Beam</div>
-            <div className="calc-struct-value">{design.plinthBeam.size}</div>
-            <div className="calc-struct-sub">{design.plinthBeam.bars}</div>
-          </div>
-
-          <div className="calc-struct-card">
-            <div className="calc-struct-icon">🧱</div>
-            <div className="calc-struct-title">External Wall</div>
-            <div className="calc-struct-value">{design.walls.external}</div>
-            <div className="calc-struct-sub">Outer walls</div>
-          </div>
-
-          <div className="calc-struct-card">
-            <div className="calc-struct-icon">🧱</div>
-            <div className="calc-struct-title">Internal Wall</div>
-            <div className="calc-struct-value">{design.walls.internal}</div>
-            <div className="calc-struct-sub">Partition walls</div>
-          </div>
-
-          <div className="calc-struct-card">
-            <div className="calc-struct-icon">📐</div>
-            <div className="calc-struct-title">Built-up Area</div>
-            <div className="calc-struct-value">{design.totalBuiltArea.toLocaleString("en-IN")} sq.ft</div>
-            <div className="calc-struct-sub">Total area</div>
-          </div>
-        </div>
-      </div>
-
-      <div className="calc-note">
-        <strong>📋 Design Note:</strong> All structural elements designed as per IS 456:2000. 
-        Use {design.concrete.cement} for all concrete work. Ensure minimum concrete cover: 
-        Columns 40mm, Beams 25mm, Slabs 20mm.
-      </div>
-    </div>
-  );
-}
-
-function CostBreakdown({ results }) {
-  const maxCost = Math.max(...Object.values(results.breakdown));
-
-  return (
-    <div className="calc-result-card">
-      <h3 className="calc-breakdown-header">
-        <span>💰</span> Detailed Cost Breakdown
-      </h3>
-      
-      <div className="calc-breakdown-list">
-        {Object.entries(results.breakdown).map(([key, cost]) => {
-          const percentage = Math.round((cost / results.totalCost) * 100);
-          const barWidth = Math.round((cost / maxCost) * 100);
-          
-          return (
-            <div key={key} className="calc-breakdown-row">
-              <span className="calc-breakdown-name">
-                {key.replace(/([A-Z])/g, ' $1').trim()} ({percentage}%)
-              </span>
-              <div className="calc-breakdown-bar-wrap">
-                <div
-                  className="calc-breakdown-bar calc-bar-primary"
-                  style={{ width: `${barWidth}%` }}
-                />
-              </div>
-              <div className="calc-breakdown-right">
-                <span className="calc-breakdown-cost">{formatCurrency(cost)}</span>
-                {results.quantities && results.quantities[key] && (
-                  <span className="calc-breakdown-qty">{results.quantities[key]}</span>
-                )}
-              </div>
-            </div>
-          );
-        })}
-      </div>
-
-      <div className="calc-note">
-        <strong>📌 Note:</strong> Costs are estimated based on current market rates and standard specifications. 
-        Actual costs may vary based on site conditions, material quality, and local factors.
-      </div>
-    </div>
-  );
-}
-
-function StaircaseDesign({ design }) {
-  return (
-    <div className="calc-result-card">
-      <h3 className="calc-breakdown-header">
-        <span>🪜</span> Staircase Design Specifications
-      </h3>
-      
-      <div className="calc-struct-grid">
-        <div className="calc-struct-card">
-          <div className="calc-struct-icon">📏</div>
-          <div className="calc-struct-title">Riser Height</div>
-          <div className="calc-struct-value">{design.riser}mm</div>
-          <div className="calc-struct-sub">NBC 2016 Compliant</div>
-        </div>
-
-        <div className="calc-struct-card">
-          <div className="calc-struct-icon">📐</div>
-          <div className="calc-struct-title">Tread Width</div>
-          <div className="calc-struct-value">{design.tread}mm</div>
-          <div className="calc-struct-sub">{design.checkPass}</div>
-        </div>
-
-        <div className="calc-struct-card">
-          <div className="calc-struct-icon">🔢</div>
-          <div className="calc-struct-title">Steps Per Flight</div>
-          <div className="calc-struct-value">{design.risersPerFlight}</div>
-          <div className="calc-struct-sub">{design.totalFlights} total flights</div>
-        </div>
-
-        <div className="calc-struct-card">
-          <div className="calc-struct-icon">⚡</div>
-          <div className="calc-struct-title">Waist Slab</div>
-          <div className="calc-struct-value">{design.waistSlab}mm</div>
-          <div className="calc-struct-sub">Structural thickness</div>
-        </div>
-
-        <div className="calc-struct-card">
-          <div className="calc-struct-icon">📊</div>
-          <div className="calc-struct-title">Stair Width</div>
-          <div className="calc-struct-value">{design.stairWidth}mm</div>
-          <div className="calc-struct-sub">Clear width</div>
-        </div>
-
-        <div className="calc-struct-card">
-          <div className="calc-struct-icon">📏</div>
-          <div className="calc-struct-title">Headroom</div>
-          <div className="calc-struct-value">{design.headroom}</div>
-          <div className="calc-struct-sub">Vertical clearance</div>
-        </div>
-      </div>
-
-      <div className="calc-note">
-        <strong>🔧 Reinforcement:</strong> Main bars {design.mainBarDia}mm @ {design.mainBarSpacing}mm c/c, 
-        Distribution bars {design.distBarDia}mm @ {design.distBarSpacing}mm c/c
-      </div>
-    </div>
-  );
-}
-
-function FoundationDesign({ footing }) {
-  return (
-    <div className="calc-result-card">
-      <h3 className="calc-breakdown-header">
-        <span>🏗️</span> Foundation Design Details
-      </h3>
-      
-      <div className="calc-struct-grid">
-        <div className="calc-struct-card">
-          <div className="calc-struct-icon">📐</div>
-          <div className="calc-struct-title">Footing Size</div>
-          <div className="calc-struct-value">{footing.size}</div>
-          <div className="calc-struct-sub">Isolated footing</div>
-        </div>
-
-        <div className="calc-struct-card">
-          <div className="calc-struct-icon">📏</div>
-          <div className="calc-struct-title">Footing Depth</div>
-          <div className="calc-struct-value">{footing.depth}mm</div>
-          <div className="calc-struct-sub">Structural depth</div>
-        </div>
-
-        <div className="calc-struct-card">
-          <div className="calc-struct-icon">⚖️</div>
-          <div className="calc-struct-title">Column Load</div>
-          <div className="calc-struct-value">{footing.columnLoad.toFixed(1)}kN</div>
-          <div className="calc-struct-sub">Factored load</div>
-        </div>
-
-        <div className="calc-struct-card">
-          <div className="calc-struct-icon">🌍</div>
-          <div className="calc-struct-title">SBC</div>
-          <div className="calc-struct-value">{footing.sbc}kN/m²</div>
-          <div className="calc-struct-sub">Safe bearing capacity</div>
-        </div>
-      </div>
-
-      <div className="calc-note">
-        <strong>💡 Design Note:</strong> Foundation designed as per IS 1904 and IS 456:2000. 
-        Use M20 grade concrete with {footing.reinforcement || "12mm bars @ 150mm c/c both ways"}.
-      </div>
-    </div>
-  );
-}
-
-function BarBendingSchedule({ bbs }) {
-  return (
-    <div className="calc-result-card">
-      <h3 className="calc-breakdown-header">
-        <span>📊</span> Bar Bending Schedule Summary
-      </h3>
-      
-      <div className="calc-bbs-summary">
-        <div className="calc-bbs-total">
-          <div className="calc-bbs-total-label">Total Steel Weight</div>
-          <div className="calc-bbs-total-value">{bbs.totalWeight.toFixed(0)} kg</div>
-        </div>
-
-        <div className="calc-bbs-grid">
-          {Object.entries(bbs.breakdown).map(([dia, weight]) => (
-            <div key={dia} className="calc-bbs-card">
-              <div className="calc-bbs-weight">{weight.toFixed(0)} kg</div>
-              <div className="calc-bbs-label">{dia}</div>
-              <div className="calc-bbs-pct">
-                {((weight / bbs.totalWeight) * 100).toFixed(1)}%
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <div className="calc-note">
-        <strong>📦 Ordering:</strong> Add 5-7% wastage for cutting and lapping. 
-        Use Fe500 grade TMT bars for all reinforcement.
-      </div>
-    </div>
-  );
-}
-
-function ProjectTimeline({ timeline }) {
-  return (
-    <div className="calc-result-card">
-      <h3 className="calc-breakdown-header">
-        <span>📅</span> Project Timeline & Milestones
-      </h3>
-      
-      <div className="calc-timeline-summary">
-        <div className="calc-timeline-total">
-          Total Duration: <strong>{timeline.totalDays} days</strong> (~{timeline.totalMonths} months)
-        </div>
-      </div>
-
-      <div className="calc-timeline-table">
-        <table className="calc-table">
-          <thead>
-            <tr>
-              <th>Phase</th>
-              <th>Duration</th>
-              <th>Start</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            {timeline.phases.map((phase, idx) => (
-              <tr key={idx}>
-                <td>{phase.name}</td>
-                <td>{phase.duration} days</td>
-                <td>Day {phase.startDay}</td>
-                <td className="calc-status-pending">Pending</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
-      <div className="calc-note">
-        <strong>⏱️ Note:</strong> Timeline is indicative and assumes good weather conditions, 
-        material availability, and adequate workforce. Actual duration may vary ±20%.
-      </div>
     </div>
   );
 }
