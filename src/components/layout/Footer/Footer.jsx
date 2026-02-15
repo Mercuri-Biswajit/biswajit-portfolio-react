@@ -29,11 +29,13 @@ function Footer() {
               <Link to="/">Home</Link>
               <Link to="/projects">Projects</Link>
               <Link to="/about">About</Link>
+              <Link to="/calculator">Calculator</Link>
+              <Link to="/vastu">Vastu Guide</Link>
             </div>
             <div className="footer-column">
               <h4>Connect</h4>
-              <a href={SITE.linkedin}  target="_blank" rel="noreferrer">LinkedIn</a>
-              <a href={SITE.facebook}  target="_blank" rel="noreferrer">Facebook</a>
+              <a href={SITE.linkedin} target="_blank" rel="noreferrer">LinkedIn</a>
+              <a href={SITE.facebook} target="_blank" rel="noreferrer">Facebook</a>
               <a href={SITE.instagram} target="_blank" rel="noreferrer">Instagram</a>
             </div>
           </div>

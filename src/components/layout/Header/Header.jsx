@@ -5,14 +5,15 @@ import { NAVBAR, SITE } from '../../../config/constants';
 
 import "./Header.css";
 
-
-function Navbar() {
+function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [scrolled, setScrolled]   = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
 
   // Close menu on route change
-  useEffect(() => { setMenuOpen(false); }, [location]);
+  useEffect(() => { 
+    setMenuOpen(false); 
+  }, [location]);
 
   // Scrolled state for navbar style
   useEffect(() => {
@@ -23,7 +24,9 @@ function Navbar() {
 
   // Close on ESC key
   useEffect(() => {
-    const handleKey = (e) => { if (e.key === 'Escape') setMenuOpen(false); };
+    const handleKey = (e) => { 
+      if (e.key === 'Escape') setMenuOpen(false); 
+    };
     document.addEventListener('keydown', handleKey);
     return () => document.removeEventListener('keydown', handleKey);
   }, []);
@@ -46,10 +49,11 @@ function Navbar() {
         </div>
 
         <div className={`nav-menu ${menuOpen ? 'active' : ''}`}>
-          <Link to="/"           className={getLinkClass('/')}>HOME</Link>
-          <Link to="/projects"   className={getLinkClass('/projects')}>PROJECTS</Link>
-          <Link to="/about"      className={getLinkClass('/about')}>ABOUT</Link>
+          <Link to="/" className={getLinkClass('/')}>HOME</Link>
+          <Link to="/projects" className={getLinkClass('/projects')}>PROJECTS</Link>
+          <Link to="/about" className={getLinkClass('/about')}>ABOUT</Link>
           <Link to="/calculator" className={getLinkClass('/calculator')}>CALCULATORS</Link>
+          <Link to="/vastu" className={getLinkClass('/vastu')}>VASTU</Link>
         </div>
 
         <a
@@ -75,4 +79,4 @@ function Navbar() {
   );
 }
 
-export default Navbar;
+export default Header;
