@@ -29,7 +29,13 @@ import {
   FullBOQ,
 } from "./TabComponents";
 
+import { designBeam } from "../../utils/calculator/beamDesign";
+import { designColumn } from "../../utils/calculator/columnDesign";
+import { BeamDesignTab } from "./BeamDesignTab";
+import { ColumnDesignTab } from "./ColumnDesignTab";
+
 import "./CalculatorPage.css";
+import "./design-calculator-styles.css";
 
 function CalculatorsPage() {
   // ── Input State ────────────────────────────────────────────────────────
@@ -39,20 +45,20 @@ function CalculatorsPage() {
     breadth: "",
     floors: 1,
     floorHeight: "10",
-    
+
     // Building Characteristics
     buildingType: "residential",
     finishGrade: "standard",
     soilCondition: "normal",
     region: "tier3",
-    
+
     // Advanced Options
     includeBasement: false,
     basementDepth: "8",
     includeStaircase: true,
     columnSize: "9x12",
     avgColumnSpan: "12",
-    
+
     // Custom Material Rates (optional)
     customCementRate: "",
     customSteelRate: "",
@@ -63,19 +69,101 @@ function CalculatorsPage() {
   const [results, setResults] = useState(null);
   const [activeTab, setActiveTab] = useState("cost");
 
+  // Beam Design State
+  const [beamInputs, setBeamInputs] = useState({
+    Mu: "",
+    Vu: "",
+    b: "",
+    D: "",
+    span: "",
+    fck: "25",
+    fy: "500",
+    cover: "30",
+  });
+  const [beamResults, setBeamResults] = useState(null);
+
+  // Column Design State
+  const [columnInputs, setColumnInputs] = useState({
+    Pu: "",
+    Mux: "",
+    Muy: "",
+    b: "",
+    D: "",
+    L: "",
+    fck: "25",
+    fy: "500",
+    cover: "40",
+    restraintX: "both-hinged",
+    restraintY: "both-hinged",
+  });
+  const [columnResults, setColumnResults] = useState(null);
+
+  // Beam Design Handler
+  const handleBeamCalculate = () => {
+    try {
+      const numericInputs = {
+        ...beamInputs,
+        Mu: parseFloat(beamInputs.Mu),
+        Vu: parseFloat(beamInputs.Vu),
+        b: parseFloat(beamInputs.b),
+        D: parseFloat(beamInputs.D),
+        span: beamInputs.span ? parseFloat(beamInputs.span) : null,
+        fck: parseFloat(beamInputs.fck),
+        fy: parseFloat(beamInputs.fy),
+        cover: parseFloat(beamInputs.cover),
+      };
+
+      const results = designBeam(numericInputs);
+      setBeamResults(results);
+    } catch (error) {
+      setBeamResults({ error: error.message });
+    }
+  };
+
+  // Column Design Handler
+  const handleColumnCalculate = () => {
+    try {
+      const numericInputs = {
+        ...columnInputs,
+        Pu: parseFloat(columnInputs.Pu),
+        Mux: columnInputs.Mux ? parseFloat(columnInputs.Mux) : 0,
+        Muy: columnInputs.Muy ? parseFloat(columnInputs.Muy) : 0,
+        b: parseFloat(columnInputs.b),
+        D: parseFloat(columnInputs.D),
+        L: parseFloat(columnInputs.L),
+        fck: parseFloat(columnInputs.fck),
+        fy: parseFloat(columnInputs.fy),
+        cover: parseFloat(columnInputs.cover),
+      };
+
+      const results = designColumn(numericInputs);
+      setColumnResults(results);
+    } catch (error) {
+      setColumnResults({ error: error.message });
+    }
+  };
+
   // ── Input Handlers ─────────────────────────────────────────────────────
   const updateField = (field) => (e) => {
-    const value = e.target.type === "checkbox" ? e.target.checked : e.target.value;
+    const value =
+      e.target.type === "checkbox" ? e.target.checked : e.target.value;
     setInputs((prev) => ({ ...prev, [field]: value }));
   };
 
   // ── Calculate ──────────────────────────────────────────────────────────
   const handleCalculate = () => {
     const { length, breadth, floors, floorHeight } = inputs;
-    
+
     // Validate inputs
-    if (!length || !breadth || parseFloat(length) <= 0 || parseFloat(breadth) <= 0) {
-      alert("Please enter valid building dimensions (length and breadth must be greater than 0).");
+    if (
+      !length ||
+      !breadth ||
+      parseFloat(length) <= 0 ||
+      parseFloat(breadth) <= 0
+    ) {
+      alert(
+        "Please enter valid building dimensions (length and breadth must be greater than 0).",
+      );
       return;
     }
 
@@ -89,17 +177,29 @@ function CalculatorsPage() {
       basementDepth: parseFloat(inputs.basementDepth),
       avgColumnSpan: parseFloat(inputs.avgColumnSpan),
       customRates: {
-        cement: inputs.customCementRate ? parseFloat(inputs.customCementRate) : null,
-        steel: inputs.customSteelRate ? parseFloat(inputs.customSteelRate) : null,
+        cement: inputs.customCementRate
+          ? parseFloat(inputs.customCementRate)
+          : null,
+        steel: inputs.customSteelRate
+          ? parseFloat(inputs.customSteelRate)
+          : null,
         sand: inputs.customSandRate ? parseFloat(inputs.customSandRate) : null,
-        aggregate: inputs.customAggregateRate ? parseFloat(inputs.customAggregateRate) : null,
+        aggregate: inputs.customAggregateRate
+          ? parseFloat(inputs.customAggregateRate)
+          : null,
       },
     };
 
     // Calculate all results
     const buildingCost = calcBuildingCost(calcInputs);
     const stairDesign = calcInputs.includeStaircase
-      ? calcStairDesign(calcInputs.length, calcInputs.breadth, calcInputs.floorHeight, calcInputs.floors, calcInputs.buildingType)
+      ? calcStairDesign(
+          calcInputs.length,
+          calcInputs.breadth,
+          calcInputs.floorHeight,
+          calcInputs.floors,
+          calcInputs.buildingType,
+        )
       : null;
     const footing = calcFooting(calcInputs);
     const barBending = calcBarBending(calcInputs);
@@ -159,9 +259,11 @@ function CalculatorsPage() {
           <div className="calc-intro">
             <span className="calc-intro-icon">ℹ️</span>
             <p>
-              Professional construction estimation tool based on IS 456:2000, NBC 2016, and current market rates. 
-              Enter your building dimensions and specifications to get a detailed cost breakdown with material quantities, 
-              structural design parameters, and complete bill of quantities.
+              Professional construction estimation tool based on IS 456:2000,
+              NBC 2016, and current market rates. Enter your building dimensions
+              and specifications to get a detailed cost breakdown with material
+              quantities, structural design parameters, and complete bill of
+              quantities.
             </p>
           </div>
         </div>
@@ -229,7 +331,9 @@ function CalculatorsPage() {
                   <button
                     key={num}
                     className={`calc-floor-btn ${inputs.floors === num ? "active" : ""}`}
-                    onClick={() => setInputs((prev) => ({ ...prev, floors: num }))}
+                    onClick={() =>
+                      setInputs((prev) => ({ ...prev, floors: num }))
+                    }
                   >
                     {num === 1 ? "G" : `G+${num - 1}`}
                   </button>
@@ -240,7 +344,9 @@ function CalculatorsPage() {
 
           {/* Building Type & Specifications */}
           <div className="calc-card">
-            <h3 className="calc-card-subtitle">Building Type & Specifications</h3>
+            <h3 className="calc-card-subtitle">
+              Building Type & Specifications
+            </h3>
             <div className="calc-grid-2">
               <div className="calc-input-group">
                 <label className="calc-label-primary">Building Type</label>
@@ -307,7 +413,7 @@ function CalculatorsPage() {
           {/* Advanced Options */}
           <div className="calc-card">
             <h3 className="calc-card-subtitle">Advanced Options</h3>
-            
+
             <div className="calc-toggle-group">
               <label className="calc-toggle-label">
                 <input
@@ -351,12 +457,24 @@ function CalculatorsPage() {
           {/* Custom Material Rates (Optional) */}
           <div className="calc-card">
             <h3 className="calc-card-subtitle">
-              Custom Material Rates <span style={{ fontSize: "0.8rem", color: "var(--color-text-dim)", fontWeight: 400 }}>(Optional - Leave blank for default rates)</span>
+              Custom Material Rates{" "}
+              <span
+                style={{
+                  fontSize: "0.8rem",
+                  color: "var(--color-text-dim)",
+                  fontWeight: 400,
+                }}
+              >
+                (Optional - Leave blank for default rates)
+              </span>
             </h3>
             <div className="calc-material-grid">
               <div className="calc-input-group">
                 <label className="calc-label-secondary">
-                  Cement <span className="calc-rate-hint">₹/bag (default: {MATERIAL_RATES.cement.rate})</span>
+                  Cement{" "}
+                  <span className="calc-rate-hint">
+                    ₹/bag (default: {MATERIAL_RATES.cement.rate})
+                  </span>
                 </label>
                 <input
                   type="number"
@@ -369,7 +487,10 @@ function CalculatorsPage() {
 
               <div className="calc-input-group">
                 <label className="calc-label-secondary">
-                  Steel <span className="calc-rate-hint">₹/kg (default: {MATERIAL_RATES.steel.rate})</span>
+                  Steel{" "}
+                  <span className="calc-rate-hint">
+                    ₹/kg (default: {MATERIAL_RATES.steel.rate})
+                  </span>
                 </label>
                 <input
                   type="number"
@@ -382,7 +503,10 @@ function CalculatorsPage() {
 
               <div className="calc-input-group">
                 <label className="calc-label-secondary">
-                  Sand <span className="calc-rate-hint">₹/cft (default: {MATERIAL_RATES.sand.rate})</span>
+                  Sand{" "}
+                  <span className="calc-rate-hint">
+                    ₹/cft (default: {MATERIAL_RATES.sand.rate})
+                  </span>
                 </label>
                 <input
                   type="number"
@@ -395,7 +519,10 @@ function CalculatorsPage() {
 
               <div className="calc-input-group">
                 <label className="calc-label-secondary">
-                  Aggregate <span className="calc-rate-hint">₹/cft (default: {MATERIAL_RATES.aggregate.rate})</span>
+                  Aggregate{" "}
+                  <span className="calc-rate-hint">
+                    ₹/cft (default: {MATERIAL_RATES.aggregate.rate})
+                  </span>
                 </label>
                 <input
                   type="number"
@@ -425,16 +552,31 @@ function CalculatorsPage() {
                 </div>
                 <div className="calc-estimate-meta">
                   <span>
-                    Rate: <strong>₹{Math.round(results.buildingCost.costPerSqft).toLocaleString("en-IN")}/sq.ft</strong>
+                    Rate:{" "}
+                    <strong>
+                      ₹
+                      {Math.round(
+                        results.buildingCost.costPerSqft,
+                      ).toLocaleString("en-IN")}
+                      /sq.ft
+                    </strong>
                   </span>
                   <span>
-                    Area: <strong>{results.buildingCost.totalArea.toLocaleString("en-IN")} sq.ft</strong>
+                    Area:{" "}
+                    <strong>
+                      {results.buildingCost.totalArea.toLocaleString("en-IN")}{" "}
+                      sq.ft
+                    </strong>
                   </span>
                   <span>
                     Floors: <strong>{inputs.floors}</strong>
                   </span>
                   <span>
-                    Duration: <strong>{results.timeline.totalDays} days (~{results.timeline.totalMonths} months)</strong>
+                    Duration:{" "}
+                    <strong>
+                      {results.timeline.totalDays} days (~
+                      {results.timeline.totalMonths} months)
+                    </strong>
                   </span>
                 </div>
               </div>
@@ -480,6 +622,19 @@ function CalculatorsPage() {
               >
                 📄 Bill of Quantities
               </button>
+              <button
+                className={`calc-tab ${activeTab === "beam" ? "active" : ""}`}
+                onClick={() => setActiveTab("beam")}
+              >
+                🏗️ Beam Design
+              </button>
+
+              <button
+                className={`calc-tab ${activeTab === "column" ? "active" : ""}`}
+                onClick={() => setActiveTab("column")}
+              >
+                🏛️ Column Design
+              </button>
             </div>
 
             {/* Tab Content */}
@@ -497,13 +652,38 @@ function CalculatorsPage() {
                 <FoundationDesign footing={results.footing} />
               )}
               {activeTab === "bbs" && (
-                <CompleteBBS 
-                  barBending={results.barBending} 
-                  completeBBS={results.completeBBS} 
+                <CompleteBBS
+                  barBending={results.barBending}
+                  completeBBS={results.completeBBS}
                 />
               )}
-              {activeTab === "boq" && (
-                <FullBOQ boq={results.fullBOQ} />
+              {activeTab === "boq" && <FullBOQ boq={results.fullBOQ} />}
+              {activeTab === "beam" && (
+                <BeamDesignTab
+                  inputs={beamInputs}
+                  onInputChange={(e) =>
+                    setBeamInputs({
+                      ...beamInputs,
+                      [e.target.name]: e.target.value,
+                    })
+                  }
+                  onCalculate={handleBeamCalculate}
+                  results={beamResults}
+                />
+              )}
+
+              {activeTab === "column" && (
+                <ColumnDesignTab
+                  inputs={columnInputs}
+                  onInputChange={(e) =>
+                    setColumnInputs({
+                      ...columnInputs,
+                      [e.target.name]: e.target.value,
+                    })
+                  }
+                  onCalculate={handleColumnCalculate}
+                  results={columnResults}
+                />
               )}
             </div>
 

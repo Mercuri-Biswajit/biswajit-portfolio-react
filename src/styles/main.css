@@ -31,6 +31,7 @@
 @import url("./utilities/helpers.css");
 @import url("./utilities/animations-consolidated.css");
 @import url("./utilities/utilities-consolidated.css");
+@import url("../pages/CalculatorPage/design-calculator-styles.css");
 
 /* ===========================
    GLOBAL STYLES

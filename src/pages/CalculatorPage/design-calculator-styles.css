@@ -1,0 +1,350 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   BEAM & COLUMN DESIGN - ADDITIONAL STYLES
+   Add these styles to your existing CSS file
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Section Labels */
+.calc-section-label {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #1e40af;
+  margin-bottom: 15px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #dbeafe;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Card Sections */
+.calc-card-section {
+  margin-bottom: 25px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.calc-card-section:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+/* Input Hints */
+.calc-input-hint {
+  display: block;
+  font-size: 0.75rem;
+  color: #6b7280;
+  margin-top: 4px;
+  font-style: italic;
+}
+
+/* Detail Grid */
+.calc-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 15px;
+  margin-top: 15px;
+}
+
+.calc-detail-item {
+  background: #f9fafb;
+  padding: 12px 15px;
+  border-radius: 8px;
+  border-left: 3px solid #3b82f6;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.calc-detail-label {
+  font-size: 0.8rem;
+  color: #6b7280;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.calc-detail-value {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+/* Table Styles */
+.calc-table-container {
+  overflow-x: auto;
+  margin-top: 15px;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+}
+
+.calc-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.calc-table thead {
+  background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+  color: white;
+}
+
+.calc-table th {
+  padding: 12px 15px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.calc-table tbody tr {
+  border-bottom: 1px solid #e5e7eb;
+  transition: background-color 0.2s ease;
+}
+
+.calc-table tbody tr:hover {
+  background-color: #f3f4f6;
+}
+
+.calc-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.calc-table td {
+  padding: 12px 15px;
+  color: #374151;
+}
+
+/* Alert Styles */
+.calc-alert {
+  padding: 15px 20px;
+  border-radius: 8px;
+  margin: 15px 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  line-height: 1.6;
+}
+
+.calc-alert strong {
+  font-weight: 600;
+}
+
+.calc-alert-error {
+  background-color: #fee2e2;
+  border: 2px solid #ef4444;
+  color: #991b1b;
+}
+
+.calc-alert-info {
+  background-color: #dbeafe;
+  border: 2px solid #3b82f6;
+  color: #1e40af;
+}
+
+.calc-alert-success {
+  background-color: #dcfce7;
+  border: 2px solid #10b981;
+  color: #065f46;
+}
+
+.calc-alert-warning {
+  background-color: #fef3c7;
+  border: 2px solid #f59e0b;
+  color: #92400e;
+}
+
+/* Responsive Grid Adjustments */
+@media (max-width: 768px) {
+  .calc-grid-3 {
+    grid-template-columns: 1fr;
+  }
+  
+  .calc-grid-2 {
+    grid-template-columns: 1fr;
+  }
+  
+  .calc-detail-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .calc-struct-grid {
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  }
+  
+  .calc-table {
+    font-size: 0.8rem;
+  }
+  
+  .calc-table th,
+  .calc-table td {
+    padding: 8px 10px;
+  }
+}
+
+/* Button Disabled State */
+.calc-btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: #9ca3af;
+}
+
+.calc-btn-primary:disabled:hover {
+  background: #9ca3af;
+  transform: none;
+}
+
+/* Enhanced Structure Cards for Results */
+.calc-struct-section {
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+  padding: 25px;
+  border-radius: 12px;
+  margin-bottom: 25px;
+  border: 2px solid #bae6fd;
+}
+
+.calc-struct-section-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #0c4a6e;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.calc-struct-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 15px;
+}
+
+.calc-struct-card {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  border: 2px solid #3b82f6;
+  text-align: center;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.calc-struct-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 12px rgba(59, 130, 246, 0.2);
+}
+
+.calc-struct-icon {
+  font-size: 2rem;
+  margin-bottom: 10px;
+}
+
+.calc-struct-title {
+  font-size: 0.75rem;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.calc-struct-value {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 5px;
+}
+
+.calc-struct-sub {
+  font-size: 0.75rem;
+  color: #9ca3af;
+  font-style: italic;
+}
+
+/* Card Subtitle Enhancement */
+.calc-card-subtitle {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #1e3a8a;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #dbeafe;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Print Styles */
+@media print {
+  .calc-btn-primary,
+  .calc-tab {
+    display: none;
+  }
+  
+  .calc-card,
+  .calc-struct-section {
+    page-break-inside: avoid;
+  }
+  
+  .calc-table-container {
+    overflow: visible;
+  }
+}
+
+/* Animations */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.calc-result-card {
+  animation: slideIn 0.4s ease-out;
+}
+
+/* Utility Classes */
+.text-success {
+  color: #10b981;
+}
+
+.text-error {
+  color: #ef4444;
+}
+
+.text-warning {
+  color: #f59e0b;
+}
+
+.text-info {
+  color: #3b82f6;
+}
+
+.font-bold {
+  font-weight: 700;
+}
+
+.text-center {
+  text-align: center;
+}
+
+/* Loading Spinner (optional) */
+.calc-spinner {
+  border: 3px solid #f3f4f6;
+  border-top: 3px solid #3b82f6;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin: 20px auto;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
