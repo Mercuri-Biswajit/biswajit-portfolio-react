@@ -511,14 +511,14 @@
   opacity: 0.5;
 }
 
-@keyframes gridMove {
+/* @keyframes gridMove {
   0% {
     transform: translate(0, 0);
   }
   100% {
     transform: translate(50px, 50px);
   }
-}
+} */
 
 .animated-shape {
   position: absolute;
@@ -555,7 +555,7 @@
   animation-duration: 30s;
 }
 
-@keyframes float {
+/* @keyframes float {
   0%, 100% {
     transform: translate(0, 0) rotate(0deg);
   }
@@ -568,7 +568,7 @@
   75% {
     transform: translate(40px, 10px) rotate(270deg);
   }
-}
+} */
 
 /* ===========================
    NEW CONTACT SECTION

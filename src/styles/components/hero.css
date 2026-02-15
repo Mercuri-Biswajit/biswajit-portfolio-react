@@ -186,7 +186,7 @@
    ANIMATIONS
    =========================== */
 
-@keyframes fadeInUp {
+/* @keyframes fadeInUp {
   from {
     opacity: 0;
     transform: translateY(30px);
@@ -213,7 +213,7 @@
   50% {
     opacity: 0.5;
   }
-}
+} */
 
 /* ===========================
    SCROLL INDICATOR (Optional)
