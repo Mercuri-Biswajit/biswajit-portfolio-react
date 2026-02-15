@@ -1,4 +1,5 @@
-import { useState } from "react";
+/* eslint-disable react-hooks/exhaustive-deps */
+import { useState, useEffect } from "react";
 
 import {
   BUILDING_TYPES,
@@ -19,7 +20,7 @@ import {
 } from "../../utils/calculator/advanced";
 import { formatCurrency } from "../../utils/helpers";
 
-// Import all tab components
+// Import tab components
 import {
   CostBreakdown,
   StructureDesign,
@@ -38,6 +39,9 @@ import "./CalculatorPage.css";
 import "./design-calculator-styles.css";
 
 function CalculatorsPage() {
+  // ── Main Tab State ─────────────────────────────────────────────────────
+  const [mainTab, setMainTab] = useState("costing"); // 'costing', 'beam', 'column'
+  
   // ── Input State ────────────────────────────────────────────────────────
   const [inputs, setInputs] = useState({
     // Basic Dimensions
@@ -67,7 +71,7 @@ function CalculatorsPage() {
   });
 
   const [results, setResults] = useState(null);
-  const [activeTab, setActiveTab] = useState("cost");
+  const [costingSubTab, setCostingSubTab] = useState("cost");
 
   // Beam Design State
   const [beamInputs, setBeamInputs] = useState({
@@ -98,9 +102,30 @@ function CalculatorsPage() {
   });
   const [columnResults, setColumnResults] = useState(null);
 
+  // Auto-populate beam/column inputs from structure design when results change
+  useEffect(() => {
+    if (results?.structureDesign && mainTab === 'beam' && !beamInputs.b) {
+      populateBeamFromStructure();
+    }
+  }, [mainTab, results]);
+
+  useEffect(() => {
+    if (results?.structureDesign && mainTab === 'column' && !columnInputs.b) {
+      populateColumnFromStructure();
+    }
+  }, [mainTab, results]);
+
   // Beam Design Handler
   const handleBeamCalculate = () => {
     try {
+      // Validate required inputs
+      if (!beamInputs.Mu || !beamInputs.Vu || !beamInputs.b || !beamInputs.D) {
+        setBeamResults({ 
+          error: "Please fill in all required fields: Mu, Vu, b (width), and D (depth)" 
+        });
+        return;
+      }
+
       const numericInputs = {
         ...beamInputs,
         Mu: parseFloat(beamInputs.Mu),
@@ -113,16 +138,44 @@ function CalculatorsPage() {
         cover: parseFloat(beamInputs.cover),
       };
 
+      // Validate numeric values
+      if (Object.values(numericInputs).some(val => val !== null && isNaN(val))) {
+        setBeamResults({ 
+          error: "Please enter valid numeric values for all fields" 
+        });
+        return;
+      }
+
       const results = designBeam(numericInputs);
+      
+      // Ensure results object has expected structure
+      if (!results || typeof results !== 'object') {
+        setBeamResults({ 
+          error: "Beam design calculation returned invalid results" 
+        });
+        return;
+      }
+      
       setBeamResults(results);
     } catch (error) {
-      setBeamResults({ error: error.message });
+      console.error("Beam calculation error:", error);
+      setBeamResults({ 
+        error: error.message || "An error occurred during beam design calculation" 
+      });
     }
   };
 
   // Column Design Handler
   const handleColumnCalculate = () => {
     try {
+      // Validate required inputs
+      if (!columnInputs.Pu || !columnInputs.b || !columnInputs.D || !columnInputs.L) {
+        setColumnResults({ 
+          error: "Please fill in all required fields: Pu, b (width), D (depth), and L (length)" 
+        });
+        return;
+      }
+
       const numericInputs = {
         ...columnInputs,
         Pu: parseFloat(columnInputs.Pu),
@@ -136,10 +189,74 @@ function CalculatorsPage() {
         cover: parseFloat(columnInputs.cover),
       };
 
+      // Validate only the numeric fields (exclude restraintX and restraintY)
+      const numericFields = ['Pu', 'Mux', 'Muy', 'b', 'D', 'L', 'fck', 'fy', 'cover'];
+      const hasInvalidNumbers = numericFields.some(field => isNaN(numericInputs[field]));
+      
+      if (hasInvalidNumbers) {
+        setColumnResults({ 
+          error: "Please enter valid numeric values for all fields" 
+        });
+        return;
+      }
+
       const results = designColumn(numericInputs);
+      
+      // Ensure results object has expected structure
+      if (!results || typeof results !== 'object') {
+        setColumnResults({ 
+          error: "Column design calculation returned invalid results" 
+        });
+        return;
+      }
+      
       setColumnResults(results);
     } catch (error) {
-      setColumnResults({ error: error.message });
+      console.error("Column calculation error:", error);
+      setColumnResults({ 
+        error: error.message || "An error occurred during column design calculation" 
+        });
+    }
+  };
+  
+  // Auto-populate beam inputs from structure design
+  const populateBeamFromStructure = () => {
+    if (!results?.structureDesign) return;
+    
+    const beamSize = results.structureDesign.beams.size; // e.g., "9" × 12""
+    const sizeParts = beamSize.replace(/"/g, '').split('×');
+    if (sizeParts.length === 2) {
+      const width = parseFloat(sizeParts[0].trim()) * 25.4; // Convert inches to mm
+      const depth = parseFloat(sizeParts[1].trim()) * 25.4;
+      
+      setBeamInputs(prev => ({
+        ...prev,
+        b: Math.round(width).toString(),
+        D: Math.round(depth).toString(),
+        fck: "20", // M20 from structure design
+        fy: "500", // Fe500 standard
+      }));
+    }
+  };
+  
+  const populateColumnFromStructure = () => {
+    if (!results?.structureDesign) return;
+    
+    const columnSize = results.structureDesign.columns.size; // e.g., "9" × 12""
+    const sizeParts = columnSize.replace(/"/g, '').split('×');
+    if (sizeParts.length === 2) {
+      const width = parseFloat(sizeParts[0].trim()) * 25.4; // Convert inches to mm
+      const depth = parseFloat(sizeParts[1].trim()) * 25.4;
+      const floorHeight = parseFloat(inputs.floorHeight) * 304.8; // Convert feet to mm
+      
+      setColumnInputs(prev => ({
+        ...prev,
+        b: Math.round(width).toString(),
+        D: Math.round(depth).toString(),
+        L: Math.round(floorHeight).toString(),
+        fck: "20", // M20 from structure design
+        fy: "500", // Fe500 standard
+      }));
     }
   };
 
@@ -242,306 +359,353 @@ function CalculatorsPage() {
       customAggregateRate: "",
     });
     setResults(null);
-    setActiveTab("cost");
+    setCostingSubTab("cost");
   };
 
   return (
     <div className="calc-page">
-      <main className="calc-main">
-        <div className="calc-header">
-          <div className="calc-header-content">
-            <div className="calc-header-left">
-              <span className="calc-step">STEP 1</span>
-              <h1 className="calc-title">Construction Cost Calculator</h1>
+      {/* Hero Section with Main Tabs */}
+      <section className="calc-hero-section">
+        <div className="container">
+          <div className="calc-hero-content">
+            <div className="calc-hero-text">
+              <span className="calc-hero-label">PROFESSIONAL TOOLS</span>
+              <h1 className="calc-hero-title">Construction Calculator Suite</h1>
+              <p className="calc-hero-description">
+                IS 456:2000 compliant tools for cost estimation, beam design, and column design
+              </p>
             </div>
-            <span className="calc-badge">Pro Version</span>
-          </div>
-          <div className="calc-intro">
-            <span className="calc-intro-icon">ℹ️</span>
-            <p>
-              Professional construction estimation tool based on IS 456:2000,
-              NBC 2016, and current market rates. Enter your building dimensions
-              and specifications to get a detailed cost breakdown with material
-              quantities, structural design parameters, and complete bill of
-              quantities.
-            </p>
+            
+            {/* Main Tabs in Hero */}
+            <div className="calc-main-tabs-hero">
+              <button
+                className={`calc-main-tab-hero ${mainTab === "costing" ? "active" : ""}`}
+                onClick={() => setMainTab("costing")}
+              >
+                <div className="calc-tab-icon-hero">💰</div>
+                <div className="calc-tab-content-hero">
+                  <div className="calc-tab-label-hero">ESTIMATE COSTING</div>
+                  <div className="calc-tab-desc-hero">Complete building cost estimation</div>
+                </div>
+              </button>
+              
+              <button
+                className={`calc-main-tab-hero ${mainTab === "beam" ? "active" : ""}`}
+                onClick={() => {
+                  setMainTab("beam");
+                  if (results?.structureDesign && !beamInputs.b) {
+                    populateBeamFromStructure();
+                  }
+                }}
+              >
+                <div className="calc-tab-icon-hero">🏗️</div>
+                <div className="calc-tab-content-hero">
+                  <div className="calc-tab-label-hero">BEAM DESIGN</div>
+                  <div className="calc-tab-desc-hero">RCC beam structural analysis</div>
+                </div>
+              </button>
+              
+              <button
+                className={`calc-main-tab-hero ${mainTab === "column" ? "active" : ""}`}
+                onClick={() => {
+                  setMainTab("column");
+                  if (results?.structureDesign && !columnInputs.b) {
+                    populateColumnFromStructure();
+                  }
+                }}
+              >
+                <div className="calc-tab-icon-hero">🏛️</div>
+                <div className="calc-tab-content-hero">
+                  <div className="calc-tab-label-hero">COLUMN DESIGN</div>
+                  <div className="calc-tab-desc-hero">Column load capacity design</div>
+                </div>
+              </button>
+            </div>
           </div>
         </div>
+      </section>
 
-        {/* Input Section */}
-        <section className="calc-input-section">
-          <div className="calc-section-header">
-            <div className="calc-panel-label">
-              <span className="label-icon">▣</span>
-              BUILDING SPECIFICATIONS
-            </div>
-            <button className="calc-btn-reset" onClick={handleReset}>
-              ↺ Reset All
-            </button>
-          </div>
+      <main className="calc-main">
 
-          {/* Basic Dimensions */}
-          <div className="calc-card">
-            <h3 className="calc-card-subtitle">Basic Dimensions</h3>
-            <div className="calc-grid-3">
-              <div className="calc-input-group">
-                <label className="calc-label-primary">
-                  Length <span className="calc-label-unit">feet</span>
-                </label>
-                <input
-                  type="number"
-                  className="calc-input-primary"
-                  placeholder="e.g. 40"
-                  value={inputs.length}
-                  onChange={updateField("length")}
-                />
+        {/* Input Section - Only shown for Costing tab */}
+        {mainTab === "costing" && (
+          <section className="calc-input-section">
+            <div className="calc-section-header">
+              <div className="calc-panel-label">
+                <span className="label-icon">▣</span>
+                BUILDING SPECIFICATIONS
               </div>
-
-              <div className="calc-input-group">
-                <label className="calc-label-primary">
-                  Breadth <span className="calc-label-unit">feet</span>
-                </label>
-                <input
-                  type="number"
-                  className="calc-input-primary"
-                  placeholder="e.g. 30"
-                  value={inputs.breadth}
-                  onChange={updateField("breadth")}
-                />
-              </div>
-
-              <div className="calc-input-group">
-                <label className="calc-label-primary">
-                  Floor Height <span className="calc-label-unit">feet</span>
-                </label>
-                <input
-                  type="number"
-                  className="calc-input-primary"
-                  placeholder="10"
-                  value={inputs.floorHeight}
-                  onChange={updateField("floorHeight")}
-                />
-              </div>
+              <button className="calc-btn-reset" onClick={handleReset}>
+                ↺ Reset All
+              </button>
             </div>
 
-            <div className="calc-input-group">
-              <label className="calc-label-primary">Number of Floors</label>
-              <div className="calc-floor-buttons">
-                {[1, 2, 3, 4, 5].map((num) => (
-                  <button
-                    key={num}
-                    className={`calc-floor-btn ${inputs.floors === num ? "active" : ""}`}
-                    onClick={() =>
-                      setInputs((prev) => ({ ...prev, floors: num }))
-                    }
-                  >
-                    {num === 1 ? "G" : `G+${num - 1}`}
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* Building Type & Specifications */}
-          <div className="calc-card">
-            <h3 className="calc-card-subtitle">
-              Building Type & Specifications
-            </h3>
-            <div className="calc-grid-2">
-              <div className="calc-input-group">
-                <label className="calc-label-primary">Building Type</label>
-                <select
-                  className="calc-input-primary calc-select-input"
-                  value={inputs.buildingType}
-                  onChange={updateField("buildingType")}
-                >
-                  {Object.entries(BUILDING_TYPES).map(([key, { label }]) => (
-                    <option key={key} value={key}>
-                      {label}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="calc-input-group">
-                <label className="calc-label-primary">Finish Grade</label>
-                <select
-                  className="calc-input-primary calc-select-input"
-                  value={inputs.finishGrade}
-                  onChange={updateField("finishGrade")}
-                >
-                  {Object.entries(FINISH_GRADES).map(([key, { label }]) => (
-                    <option key={key} value={key}>
-                      {label}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="calc-input-group">
-                <label className="calc-label-primary">Soil Condition</label>
-                <select
-                  className="calc-input-primary calc-select-input"
-                  value={inputs.soilCondition}
-                  onChange={updateField("soilCondition")}
-                >
-                  {Object.entries(SOIL_CONDITIONS).map(([key, { label }]) => (
-                    <option key={key} value={key}>
-                      {label}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="calc-input-group">
-                <label className="calc-label-primary">Region / Location</label>
-                <select
-                  className="calc-input-primary calc-select-input"
-                  value={inputs.region}
-                  onChange={updateField("region")}
-                >
-                  {Object.entries(REGIONS).map(([key, { label }]) => (
-                    <option key={key} value={key}>
-                      {label}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
-          </div>
-
-          {/* Advanced Options */}
-          <div className="calc-card">
-            <h3 className="calc-card-subtitle">Advanced Options</h3>
-
-            <div className="calc-toggle-group">
-              <label className="calc-toggle-label">
-                <input
-                  type="checkbox"
-                  className="calc-checkbox"
-                  checked={inputs.includeBasement}
-                  onChange={updateField("includeBasement")}
-                />
-                <span>Include Basement</span>
-              </label>
-
-              <label className="calc-toggle-label">
-                <input
-                  type="checkbox"
-                  className="calc-checkbox"
-                  checked={inputs.includeStaircase}
-                  onChange={updateField("includeStaircase")}
-                />
-                <span>Include Staircase Design</span>
-              </label>
-            </div>
-
-            {inputs.includeBasement && (
-              <div className="calc-grid-3" style={{ marginTop: "1rem" }}>
+            {/* Basic Dimensions */}
+            <div className="calc-card">
+              <h3 className="calc-card-subtitle">Basic Dimensions</h3>
+              <div className="calc-grid-3">
                 <div className="calc-input-group">
                   <label className="calc-label-primary">
-                    Basement Depth <span className="calc-label-unit">feet</span>
+                    Length <span className="calc-label-unit">feet</span>
                   </label>
                   <input
                     type="number"
                     className="calc-input-primary"
-                    placeholder="8"
-                    value={inputs.basementDepth}
-                    onChange={updateField("basementDepth")}
+                    placeholder="e.g. 40"
+                    value={inputs.length}
+                    onChange={updateField("length")}
+                  />
+                </div>
+
+                <div className="calc-input-group">
+                  <label className="calc-label-primary">
+                    Breadth <span className="calc-label-unit">feet</span>
+                  </label>
+                  <input
+                    type="number"
+                    className="calc-input-primary"
+                    placeholder="e.g. 30"
+                    value={inputs.breadth}
+                    onChange={updateField("breadth")}
+                  />
+                </div>
+
+                <div className="calc-input-group">
+                  <label className="calc-label-primary">
+                    Floor Height <span className="calc-label-unit">feet</span>
+                  </label>
+                  <input
+                    type="number"
+                    className="calc-input-primary"
+                    placeholder="10"
+                    value={inputs.floorHeight}
+                    onChange={updateField("floorHeight")}
                   />
                 </div>
               </div>
-            )}
-          </div>
-
-          {/* Custom Material Rates (Optional) */}
-          <div className="calc-card">
-            <h3 className="calc-card-subtitle">
-              Custom Material Rates{" "}
-              <span
-                style={{
-                  fontSize: "0.8rem",
-                  color: "var(--color-text-dim)",
-                  fontWeight: 400,
-                }}
-              >
-                (Optional - Leave blank for default rates)
-              </span>
-            </h3>
-            <div className="calc-material-grid">
-              <div className="calc-input-group">
-                <label className="calc-label-secondary">
-                  Cement{" "}
-                  <span className="calc-rate-hint">
-                    ₹/bag (default: {MATERIAL_RATES.cement.rate})
-                  </span>
-                </label>
-                <input
-                  type="number"
-                  className="calc-input-secondary"
-                  placeholder={MATERIAL_RATES.cement.rate}
-                  value={inputs.customCementRate}
-                  onChange={updateField("customCementRate")}
-                />
-              </div>
 
               <div className="calc-input-group">
-                <label className="calc-label-secondary">
-                  Steel{" "}
-                  <span className="calc-rate-hint">
-                    ₹/kg (default: {MATERIAL_RATES.steel.rate})
-                  </span>
-                </label>
-                <input
-                  type="number"
-                  className="calc-input-secondary"
-                  placeholder={MATERIAL_RATES.steel.rate}
-                  value={inputs.customSteelRate}
-                  onChange={updateField("customSteelRate")}
-                />
-              </div>
-
-              <div className="calc-input-group">
-                <label className="calc-label-secondary">
-                  Sand{" "}
-                  <span className="calc-rate-hint">
-                    ₹/cft (default: {MATERIAL_RATES.sand.rate})
-                  </span>
-                </label>
-                <input
-                  type="number"
-                  className="calc-input-secondary"
-                  placeholder={MATERIAL_RATES.sand.rate}
-                  value={inputs.customSandRate}
-                  onChange={updateField("customSandRate")}
-                />
-              </div>
-
-              <div className="calc-input-group">
-                <label className="calc-label-secondary">
-                  Aggregate{" "}
-                  <span className="calc-rate-hint">
-                    ₹/cft (default: {MATERIAL_RATES.aggregate.rate})
-                  </span>
-                </label>
-                <input
-                  type="number"
-                  className="calc-input-secondary"
-                  placeholder={MATERIAL_RATES.aggregate.rate}
-                  value={inputs.customAggregateRate}
-                  onChange={updateField("customAggregateRate")}
-                />
+                <label className="calc-label-primary">Number of Floors</label>
+                <div className="calc-floor-buttons">
+                  {[1, 2, 3, 4, 5].map((num) => (
+                    <button
+                      key={num}
+                      className={`calc-floor-btn ${inputs.floors === num ? "active" : ""}`}
+                      onClick={() =>
+                        setInputs((prev) => ({ ...prev, floors: num }))
+                      }
+                    >
+                      {num === 1 ? "G" : `G+${num - 1}`}
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
-          </div>
 
-          <button className="calc-btn-primary" onClick={handleCalculate}>
-            CALCULATE ESTIMATE →
-          </button>
-        </section>
+            {/* Building Type & Specifications */}
+            <div className="calc-card">
+              <h3 className="calc-card-subtitle">
+                Building Type & Specifications
+              </h3>
+              <div className="calc-grid-2">
+                <div className="calc-input-group">
+                  <label className="calc-label-primary">Building Type</label>
+                  <select
+                    className="calc-input-primary calc-select-input"
+                    value={inputs.buildingType}
+                    onChange={updateField("buildingType")}
+                  >
+                    {Object.entries(BUILDING_TYPES).map(([key, { label }]) => (
+                      <option key={key} value={key}>
+                        {label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
 
-        {/* Results Section */}
-        {results && (
+                <div className="calc-input-group">
+                  <label className="calc-label-primary">Finish Grade</label>
+                  <select
+                    className="calc-input-primary calc-select-input"
+                    value={inputs.finishGrade}
+                    onChange={updateField("finishGrade")}
+                  >
+                    {Object.entries(FINISH_GRADES).map(([key, { label }]) => (
+                      <option key={key} value={key}>
+                        {label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="calc-input-group">
+                  <label className="calc-label-primary">Soil Condition</label>
+                  <select
+                    className="calc-input-primary calc-select-input"
+                    value={inputs.soilCondition}
+                    onChange={updateField("soilCondition")}
+                  >
+                    {Object.entries(SOIL_CONDITIONS).map(([key, { label }]) => (
+                      <option key={key} value={key}>
+                        {label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="calc-input-group">
+                  <label className="calc-label-primary">Region / Location</label>
+                  <select
+                    className="calc-input-primary calc-select-input"
+                    value={inputs.region}
+                    onChange={updateField("region")}
+                  >
+                    {Object.entries(REGIONS).map(([key, { label }]) => (
+                      <option key={key} value={key}>
+                        {label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            {/* Advanced Options */}
+            <div className="calc-card">
+              <h3 className="calc-card-subtitle">Advanced Options</h3>
+
+              <div className="calc-toggle-group">
+                <label className="calc-toggle-label">
+                  <input
+                    type="checkbox"
+                    className="calc-checkbox"
+                    checked={inputs.includeBasement}
+                    onChange={updateField("includeBasement")}
+                  />
+                  <span>Include Basement</span>
+                </label>
+
+                <label className="calc-toggle-label">
+                  <input
+                    type="checkbox"
+                    className="calc-checkbox"
+                    checked={inputs.includeStaircase}
+                    onChange={updateField("includeStaircase")}
+                  />
+                  <span>Include Staircase Design</span>
+                </label>
+              </div>
+
+              {inputs.includeBasement && (
+                <div className="calc-grid-3" style={{ marginTop: "1rem" }}>
+                  <div className="calc-input-group">
+                    <label className="calc-label-primary">
+                      Basement Depth <span className="calc-label-unit">feet</span>
+                    </label>
+                    <input
+                      type="number"
+                      className="calc-input-primary"
+                      placeholder="8"
+                      value={inputs.basementDepth}
+                      onChange={updateField("basementDepth")}
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Custom Material Rates (Optional) */}
+            <div className="calc-card">
+              <h3 className="calc-card-subtitle">
+                Custom Material Rates{" "}
+                <span
+                  style={{
+                    fontSize: "0.8rem",
+                    color: "var(--color-text-dim)",
+                    fontWeight: 400,
+                  }}
+                >
+                  (Optional - Leave blank for default rates)
+                </span>
+              </h3>
+              <div className="calc-material-grid">
+                <div className="calc-input-group">
+                  <label className="calc-label-secondary">
+                    Cement{" "}
+                    <span className="calc-rate-hint">
+                      ₹/bag (default: {MATERIAL_RATES.cement.rate})
+                    </span>
+                  </label>
+                  <input
+                    type="number"
+                    className="calc-input-secondary"
+                    placeholder={MATERIAL_RATES.cement.rate}
+                    value={inputs.customCementRate}
+                    onChange={updateField("customCementRate")}
+                  />
+                </div>
+
+                <div className="calc-input-group">
+                  <label className="calc-label-secondary">
+                    Steel{" "}
+                    <span className="calc-rate-hint">
+                      ₹/kg (default: {MATERIAL_RATES.steel.rate})
+                    </span>
+                  </label>
+                  <input
+                    type="number"
+                    className="calc-input-secondary"
+                    placeholder={MATERIAL_RATES.steel.rate}
+                    value={inputs.customSteelRate}
+                    onChange={updateField("customSteelRate")}
+                  />
+                </div>
+
+                <div className="calc-input-group">
+                  <label className="calc-label-secondary">
+                    Sand{" "}
+                    <span className="calc-rate-hint">
+                      ₹/cft (default: {MATERIAL_RATES.sand.rate})
+                    </span>
+                  </label>
+                  <input
+                    type="number"
+                    className="calc-input-secondary"
+                    placeholder={MATERIAL_RATES.sand.rate}
+                    value={inputs.customSandRate}
+                    onChange={updateField("customSandRate")}
+                  />
+                </div>
+
+                <div className="calc-input-group">
+                  <label className="calc-label-secondary">
+                    Aggregate{" "}
+                    <span className="calc-rate-hint">
+                      ₹/cft (default: {MATERIAL_RATES.aggregate.rate})
+                    </span>
+                  </label>
+                  <input
+                    type="number"
+                    className="calc-input-secondary"
+                    placeholder={MATERIAL_RATES.aggregate.rate}
+                    value={inputs.customAggregateRate}
+                    onChange={updateField("customAggregateRate")}
+                  />
+                </div>
+              </div>
+            </div>
+
+            <button className="calc-btn-primary" onClick={handleCalculate}>
+              CALCULATE ESTIMATE →
+            </button>
+          </section>
+        )}
+
+        {/* Main Tabs Navigation */}
+        {/* REMOVED - Now in hero section */}
+
+        {/* Tab Content */}
+        {mainTab === "costing" && results && (
           <section className="calc-results-section">
             {/* Cost Banner with Timeline */}
             <div className="calc-cost-banner">
@@ -582,109 +746,69 @@ function CalculatorsPage() {
               </div>
             </div>
 
-            {/* Tabs */}
+            {/* Sub Tabs */}
             <div className="calc-tabs">
               <button
-                className={`calc-tab ${activeTab === "cost" ? "active" : ""}`}
-                onClick={() => setActiveTab("cost")}
+                className={`calc-tab ${costingSubTab === "cost" ? "active" : ""}`}
+                onClick={() => setCostingSubTab("cost")}
               >
                 💰 Cost Breakdown
               </button>
               <button
-                className={`calc-tab ${activeTab === "structure" ? "active" : ""}`}
-                onClick={() => setActiveTab("structure")}
+                className={`calc-tab ${costingSubTab === "structure" ? "active" : ""}`}
+                onClick={() => setCostingSubTab("structure")}
               >
                 🏛️ Structure Design
               </button>
               {results.stairDesign && (
                 <button
-                  className={`calc-tab ${activeTab === "stair" ? "active" : ""}`}
-                  onClick={() => setActiveTab("stair")}
+                  className={`calc-tab ${costingSubTab === "stair" ? "active" : ""}`}
+                  onClick={() => setCostingSubTab("stair")}
                 >
                   🪜 Staircase Design
                 </button>
               )}
               <button
-                className={`calc-tab ${activeTab === "footing" ? "active" : ""}`}
-                onClick={() => setActiveTab("footing")}
+                className={`calc-tab ${costingSubTab === "footing" ? "active" : ""}`}
+                onClick={() => setCostingSubTab("footing")}
               >
                 🏗️ Foundation Design
               </button>
               <button
-                className={`calc-tab ${activeTab === "bbs" ? "active" : ""}`}
-                onClick={() => setActiveTab("bbs")}
+                className={`calc-tab ${costingSubTab === "bbs" ? "active" : ""}`}
+                onClick={() => setCostingSubTab("bbs")}
               >
                 📋 Bar Bending Schedule
               </button>
               <button
-                className={`calc-tab ${activeTab === "boq" ? "active" : ""}`}
-                onClick={() => setActiveTab("boq")}
+                className={`calc-tab ${costingSubTab === "boq" ? "active" : ""}`}
+                onClick={() => setCostingSubTab("boq")}
               >
                 📄 Bill of Quantities
               </button>
-              <button
-                className={`calc-tab ${activeTab === "beam" ? "active" : ""}`}
-                onClick={() => setActiveTab("beam")}
-              >
-                🏗️ Beam Design
-              </button>
-
-              <button
-                className={`calc-tab ${activeTab === "column" ? "active" : ""}`}
-                onClick={() => setActiveTab("column")}
-              >
-                🏛️ Column Design
-              </button>
             </div>
 
-            {/* Tab Content */}
+            {/* Sub Tab Content */}
             <div className="calc-tab-content">
-              {activeTab === "cost" && (
+              {costingSubTab === "cost" && (
                 <CostBreakdown results={results.buildingCost} />
               )}
-              {activeTab === "structure" && (
+              {costingSubTab === "structure" && (
                 <StructureDesign design={results.structureDesign} />
               )}
-              {activeTab === "stair" && results.stairDesign && (
+              {costingSubTab === "stair" && results.stairDesign && (
                 <StaircaseDesign design={results.stairDesign} />
               )}
-              {activeTab === "footing" && (
+              {costingSubTab === "footing" && (
                 <FoundationDesign footing={results.footing} />
               )}
-              {activeTab === "bbs" && (
+              {costingSubTab === "bbs" && (
                 <CompleteBBS
                   barBending={results.barBending}
                   completeBBS={results.completeBBS}
                 />
               )}
-              {activeTab === "boq" && <FullBOQ boq={results.fullBOQ} />}
-              {activeTab === "beam" && (
-                <BeamDesignTab
-                  inputs={beamInputs}
-                  onInputChange={(e) =>
-                    setBeamInputs({
-                      ...beamInputs,
-                      [e.target.name]: e.target.value,
-                    })
-                  }
-                  onCalculate={handleBeamCalculate}
-                  results={beamResults}
-                />
-              )}
-
-              {activeTab === "column" && (
-                <ColumnDesignTab
-                  inputs={columnInputs}
-                  onInputChange={(e) =>
-                    setColumnInputs({
-                      ...columnInputs,
-                      [e.target.name]: e.target.value,
-                    })
-                  }
-                  onCalculate={handleColumnCalculate}
-                  results={columnResults}
-                />
-              )}
+              {costingSubTab === "boq" && <FullBOQ boq={results.fullBOQ} />}
             </div>
 
             <div style={{ textAlign: "center", paddingTop: "2rem" }}>
@@ -692,6 +816,48 @@ function CalculatorsPage() {
                 ← New Estimate
               </button>
             </div>
+          </section>
+        )}
+
+        {mainTab === "beam" && (
+          <section className="calc-results-section">
+            {results?.structureDesign && (
+              <div className="calc-alert calc-alert-info" style={{ marginBottom: "1.5rem" }}>
+                <strong>ℹ️ Auto-populated from Structure Design:</strong> Beam dimensions and material grades have been filled based on your building estimate. You can modify them as needed.
+              </div>
+            )}
+            <BeamDesignTab
+              inputs={beamInputs}
+              onInputChange={(e) =>
+                setBeamInputs({
+                  ...beamInputs,
+                  [e.target.name]: e.target.value,
+                })
+              }
+              onCalculate={handleBeamCalculate}
+              results={beamResults}
+            />
+          </section>
+        )}
+
+        {mainTab === "column" && (
+          <section className="calc-results-section">
+            {results?.structureDesign && (
+              <div className="calc-alert calc-alert-info" style={{ marginBottom: "1.5rem" }}>
+                <strong>ℹ️ Auto-populated from Structure Design:</strong> Column dimensions and material grades have been filled based on your building estimate. You can modify them as needed.
+              </div>
+            )}
+            <ColumnDesignTab
+              inputs={columnInputs}
+              onInputChange={(e) =>
+                setColumnInputs({
+                  ...columnInputs,
+                  [e.target.name]: e.target.value,
+                })
+              }
+              onCalculate={handleColumnCalculate}
+              results={columnResults}
+            />
           </section>
         )}
       </main>

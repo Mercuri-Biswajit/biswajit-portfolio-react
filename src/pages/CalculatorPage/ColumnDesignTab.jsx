@@ -11,6 +11,24 @@ export function ColumnDesignTab({
   onCalculate,
   results,
 }) {
+  // Safe number formatting helper to prevent toFixed errors
+  const safeFormat = (value, decimals = 2) => {
+    if (value === null || value === undefined || isNaN(value)) {
+      return "N/A";
+    }
+    return Number(value).toFixed(decimals);
+  };
+
+  // Safe property access helper
+  const safeGet = (obj, path, fallback = "N/A") => {
+    try {
+      const value = path.split('.').reduce((acc, part) => acc?.[part], obj);
+      return value !== undefined && value !== null ? value : fallback;
+    } catch {
+      return fallback;
+    }
+  };
+
   return (
     <div className="calc-result-card">
       <h3 className="calc-breakdown-header">
@@ -251,478 +269,487 @@ export function ColumnDesignTab({
       {results && !results.error && (
         <>
           {/* Design Summary */}
-          <div className="calc-struct-section">
-            <h4 className="calc-struct-section-title">
-              <span>📊</span> Design Summary
-            </h4>
-            <div className="calc-struct-grid">
-              <div
-                className="calc-struct-card"
-                style={{
-                  borderColor: results.slenderness.isShort
-                    ? "#3B82F6"
-                    : "#F59E0B",
-                }}
-              >
-                <div className="calc-struct-icon">📏</div>
-                <div className="calc-struct-title">Classification</div>
-                <div className="calc-struct-value">
-                  {results.summary.classification}
-                </div>
-                <div className="calc-struct-sub">
-                  λx = {results.slenderness.slenderness_x.toFixed(1)}, λy ={" "}
-                  {results.slenderness.slenderness_y.toFixed(1)}
-                </div>
-              </div>
-
-              <div className="calc-struct-card">
-                <div className="calc-struct-icon">🎯</div>
-                <div className="calc-struct-title">Design Type</div>
+          {results.slenderness && results.summary && (
+            <div className="calc-struct-section">
+              <h4 className="calc-struct-section-title">
+                <span>📊</span> Design Summary
+              </h4>
+              <div className="calc-struct-grid">
                 <div
-                  className="calc-struct-value"
-                  style={{ fontSize: "0.9em" }}
-                >
-                  {results.summary.designType.replace("-", " ").toUpperCase()}
-                </div>
-                <div className="calc-struct-sub">Load condition</div>
-              </div>
-
-              <div className="calc-struct-card">
-                <div className="calc-struct-icon">⚙️</div>
-                <div className="calc-struct-title">Longitudinal Steel</div>
-                <div className="calc-struct-value">
-                  {results.summary.longitudinalSteel}
-                </div>
-                <div className="calc-struct-sub">
-                  p = {results.summary.reinforcementRatio}
-                </div>
-              </div>
-
-              <div className="calc-struct-card">
-                <div className="calc-struct-icon">🔗</div>
-                <div className="calc-struct-title">Lateral Ties</div>
-                <div className="calc-struct-value">
-                  {results.summary.lateralTies}
-                </div>
-                <div className="calc-struct-sub">Confinement reinforcement</div>
-              </div>
-
-              <div className="calc-struct-card">
-                <div className="calc-struct-icon">💪</div>
-                <div className="calc-struct-title">Load Capacity</div>
-                <div className="calc-struct-value" style={{ color: "#10B981" }}>
-                  {results.summary.loadCapacity}
-                </div>
-                <div className="calc-struct-sub">
-                  Factor: {results.summary.loadFactor}
-                </div>
-              </div>
-
-              <div
-                className="calc-struct-card"
-                style={{
-                  borderColor:
-                    results.summary.status === "OK" ? "#10B981" : "#EF4444",
-                  backgroundColor:
-                    results.summary.status === "OK" ? "#F0FDF4" : "#FEF2F2",
-                }}
-              >
-                <div
-                  className="calc-struct-icon"
+                  className="calc-struct-card"
                   style={{
-                    color:
-                      results.summary.status === "OK" ? "#10B981" : "#EF4444",
+                    borderColor: results.slenderness.isShort
+                      ? "#3B82F6"
+                      : "#F59E0B",
                   }}
                 >
-                  {results.summary.status === "OK" ? "✓" : "✗"}
+                  <div className="calc-struct-icon">📏</div>
+                  <div className="calc-struct-title">Classification</div>
+                  <div className="calc-struct-value">
+                    {safeGet(results, 'summary.classification', 'N/A')}
+                  </div>
+                  <div className="calc-struct-sub">
+                    λx = {safeFormat(results.slenderness.slenderness_x, 1)}, λy ={" "}
+                    {safeFormat(results.slenderness.slenderness_y, 1)}
+                  </div>
                 </div>
-                <div className="calc-struct-title">Design Status</div>
+
+                <div className="calc-struct-card">
+                  <div className="calc-struct-icon">🎯</div>
+                  <div className="calc-struct-title">Design Type</div>
+                  <div
+                    className="calc-struct-value"
+                    style={{ fontSize: "0.9em" }}
+                  >
+                    {(safeGet(results, 'summary.designType', 'N/A')).replace("-", " ").toUpperCase()}
+                  </div>
+                  <div className="calc-struct-sub">Load condition</div>
+                </div>
+
+                <div className="calc-struct-card">
+                  <div className="calc-struct-icon">⚙️</div>
+                  <div className="calc-struct-title">Longitudinal Steel</div>
+                  <div className="calc-struct-value">
+                    {safeGet(results, 'summary.longitudinalSteel', 'N/A')}
+                  </div>
+                  <div className="calc-struct-sub">
+                    p = {safeGet(results, 'summary.reinforcementRatio', 'N/A')}
+                  </div>
+                </div>
+
+                <div className="calc-struct-card">
+                  <div className="calc-struct-icon">🔗</div>
+                  <div className="calc-struct-title">Lateral Ties</div>
+                  <div className="calc-struct-value">
+                    {safeGet(results, 'summary.lateralTies', 'N/A')}
+                  </div>
+                  <div className="calc-struct-sub">Confinement reinforcement</div>
+                </div>
+
+                <div className="calc-struct-card">
+                  <div className="calc-struct-icon">💪</div>
+                  <div className="calc-struct-title">Load Capacity</div>
+                  <div className="calc-struct-value" style={{ color: "#10B981" }}>
+                    {safeGet(results, 'summary.loadCapacity', 'N/A')}
+                  </div>
+                  <div className="calc-struct-sub">
+                    Factor: {safeGet(results, 'summary.loadFactor', 'N/A')}
+                  </div>
+                </div>
+
                 <div
-                  className="calc-struct-value"
+                  className="calc-struct-card"
                   style={{
-                    color:
-                      results.summary.status === "OK" ? "#10B981" : "#EF4444",
+                    borderColor:
+                      safeGet(results, 'summary.status') === "OK" ? "#10B981" : "#EF4444",
+                    backgroundColor:
+                      safeGet(results, 'summary.status') === "OK" ? "#F0FDF4" : "#FEF2F2",
                   }}
                 >
-                  {results.summary.status}
+                  <div
+                    className="calc-struct-icon"
+                    style={{
+                      color:
+                        safeGet(results, 'summary.status') === "OK" ? "#10B981" : "#EF4444",
+                    }}
+                  >
+                    {safeGet(results, 'summary.status') === "OK" ? "✓" : "✗"}
+                  </div>
+                  <div className="calc-struct-title">Design Status</div>
+                  <div
+                    className="calc-struct-value"
+                    style={{
+                      color:
+                        safeGet(results, 'summary.status') === "OK" ? "#10B981" : "#EF4444",
+                    }}
+                  >
+                    {safeGet(results, 'summary.status', 'UNKNOWN')}
+                  </div>
+                  <div className="calc-struct-sub">Overall compliance</div>
                 </div>
-                <div className="calc-struct-sub">Overall compliance</div>
               </div>
             </div>
-          </div>
+          )}
 
           {/* Effective Lengths & Slenderness */}
-          <div className="calc-card">
-            <h4 className="calc-card-subtitle">
-              <span>📐</span> Slenderness Analysis
-            </h4>
+          {results.effectiveLengths && results.slenderness && (
+            <div className="calc-card">
+              <h4 className="calc-card-subtitle">
+                <span>📐</span> Slenderness Analysis
+              </h4>
 
-            <div className="calc-detail-grid">
-              <div className="calc-detail-item">
-                <span className="calc-detail-label">
-                  Unsupported Length (L)
-                </span>
-                <span className="calc-detail-value">{inputs.L} mm</span>
-              </div>
-              <div className="calc-detail-item">
-                <span className="calc-detail-label">
-                  Effective Length (lex)
-                </span>
-                <span className="calc-detail-value">
-                  {results.effectiveLengths.lex} mm
-                </span>
-              </div>
-              <div className="calc-detail-item">
-                <span className="calc-detail-label">
-                  Effective Length (ley)
-                </span>
-                <span className="calc-detail-value">
-                  {results.effectiveLengths.ley} mm
-                </span>
-              </div>
-              <div className="calc-detail-item">
-                <span className="calc-detail-label">Classification</span>
-                <span
-                  className="calc-detail-value"
-                  style={{
-                    color: results.slenderness.isShort ? "#10B981" : "#F59E0B",
-                    fontWeight: "bold",
-                  }}
-                >
-                  {results.slenderness.classification}
-                </span>
-              </div>
-            </div>
-
-            <div style={{ marginTop: "15px" }}>
               <div className="calc-detail-grid">
                 <div className="calc-detail-item">
                   <span className="calc-detail-label">
-                    Slenderness Ratio (lex/D)
+                    Unsupported Length (L)
+                  </span>
+                  <span className="calc-detail-value">{inputs.L || 'N/A'} mm</span>
+                </div>
+                <div className="calc-detail-item">
+                  <span className="calc-detail-label">
+                    Effective Length (lex)
                   </span>
                   <span className="calc-detail-value">
-                    {results.slenderness.slenderness_x.toFixed(2)}
-                    {results.slenderness.isShort_x && (
-                      <span style={{ color: "#10B981", marginLeft: "5px" }}>
-                        ✓ Short
-                      </span>
-                    )}
+                    {safeGet(results, 'effectiveLengths.lex', 'N/A')} mm
                   </span>
                 </div>
                 <div className="calc-detail-item">
                   <span className="calc-detail-label">
-                    Slenderness Ratio (ley/b)
+                    Effective Length (ley)
                   </span>
                   <span className="calc-detail-value">
-                    {results.slenderness.slenderness_y.toFixed(2)}
-                    {results.slenderness.isShort_y && (
-                      <span style={{ color: "#10B981", marginLeft: "5px" }}>
-                        ✓ Short
-                      </span>
-                    )}
+                    {safeGet(results, 'effectiveLengths.ley', 'N/A')} mm
                   </span>
                 </div>
                 <div className="calc-detail-item">
-                  <span className="calc-detail-label">
-                    Limit (Short Column)
-                  </span>
-                  <span className="calc-detail-value">12.0</span>
-                </div>
-                <div className="calc-detail-item">
-                  <span className="calc-detail-label">Reference</span>
+                  <span className="calc-detail-label">Classification</span>
                   <span
                     className="calc-detail-value"
-                    style={{ fontSize: "0.9em" }}
+                    style={{
+                      color: results.slenderness.isShort ? "#10B981" : "#F59E0B",
+                      fontWeight: "bold",
+                    }}
                   >
-                    IS 456 Cl. 25.1.2
+                    {safeGet(results, 'slenderness.classification', 'N/A')}
                   </span>
                 </div>
               </div>
-            </div>
-          </div>
 
-          {/* Eccentricity Details */}
-          <div className="calc-card">
-            <h4 className="calc-card-subtitle">
-              <span>🎯</span> Eccentricity Analysis
-            </h4>
-
-            <div className="calc-detail-grid">
-              <div className="calc-detail-item">
-                <span className="calc-detail-label">Min. Eccentricity ex</span>
-                <span className="calc-detail-value">
-                  {results.eccentricity.ex_min.toFixed(1)} mm
-                </span>
-              </div>
-              <div className="calc-detail-item">
-                <span className="calc-detail-label">Min. Eccentricity ey</span>
-                <span className="calc-detail-value">
-                  {results.eccentricity.ey_min.toFixed(1)} mm
-                </span>
-              </div>
-              <div className="calc-detail-item">
-                <span className="calc-detail-label">Actual ex</span>
-                <span
-                  className="calc-detail-value"
-                  style={{ color: "#F59E0B", fontWeight: "bold" }}
-                >
-                  {results.eccentricity.ex_actual.toFixed(1)} mm
-                </span>
-              </div>
-              <div className="calc-detail-item">
-                <span className="calc-detail-label">Actual ey</span>
-                <span
-                  className="calc-detail-value"
-                  style={{ color: "#F59E0B", fontWeight: "bold" }}
-                >
-                  {results.eccentricity.ey_actual.toFixed(1)} mm
-                </span>
-              </div>
-            </div>
-
-            <div style={{ marginTop: "15px" }}>
-              <div className="calc-detail-grid">
-                <div className="calc-detail-item">
-                  <span className="calc-detail-label">Design Moment Mux</span>
-                  <span className="calc-detail-value">
-                    {inputs.Mux_design?.toFixed(2) || "0.00"} kNm
-                  </span>
-                </div>
-                <div className="calc-detail-item">
-                  <span className="calc-detail-label">Design Moment Muy</span>
-                  <span className="calc-detail-value">
-                    {inputs.Muy_design?.toFixed(2) || "0.00"} kNm
-                  </span>
-                </div>
-                <div className="calc-detail-item">
-                  <span className="calc-detail-label">Reference</span>
-                  <span
-                    className="calc-detail-value"
-                    style={{ fontSize: "0.9em" }}
-                  >
-                    IS 456 Cl. 25.4
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Design Details */}
-          <div className="calc-card">
-            <h4 className="calc-card-subtitle">
-              <span>💪</span> Reinforcement Design
-            </h4>
-
-            {results.design.status === "FAIL" ? (
-              <div className="calc-alert calc-alert-error">
-                <strong>⚠️ Design Failed:</strong> {results.design.message}
-              </div>
-            ) : (
-              <>
+              <div style={{ marginTop: "15px" }}>
                 <div className="calc-detail-grid">
                   <div className="calc-detail-item">
-                    <span className="calc-detail-label">Required Steel %</span>
+                    <span className="calc-detail-label">
+                      Slenderness Ratio (lex/D)
+                    </span>
                     <span className="calc-detail-value">
-                      {results.design.p_required?.toFixed(2)}%
+                      {safeFormat(results.slenderness.slenderness_x, 2)}
+                      {results.slenderness.isShort_x && (
+                        <span style={{ color: "#10B981", marginLeft: "5px" }}>
+                          ✓ Short
+                        </span>
+                      )}
                     </span>
                   </div>
                   <div className="calc-detail-item">
                     <span className="calc-detail-label">
-                      Required Area (Asc)
+                      Slenderness Ratio (ley/b)
                     </span>
                     <span className="calc-detail-value">
-                      {results.design.Asc_required?.toFixed(0)} mm²
+                      {safeFormat(results.slenderness.slenderness_y, 2)}
+                      {results.slenderness.isShort_y && (
+                        <span style={{ color: "#10B981", marginLeft: "5px" }}>
+                          ✓ Short
+                        </span>
+                      )}
                     </span>
                   </div>
                   <div className="calc-detail-item">
                     <span className="calc-detail-label">
-                      Axial Capacity (Pu)
+                      Limit (Short Column)
                     </span>
+                    <span className="calc-detail-value">12.0</span>
+                  </div>
+                  <div className="calc-detail-item">
+                    <span className="calc-detail-label">Reference</span>
                     <span
                       className="calc-detail-value"
-                      style={{ color: "#10B981" }}
+                      style={{ fontSize: "0.9em" }}
                     >
-                      {results.design.Pu_capacity?.toFixed(2)} kN
+                      IS 456 Cl. 25.1.2
                     </span>
                   </div>
-                  {results.design.Mu_capacity && (
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Eccentricity Details */}
+          {results.eccentricity && (
+            <div className="calc-card">
+              <h4 className="calc-card-subtitle">
+                <span>🎯</span> Eccentricity Analysis
+              </h4>
+
+              <div className="calc-detail-grid">
+                <div className="calc-detail-item">
+                  <span className="calc-detail-label">Min. Eccentricity ex</span>
+                  <span className="calc-detail-value">
+                    {safeFormat(results.eccentricity.ex_min, 1)} mm
+                  </span>
+                </div>
+                <div className="calc-detail-item">
+                  <span className="calc-detail-label">Min. Eccentricity ey</span>
+                  <span className="calc-detail-value">
+                    {safeFormat(results.eccentricity.ey_min, 1)} mm
+                  </span>
+                </div>
+                <div className="calc-detail-item">
+                  <span className="calc-detail-label">Actual ex</span>
+                  <span
+                    className="calc-detail-value"
+                    style={{ color: "#F59E0B", fontWeight: "bold" }}
+                  >
+                    {safeFormat(results.eccentricity.ex_actual, 1)} mm
+                  </span>
+                </div>
+                <div className="calc-detail-item">
+                  <span className="calc-detail-label">Actual ey</span>
+                  <span
+                    className="calc-detail-value"
+                    style={{ color: "#F59E0B", fontWeight: "bold" }}
+                  >
+                    {safeFormat(results.eccentricity.ey_actual, 1)} mm
+                  </span>
+                </div>
+              </div>
+
+              <div style={{ marginTop: "15px" }}>
+                <div className="calc-detail-grid">
+                  <div className="calc-detail-item">
+                    <span className="calc-detail-label">Design Moment Mux</span>
+                    <span className="calc-detail-value">
+                      {safeFormat(inputs.Mux_design, 2)} kNm
+                    </span>
+                  </div>
+                  <div className="calc-detail-item">
+                    <span className="calc-detail-label">Design Moment Muy</span>
+                    <span className="calc-detail-value">
+                      {safeFormat(inputs.Muy_design, 2)} kNm
+                    </span>
+                  </div>
+                  <div className="calc-detail-item">
+                    <span className="calc-detail-label">Reference</span>
+                    <span
+                      className="calc-detail-value"
+                      style={{ fontSize: "0.9em" }}
+                    >
+                      IS 456 Cl. 25.4
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Design Details */}
+          {results.design && (
+            <div className="calc-card">
+              <h4 className="calc-card-subtitle">
+                <span>💪</span> Reinforcement Design
+              </h4>
+
+              {results.design.status === "FAIL" ? (
+                <div className="calc-alert calc-alert-error">
+                  <strong>⚠️ Design Failed:</strong> {safeGet(results, 'design.message', 'Check input parameters')}
+                </div>
+              ) : (
+                <>
+                  <div className="calc-detail-grid">
+                    <div className="calc-detail-item">
+                      <span className="calc-detail-label">Required Steel %</span>
+                      <span className="calc-detail-value">
+                        {safeFormat(results.design.p_required, 2)}%
+                      </span>
+                    </div>
                     <div className="calc-detail-item">
                       <span className="calc-detail-label">
-                        Moment Capacity (Mu)
+                        Required Area (Asc)
+                      </span>
+                      <span className="calc-detail-value">
+                        {safeFormat(results.design.Asc_required, 0)} mm²
+                      </span>
+                    </div>
+                    <div className="calc-detail-item">
+                      <span className="calc-detail-label">
+                        Axial Capacity (Pu)
                       </span>
                       <span
                         className="calc-detail-value"
                         style={{ color: "#10B981" }}
                       >
-                        {results.design.Mu_capacity.toFixed(2)} kNm
+                        {safeFormat(results.design.Pu_capacity, 2)} kN
                       </span>
                     </div>
-                  )}
-                </div>
-
-                {/* Utilization Ratios */}
-                {results.design.utilization && (
-                  <div style={{ marginTop: "20px" }}>
-                    <h5 className="calc-section-label">Interaction Check</h5>
-                    <div className="calc-detail-grid">
+                    {results.design.Mu_capacity && (
                       <div className="calc-detail-item">
                         <span className="calc-detail-label">
-                          Axial Utilization
-                        </span>
-                        <span className="calc-detail-value">
-                          {(results.design.utilization.axial * 100).toFixed(1)}%
-                        </span>
-                      </div>
-                      <div className="calc-detail-item">
-                        <span className="calc-detail-label">
-                          Moment Utilization
-                        </span>
-                        <span className="calc-detail-value">
-                          {(results.design.utilization.moment * 100).toFixed(1)}
-                          %
-                        </span>
-                      </div>
-                      <div className="calc-detail-item">
-                        <span className="calc-detail-label">
-                          Total Interaction
+                          Moment Capacity (Mu)
                         </span>
                         <span
                           className="calc-detail-value"
-                          style={{
-                            color:
-                              results.design.utilization.total <= 1.0
-                                ? "#10B981"
-                                : "#EF4444",
-                            fontWeight: "bold",
-                          }}
+                          style={{ color: "#10B981" }}
                         >
-                          {(results.design.utilization.total * 100).toFixed(1)}%
-                          {results.design.utilization.total <= 1.0
-                            ? " ✓"
-                            : " ✗"}
+                          {safeFormat(results.design.Mu_capacity, 2)} kNm
                         </span>
                       </div>
-                      <div className="calc-detail-item">
-                        <span className="calc-detail-label">Limit</span>
-                        <span className="calc-detail-value">100%</span>
+                    )}
+                  </div>
+
+                  {/* Utilization Ratios */}
+                  {results.design.utilization && (
+                    <div style={{ marginTop: "20px" }}>
+                      <h5 className="calc-section-label">Interaction Check</h5>
+                      <div className="calc-detail-grid">
+                        <div className="calc-detail-item">
+                          <span className="calc-detail-label">
+                            Axial Utilization
+                          </span>
+                          <span className="calc-detail-value">
+                            {safeFormat(results.design.utilization.axial * 100, 1)}%
+                          </span>
+                        </div>
+                        <div className="calc-detail-item">
+                          <span className="calc-detail-label">
+                            Moment Utilization
+                          </span>
+                          <span className="calc-detail-value">
+                            {safeFormat(results.design.utilization.moment * 100, 1)}%
+                          </span>
+                        </div>
+                        <div className="calc-detail-item">
+                          <span className="calc-detail-label">
+                            Total Interaction
+                          </span>
+                          <span
+                            className="calc-detail-value"
+                            style={{
+                              color:
+                                results.design.utilization.total <= 1.0
+                                  ? "#10B981"
+                                  : "#EF4444",
+                              fontWeight: "bold",
+                            }}
+                          >
+                            {safeFormat(results.design.utilization.total * 100, 1)}%
+                            {results.design.utilization.total <= 1.0
+                              ? " ✓"
+                              : " ✗"}
+                          </span>
+                        </div>
+                        <div className="calc-detail-item">
+                          <span className="calc-detail-label">Limit</span>
+                          <span className="calc-detail-value">100%</span>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                )}
+                  )}
 
-                {/* Bar Options */}
-                {results.design.barOptions && (
-                  <div style={{ marginTop: "20px" }}>
-                    <h5 className="calc-section-label">
-                      Reinforcement Options
-                    </h5>
-                    <div className="calc-table-container">
-                      <table className="calc-table">
-                        <thead>
-                          <tr>
-                            <th>Option</th>
-                            <th>Bar Size</th>
-                            <th>Number of Bars</th>
-                            <th>Area Provided</th>
-                            <th>Steel %</th>
-                            <th>Spacing</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {results.design.barOptions.map((option, idx) => (
-                            <tr
-                              key={idx}
-                              style={{
-                                backgroundColor:
-                                  idx === 0 ? "#F0F9FF" : "transparent",
-                                fontWeight: idx === 0 ? "bold" : "normal",
-                              }}
-                            >
-                              <td>
-                                {idx === 0
-                                  ? "⭐ Recommended"
-                                  : `Option ${idx + 1}`}
-                              </td>
-                              <td>{option.diameter} mm φ</td>
-                              <td>{option.numBars}</td>
-                              <td>{option.actualAsc.toFixed(0)} mm²</td>
-                              <td>{option.p_provided.toFixed(2)}%</td>
-                              <td>{option.spacing.toFixed(0)} mm</td>
+                  {/* Bar Options */}
+                  {results.design.barOptions && (
+                    <div style={{ marginTop: "20px" }}>
+                      <h5 className="calc-section-label">
+                        Reinforcement Options
+                      </h5>
+                      <div className="calc-table-container">
+                        <table className="calc-table">
+                          <thead>
+                            <tr>
+                              <th>Option</th>
+                              <th>Bar Size</th>
+                              <th>Number of Bars</th>
+                              <th>Area Provided</th>
+                              <th>Steel %</th>
+                              <th>Spacing</th>
                             </tr>
-                          ))}
-                        </tbody>
-                      </table>
+                          </thead>
+                          <tbody>
+                            {results.design.barOptions.map((option, idx) => (
+                              <tr
+                                key={idx}
+                                style={{
+                                  backgroundColor:
+                                    idx === 0 ? "#F0F9FF" : "transparent",
+                                  fontWeight: idx === 0 ? "bold" : "normal",
+                                }}
+                              >
+                                <td>
+                                  {idx === 0
+                                    ? "⭐ Recommended"
+                                    : `Option ${idx + 1}`}
+                                </td>
+                                <td>{option.diameter || 'N/A'} mm φ</td>
+                                <td>{option.numBars || 'N/A'}</td>
+                                <td>{safeFormat(option.actualAsc, 0)} mm²</td>
+                                <td>{safeFormat(option.p_provided, 2)}%</td>
+                                <td>{safeFormat(option.spacing, 0)} mm</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
 
-                {/* Biaxial Note */}
-                {results.design.biaxialNote && (
-                  <div
-                    className="calc-alert calc-alert-info"
-                    style={{ marginTop: "20px" }}
-                  >
-                    <strong>ℹ️ Note:</strong> {results.design.biaxialNote}
-                  </div>
-                )}
-              </>
-            )}
-          </div>
+                  {/* Biaxial Note */}
+                  {results.design.biaxialNote && (
+                    <div
+                      className="calc-alert calc-alert-info"
+                      style={{ marginTop: "20px" }}
+                    >
+                      <strong>ℹ️ Note:</strong> {results.design.biaxialNote}
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
+          )}
 
           {/* Lateral Ties */}
-          <div className="calc-card">
-            <h4 className="calc-card-subtitle">
-              <span>🔗</span> Lateral Reinforcement
-            </h4>
+          {results.ties && (
+            <div className="calc-card">
+              <h4 className="calc-card-subtitle">
+                <span>🔗</span> Lateral Reinforcement
+              </h4>
 
-            <div className="calc-detail-grid">
-              <div className="calc-detail-item">
-                <span className="calc-detail-label">Tie Diameter</span>
-                <span className="calc-detail-value">
-                  {results.ties.diameter} mm φ
-                </span>
+              <div className="calc-detail-grid">
+                <div className="calc-detail-item">
+                  <span className="calc-detail-label">Tie Diameter</span>
+                  <span className="calc-detail-value">
+                    {safeGet(results, 'ties.diameter', 'N/A')} mm φ
+                  </span>
+                </div>
+                <div className="calc-detail-item">
+                  <span className="calc-detail-label">Spacing</span>
+                  <span className="calc-detail-value">
+                    {safeGet(results, 'ties.spacing', 'N/A')} mm c/c
+                  </span>
+                </div>
+                <div className="calc-detail-item">
+                  <span className="calc-detail-label">Type</span>
+                  <span className="calc-detail-value">{safeGet(results, 'ties.type', 'N/A')}</span>
+                </div>
+                <div className="calc-detail-item">
+                  <span className="calc-detail-label">Description</span>
+                  <span
+                    className="calc-detail-value"
+                    style={{ fontWeight: "bold", color: "#F59E0B" }}
+                  >
+                    {safeGet(results, 'ties.description', 'N/A')}
+                  </span>
+                </div>
               </div>
-              <div className="calc-detail-item">
-                <span className="calc-detail-label">Spacing</span>
-                <span className="calc-detail-value">
-                  {results.ties.spacing} mm c/c
-                </span>
-              </div>
-              <div className="calc-detail-item">
-                <span className="calc-detail-label">Type</span>
-                <span className="calc-detail-value">{results.ties.type}</span>
-              </div>
-              <div className="calc-detail-item">
-                <span className="calc-detail-label">Description</span>
-                <span
-                  className="calc-detail-value"
-                  style={{ fontWeight: "bold", color: "#F59E0B" }}
-                >
-                  {results.ties.description}
-                </span>
-              </div>
-            </div>
 
-            <div
-              className="calc-alert calc-alert-info"
-              style={{ marginTop: "15px" }}
-            >
-              <strong>ℹ️ Spacing Criteria (IS 456 Cl. 26.5.3.2):</strong>
-              <ul
-                style={{
-                  paddingLeft: "20px",
-                  marginTop: "8px",
-                  marginBottom: "0",
-                }}
+              <div
+                className="calc-alert calc-alert-info"
+                style={{ marginTop: "15px" }}
               >
-                <li>
-                  ≤ Least lateral dimension ({Math.min(inputs.b, inputs.D)} mm)
-                </li>
-                <li>≤ 16 × longitudinal bar diameter</li>
-                <li>≤ 300 mm</li>
-              </ul>
+                <strong>ℹ️ Spacing Criteria (IS 456 Cl. 26.5.3.2):</strong>
+                <ul
+                  style={{
+                    paddingLeft: "20px",
+                    marginTop: "8px",
+                    marginBottom: "0",
+                  }}
+                >
+                  <li>
+                    ≤ Least lateral dimension ({Math.min(inputs.b || 0, inputs.D || 0)} mm)
+                  </li>
+                  <li>≤ 16 × longitudinal bar diameter</li>
+                  <li>≤ 300 mm</li>
+                </ul>
+              </div>
             </div>
-          </div>
+          )}
 
           {/* Design Notes */}
           <div
@@ -766,13 +793,13 @@ export function ColumnDesignTab({
                 <strong>Detailing:</strong> Follow IS 456 Cl. 26.5.3 for column
                 detailing
               </li>
-              {!results.slenderness.isShort && (
+              {results.slenderness && !results.slenderness.isShort && (
                 <li>
                   <strong>Slender Column:</strong> Consider additional moments
                   due to slenderness effects
                 </li>
               )}
-              {results.design.type === "biaxial" && (
+              {results.design?.type === "biaxial" && (
                 <li>
                   <strong>Biaxial Bending:</strong> Verify design using
                   interaction curves or detailed analysis
