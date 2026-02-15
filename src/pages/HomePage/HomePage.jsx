@@ -102,8 +102,8 @@ function HomePage() {
               <Link to="/projects" className="btn btn-primary">
                 VIEW PROJECTS
               </Link>
-              <Link to="/about" className="btn btn-secondary">
-                LEARN MORE
+              <Link to="/calculator" className="btn btn-secondary">
+                Advanced Calculator
               </Link>
             </div>
           </div>
