@@ -10,10 +10,7 @@ import { designColumnBars } from './columnBars';
 export function designUniaxialColumn(Pu, Mu, b, D, fck, fy, cover, axis = 'major') {
   const d_prime = cover + 8 + 10;
   const d = (axis === 'major' ? D : b) - d_prime;
-  
-  const Pu_N = Pu * 1000;
-  const Mu_Nmm = Mu * 1000000;
-  
+
   const pOptions = [0.8, 1.0, 1.5, 2.0, 2.5, 3.0, 4.0, 5.0, 6.0];
   const Ag = b * D;
   
