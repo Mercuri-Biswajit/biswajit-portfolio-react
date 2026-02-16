@@ -1,21 +1,23 @@
 // ═══════════════════════════════════════════════════════════════════════════
-// BEAM DESIGN CALCULATOR - IS 456:2000 COMPLIANT
-// Backward compatibility wrapper
+// BEAM DESIGN - MODULE EXPORTS
 // ═══════════════════════════════════════════════════════════════════════════
 
+export { designBeam, default } from './beamDesign';
+export { BEAM_CONSTANTS } from './beamConstants';
 export { 
-  designBeam, 
-  default,
-  BEAM_CONSTANTS,
-  calcEffectiveDepth,
-  calcLimitingMoment,
+  calcEffectiveDepth, 
+  calcLimitingMoment, 
   calcDevelopmentLength,
   getShearStrength,
-  getMaxShearStress,
-  designSinglyReinforcedBeam,
-  designDoublyReinforcedBeam,
+  getMaxShearStress
+} from './beamHelpers';
+export { 
+  designSinglyReinforcedBeam, 
+  designDoublyReinforcedBeam 
+} from './beamFlexure';
+export { 
   designShearReinforcement,
   getMinimumStirrups,
-  designStirrups,
-  checkDeflection
-} from './design/beam';
+  designStirrups
+} from './beamShear';
+export { checkDeflection } from './beamDeflection';
