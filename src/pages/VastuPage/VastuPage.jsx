@@ -423,7 +423,7 @@ function VastuPage() {
       </section>
 
       {/* Consultation CTA */}
-      <section className="vastu-consultation-cta" data-aos="fade-up">
+      {/* <section className="vastu-consultation-cta" data-aos="fade-up">
         <div className="container">
           <div className="consultation-card">
             <div className="consultation-icon">🕉️</div>
@@ -442,7 +442,7 @@ function VastuPage() {
             </div>
           </div>
         </div>
-      </section>
+      </section> */}
     </div>
   );
 }

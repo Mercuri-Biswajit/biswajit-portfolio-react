@@ -4,19 +4,21 @@ export const vastuPrinciples = [
   {
     icon: "🌍",
     title: "Five Elements (Pancha Mahabhuta)",
-    description: "Vastu is based on the balance of five fundamental elements that constitute the universe.",
+    description:
+      "Vastu is based on the balance of five fundamental elements that constitute the universe.",
     points: [
       "Earth (Prithvi) - Southwest direction, provides stability",
       "Water (Jal) - Northeast direction, source of life",
       "Fire (Agni) - Southeast direction, represents energy",
       "Air (Vayu) - Northwest direction, movement and change",
-      "Space (Akasha) - Center (Brahmasthan), cosmic energy"
-    ]
+      "Space (Akasha) - Center (Brahmasthan), cosmic energy",
+    ],
   },
   {
     icon: "🧭",
     title: "Eight Directions",
-    description: "Each direction is governed by a deity and has specific characteristics.",
+    description:
+      "Each direction is governed by a deity and has specific characteristics.",
     points: [
       "North (Kubera) - Wealth and opportunities",
       "Northeast (Ishanya) - Spiritual growth and wisdom",
@@ -25,33 +27,35 @@ export const vastuPrinciples = [
       "South (Yama) - Dharma and strength",
       "Southwest (Niruti) - Stability and relationships",
       "West (Varuna) - Gains and profits",
-      "Northwest (Vayu) - Movement and change"
-    ]
+      "Northwest (Vayu) - Movement and change",
+    ],
   },
   {
     icon: "⚖️",
     title: "Balance and Harmony",
-    description: "Vastu emphasizes balance between different energies for overall well-being.",
+    description:
+      "Vastu emphasizes balance between different energies for overall well-being.",
     points: [
       "Equal distribution of weight in the structure",
       "Proper ventilation and natural light",
       "Balance between open and closed spaces",
       "Harmony between built and natural elements",
-      "Symmetry in design and layout"
-    ]
+      "Symmetry in design and layout",
+    ],
   },
   {
     icon: "☀️",
     title: "Solar Energy",
-    description: "Sun's path and energy play a crucial role in Vastu compliance.",
+    description:
+      "Sun's path and energy play a crucial role in Vastu compliance.",
     points: [
       "East and North should be more open for sunlight",
       "West and South can be higher and heavier",
       "Maximum openings in Northeast for morning sun",
       "Slope of land should be towards North or East",
-      "Roof slope towards North or East preferred"
-    ]
-  }
+      "Roof slope towards North or East preferred",
+    ],
+  },
 ];
 
 export const vastuRooms = [
@@ -59,117 +63,226 @@ export const vastuRooms = [
     name: "Master Bedroom",
     icon: "🛏️",
     idealDirection: "Southwest",
-    description: "The master bedroom should be in the Southwest for stability, strength, and good health of the head of the family.",
+    description:
+      "The master bedroom should be in the Southwest for stability, strength, and good health of the head of the family.",
     dos: [
       "Place bed in Southwest with head towards South or West",
       "Keep the room square or rectangular in shape",
       "Use soothing colors like light pink, blue, or green",
-      "Ensure good ventilation with windows on East or North"
+      "Ensure good ventilation with windows on East or North",
     ],
     donts: [
       "Avoid mirror facing the bed",
       "Don't place bed under an overhead beam",
       "Avoid bedroom in Northeast direction",
-      "Don't keep water features in the bedroom"
+      "Don't keep water features in the bedroom",
     ],
     additionalTips: [
       "Wooden furniture is more favorable than metal",
       "Keep a small plant for positive energy",
-      "Ensure door opens at least 90 degrees"
-    ]
+      "Ensure door opens at least 90 degrees",
+    ],
   },
   {
     name: "Kitchen",
     icon: "🍳",
     idealDirection: "Southeast",
-    description: "Kitchen represents the fire element and should be in the Southeast (Agni corner) for prosperity and health.",
+    description:
+      "Kitchen represents the fire element and should be in the Southeast (Agni corner) for prosperity and health.",
     dos: [
       "Place cooking stove in Southeast facing East",
       "Keep sink and water sources in Northeast",
       "Ensure proper ventilation and exhaust system",
-      "Use yellow, orange, or red colors"
+      "Use yellow, orange, or red colors",
     ],
     donts: [
       "Avoid kitchen in North, Northeast, or Southwest",
       "Don't place stove directly opposite to sink",
       "Avoid kitchen under or above toilet",
-      "Don't keep broken utensils or appliances"
+      "Don't keep broken utensils or appliances",
     ],
     additionalTips: [
       "Kitchen door should not face main entrance",
       "Store grains and pulses in Southwest",
-      "Keep kitchen clean and clutter-free always"
-    ]
+      "Keep kitchen clean and clutter-free always",
+    ],
   },
   {
     name: "Living Room",
     icon: "🛋️",
     idealDirection: "Northeast, North, or East",
-    description: "Living room is for family gatherings and should have positive energy flow.",
+    description:
+      "Living room is for family gatherings and should have positive energy flow.",
     dos: [
       "Place heavy furniture in South or West",
       "Keep Northeast corner light and open",
       "Use light colors like white, yellow, or light blue",
-      "Ensure main entrance opens into living room"
+      "Ensure main entrance opens into living room",
     ],
     donts: [
       "Avoid dark or dull colors",
       "Don't place aquarium in South or Southwest",
       "Avoid cluttering the center of the room",
-      "Don't keep broken or non-functional items"
+      "Don't keep broken or non-functional items",
     ],
     additionalTips: [
       "Display family photos on South or Southwest wall",
       "Add indoor plants for positive energy",
-      "Keep floor level lower in North and East"
-    ]
+      "Keep floor level lower in North and East",
+    ],
   },
   {
     name: "Bathroom & Toilet",
     icon: "🚿",
     idealDirection: "Northwest or Southeast",
-    description: "Bathrooms should be positioned to allow proper drainage of negative energy.",
+    description:
+      "Bathrooms should be positioned to allow proper drainage of negative energy.",
     dos: [
       "Place toilet seat in Northwest or Southeast",
       "Face North or South while using toilet",
       "Ensure proper ventilation and exhaust",
-      "Keep bathroom clean and dry always"
+      "Keep bathroom clean and dry always",
     ],
     donts: [
       "Never in Northeast (highly inauspicious)",
       "Avoid common wall with kitchen or pooja room",
       "Don't face toilet towards East or North",
-      "Avoid bathroom in center of the house"
+      "Avoid bathroom in center of the house",
     ],
     additionalTips: [
       "Keep toilet lid closed when not in use",
       "Fix all leaking taps immediately",
-      "Use exhaust fans to remove moisture"
-    ]
+      "Use exhaust fans to remove moisture",
+    ],
   },
   {
     name: "Pooja Room",
     icon: "🙏",
     idealDirection: "Northeast",
-    description: "The prayer room should be in the Northeast for spiritual growth and divine blessings.",
+    description:
+      "The prayer room should be in the Northeast for spiritual growth and divine blessings.",
     dos: [
       "Place idols facing East or West",
       "Keep room clean and well-lit",
       "Use white, yellow, or light blue colors",
-      "Ensure door opens completely (minimum 90°)"
+      "Ensure door opens completely (minimum 90°)",
     ],
     donts: [
       "Avoid in bedroom or under staircase",
       "Don't keep broken or damaged idols",
       "Avoid South-facing idols",
-      "Don't share wall with toilet"
+      "Don't share wall with toilet",
     ],
     additionalTips: [
       "Light a lamp daily for positive energy",
       "Keep fresh flowers and incense",
-      "Place a copper pyramid for energy enhancement"
-    ]
-  }
+      "Place a copper pyramid for energy enhancement",
+    ],
+  },
+  {
+    name: "Main Entrance",
+    icon: "🚪",
+    idealDirection: "North, East, or Northeast",
+    description:
+      "The main entrance is the gateway for energy, opportunities, and prosperity. It should be welcoming, well-lit, and obstacle-free.",
+    dos: [
+      "Keep entrance well-lit with bright lights",
+      "Use auspicious symbols like Om, Swastika, or Ganesha",
+      "Ensure door opens inward and clockwise",
+      "Place a threshold and clean doormat",
+      "Decorate with fresh flowers or rangoli",
+    ],
+    donts: [
+      "Avoid placing dustbin or garbage near entrance",
+      "Don't have bathroom directly opposite main door",
+      "Avoid dark, cluttered, or narrow entrance",
+      "No broken, squeaky, or damaged doors",
+      "Don't place thorny plants or cactus near door",
+    ],
+    additionalTips: [
+      "Main door should be the largest door in the house",
+      "Use good quality wood for the door",
+      "Keep the entrance area clean and clutter-free",
+    ],
+  },
+  {
+    name: "Study Room",
+    icon: "📚",
+    idealDirection: "West, North, or Northeast",
+    description:
+      "Study room should promote concentration, learning, and academic success. Proper placement enhances focus and memory.",
+    dos: [
+      "Face East or North while studying",
+      "Use light green, white, or cream colors",
+      "Keep study table organized and clutter-free",
+      "Ensure proper natural lighting and ventilation",
+      "Place bookshelf in West or Southwest wall",
+    ],
+    donts: [
+      "Avoid studying directly under overhead beam",
+      "Don't face wall directly while studying",
+      "No clutter or unnecessary items on desk",
+      "Avoid dark colors or dim lighting",
+      "Don't place study desk in the center of room",
+    ],
+    additionalTips: [
+      "Keep motivational quotes and educational posters visible",
+      "Use wooden furniture for study purposes",
+      "Place a crystal globe or pyramid for positive energy",
+    ],
+  },
+  {
+    name: "Children's Room",
+    icon: "👶",
+    idealDirection: "West or Northwest",
+    description:
+      "Children's room should promote healthy growth, learning, creativity, and good sleep patterns.",
+    dos: [
+      "Place bed in Southwest corner of the room",
+      "Position study table in East or North direction",
+      "Use light, cheerful colors like light blue, green, or yellow",
+      "Ensure adequate natural light and fresh air",
+      "Keep room clean, organized, and clutter-free",
+    ],
+    donts: [
+      "Avoid mirrors facing the bed",
+      "Don't place bed directly under window",
+      "No TV or electronic devices directly opposite bed",
+      "Avoid excessive electronic gadgets in room",
+      "Don't use dark or aggressive colors",
+    ],
+    additionalTips: [
+      "Create a dedicated art and creativity corner",
+      "Display positive affirmations and achievements",
+      "Keep educational toys and books easily accessible",
+    ],
+  },
+  {
+    name: "Dining Room",
+    icon: "🍽️",
+    idealDirection: "West or East",
+    description:
+      "Dining area should promote family bonding, good digestion, and positive conversations during meals.",
+    dos: [
+      "Place dining table in West or center of house",
+      "Face East or North while eating",
+      "Use light, appetizing colors like yellow, orange, or cream",
+      "Keep dining area clean and well-lit",
+      "Ensure adequate seating space for family",
+    ],
+    donts: [
+      "Avoid placing dining table directly under beam",
+      "Don't face South while eating",
+      "No TV or excessive entertainment during meals",
+      "Avoid clutter or storage in dining area",
+      "Don't place toilet adjacent to dining room",
+    ],
+    additionalTips: [
+      "Square or rectangular dining tables are preferred",
+      "Keep fresh flowers or fruits on the table",
+      "Play soft instrumental music during meals",
+    ],
+  },
 ];
 
 export const vastuDirections = [
@@ -178,89 +291,257 @@ export const vastuDirections = [
     icon: "⬆️",
     deity: "Kubera (God of Wealth)",
     element: "Water",
-    description: "North direction is ruled by Kubera, the lord of wealth and prosperity. It's associated with career, business growth, and financial gains.",
-    bestFor: ["Main entrance or gate", "Living room", "Cash locker or safe", "Business office", "Water features (fountains, aquarium)"],
-    colors: [{ name: "Green", code: "#138808" }, { name: "Blue", code: "#0066CC" }, { name: "White", code: "#FFFFFF" }],
-    benefits: ["Financial prosperity and wealth", "Career growth and opportunities", "Mental peace and clarity", "Good reputation and fame"],
-    avoid: ["Toilet or septic tank", "Heavy storage or obstruction", "Dark or dull colors", "Kitchen (not favorable)"]
+    description:
+      "North direction is ruled by Kubera, the lord of wealth and prosperity. It's associated with career, business growth, and financial gains.",
+    bestFor: [
+      "Main entrance or gate",
+      "Living room",
+      "Cash locker or safe",
+      "Business office",
+      "Water features (fountains, aquarium)",
+    ],
+    colors: [
+      { name: "Green", code: "#138808" },
+      { name: "Blue", code: "#0066CC" },
+      { name: "White", code: "#FFFFFF" },
+    ],
+    benefits: [
+      "Financial prosperity and wealth",
+      "Career growth and opportunities",
+      "Mental peace and clarity",
+      "Good reputation and fame",
+    ],
+    avoid: [
+      "Toilet or septic tank",
+      "Heavy storage or obstruction",
+      "Dark or dull colors",
+      "Kitchen (not favorable)",
+    ],
   },
   {
     name: "Northeast",
     icon: "↗️",
     deity: "Ishanya (Lord Shiva)",
     element: "Water + Air",
-    description: "Northeast is the most auspicious direction, representing divine energy, spiritual growth, and wisdom. It's where cosmic energy enters.",
-    bestFor: ["Pooja room or temple", "Meditation space", "Water source (bore well, tank)", "Study room", "Open space or garden"],
-    colors: [{ name: "White", code: "#FFFFFF" }, { name: "Light Blue", code: "#87CEEB" }, { name: "Light Yellow", code: "#FFFFE0" }],
-    benefits: ["Spiritual growth and enlightenment", "Good health and vitality", "Mental clarity and wisdom", "Peace and positive energy"],
-    avoid: ["Toilet or bathroom (highly inauspicious)", "Kitchen or fire", "Heavy furniture or obstruction", "Garbage or clutter"]
+    description:
+      "Northeast is the most auspicious direction, representing divine energy, spiritual growth, and wisdom. It's where cosmic energy enters.",
+    bestFor: [
+      "Pooja room or temple",
+      "Meditation space",
+      "Water source (bore well, tank)",
+      "Study room",
+      "Open space or garden",
+    ],
+    colors: [
+      { name: "White", code: "#FFFFFF" },
+      { name: "Light Blue", code: "#87CEEB" },
+      { name: "Light Yellow", code: "#FFFFE0" },
+    ],
+    benefits: [
+      "Spiritual growth and enlightenment",
+      "Good health and vitality",
+      "Mental clarity and wisdom",
+      "Peace and positive energy",
+    ],
+    avoid: [
+      "Toilet or bathroom (highly inauspicious)",
+      "Kitchen or fire",
+      "Heavy furniture or obstruction",
+      "Garbage or clutter",
+    ],
   },
   {
     name: "East",
     icon: "➡️",
     deity: "Indra (King of Gods)",
     element: "Air",
-    description: "East is the direction of sunrise, symbolizing new beginnings, health, and vitality. It's associated with social life and happiness.",
-    bestFor: ["Main entrance", "Windows and openings", "Living room", "Children's bedroom", "Balcony or terrace"],
-    colors: [{ name: "White", code: "#FFFFFF" }, { name: "Light Blue", code: "#ADD8E6" }, { name: "Light Green", code: "#90EE90" }],
-    benefits: ["Good health and vitality", "Success in endeavors", "Social harmony", "Mental freshness and clarity"],
-    avoid: ["Heavy storage blocking sunlight", "Toilet (not favorable)", "Dark corners or rooms", "Staircases (not ideal)"]
+    description:
+      "East is the direction of sunrise, symbolizing new beginnings, health, and vitality. It's associated with social life and happiness.",
+    bestFor: [
+      "Main entrance",
+      "Windows and openings",
+      "Living room",
+      "Children's bedroom",
+      "Balcony or terrace",
+    ],
+    colors: [
+      { name: "White", code: "#FFFFFF" },
+      { name: "Light Blue", code: "#ADD8E6" },
+      { name: "Light Green", code: "#90EE90" },
+    ],
+    benefits: [
+      "Good health and vitality",
+      "Success in endeavors",
+      "Social harmony",
+      "Mental freshness and clarity",
+    ],
+    avoid: [
+      "Heavy storage blocking sunlight",
+      "Toilet (not favorable)",
+      "Dark corners or rooms",
+      "Staircases (not ideal)",
+    ],
   },
   {
     name: "Southeast",
     icon: "↘️",
     deity: "Agni (God of Fire)",
     element: "Fire",
-    description: "Southeast represents fire element and is ideal for activities involving heat and energy. It's associated with health and immunity.",
-    bestFor: ["Kitchen (most ideal)", "Electrical equipment room", "Boiler or heater", "Electrical panel", "Generator room"],
-    colors: [{ name: "Red", code: "#FF0000" }, { name: "Orange", code: "#FF8C00" }, { name: "Pink", code: "#FFC0CB" }],
-    benefits: ["Good health and immunity", "Energy and enthusiasm", "Protection from diseases", "Digestive health"],
-    avoid: ["Water features or tanks", "Bedroom (causes health issues)", "Toilet or bathroom", "Main entrance (not favorable)"]
+    description:
+      "Southeast represents fire element and is ideal for activities involving heat and energy. It's associated with health and immunity.",
+    bestFor: [
+      "Kitchen (most ideal)",
+      "Electrical equipment room",
+      "Boiler or heater",
+      "Electrical panel",
+      "Generator room",
+    ],
+    colors: [
+      { name: "Red", code: "#FF0000" },
+      { name: "Orange", code: "#FF8C00" },
+      { name: "Pink", code: "#FFC0CB" },
+    ],
+    benefits: [
+      "Good health and immunity",
+      "Energy and enthusiasm",
+      "Protection from diseases",
+      "Digestive health",
+    ],
+    avoid: [
+      "Water features or tanks",
+      "Bedroom (causes health issues)",
+      "Toilet or bathroom",
+      "Main entrance (not favorable)",
+    ],
   },
   {
     name: "South",
     icon: "⬇️",
     deity: "Yama (God of Death & Dharma)",
     element: "Fire",
-    description: "South represents strength, stability, and longevity. Though associated with Yama, it's not negative but represents righteousness.",
-    bestFor: ["Master bedroom (Southwest corner)", "Heavy storage or safe", "Strong room or vault", "Higher walls or buildings", "Closed spaces"],
-    colors: [{ name: "Red", code: "#DC143C" }, { name: "Orange", code: "#FF8C00" }, { name: "Brown", code: "#8B4513" }],
-    benefits: ["Longevity and good health", "Stability in life", "Protection and security", "Strength and courage"],
-    avoid: ["Main entrance", "Water features", "Slope in land", "Too many openings"]
+    description:
+      "South represents strength, stability, and longevity. Though associated with Yama, it's not negative but represents righteousness.",
+    bestFor: [
+      "Master bedroom (Southwest corner)",
+      "Heavy storage or safe",
+      "Strong room or vault",
+      "Higher walls or buildings",
+      "Closed spaces",
+    ],
+    colors: [
+      { name: "Red", code: "#DC143C" },
+      { name: "Orange", code: "#FF8C00" },
+      { name: "Brown", code: "#8B4513" },
+    ],
+    benefits: [
+      "Longevity and good health",
+      "Stability in life",
+      "Protection and security",
+      "Strength and courage",
+    ],
+    avoid: [
+      "Main entrance",
+      "Water features",
+      "Slope in land",
+      "Too many openings",
+    ],
   },
   {
     name: "Southwest",
     icon: "↙️",
     deity: "Niruti (Goddess of Destruction)",
     element: "Earth",
-    description: "Southwest represents stability, strength, and relationships. It's the direction of earth element and provides grounding.",
-    bestFor: ["Master bedroom (most ideal)", "Heavy furniture and storage", "Strong room or safe", "Solid walls (highest in house)", "Overhead water tank"],
-    colors: [{ name: "Brown", code: "#A0522D" }, { name: "Yellow", code: "#FFD700" }, { name: "Beige", code: "#F5F5DC" }],
-    benefits: ["Relationship harmony", "Stability and grounding", "Financial security", "Longevity and prosperity"],
-    avoid: ["Main entrance", "Kitchen", "Toilet (highly inauspicious)", "Open spaces or gardens"]
+    description:
+      "Southwest represents stability, strength, and relationships. It's the direction of earth element and provides grounding.",
+    bestFor: [
+      "Master bedroom (most ideal)",
+      "Heavy furniture and storage",
+      "Strong room or safe",
+      "Solid walls (highest in house)",
+      "Overhead water tank",
+    ],
+    colors: [
+      { name: "Brown", code: "#A0522D" },
+      { name: "Yellow", code: "#FFD700" },
+      { name: "Beige", code: "#F5F5DC" },
+    ],
+    benefits: [
+      "Relationship harmony",
+      "Stability and grounding",
+      "Financial security",
+      "Longevity and prosperity",
+    ],
+    avoid: [
+      "Main entrance",
+      "Kitchen",
+      "Toilet (highly inauspicious)",
+      "Open spaces or gardens",
+    ],
   },
   {
     name: "West",
     icon: "⬅️",
     deity: "Varuna (God of Rain & Water)",
     element: "Water",
-    description: "West direction represents gains, profits, and prosperity. It's favorable for business and financial growth.",
-    bestFor: ["Children's bedroom", "Study room", "Dining room", "Storage room", "Guest room"],
-    colors: [{ name: "Blue", code: "#4169E1" }, { name: "White", code: "#F0F8FF" }, { name: "Silver", code: "#C0C0C0" }],
-    benefits: ["Financial gains and profits", "Business success", "Children's growth and education", "Good fortune"],
-    avoid: ["Main entrance (not ideal)", "Overhead water tank", "Too much open space", "Very low level"]
+    description:
+      "West direction represents gains, profits, and prosperity. It's favorable for business and financial growth.",
+    bestFor: [
+      "Children's bedroom",
+      "Study room",
+      "Dining room",
+      "Storage room",
+      "Guest room",
+    ],
+    colors: [
+      { name: "Blue", code: "#4169E1" },
+      { name: "White", code: "#F0F8FF" },
+      { name: "Silver", code: "#C0C0C0" },
+    ],
+    benefits: [
+      "Financial gains and profits",
+      "Business success",
+      "Children's growth and education",
+      "Good fortune",
+    ],
+    avoid: [
+      "Main entrance (not ideal)",
+      "Overhead water tank",
+      "Too much open space",
+      "Very low level",
+    ],
   },
   {
     name: "Northwest",
     icon: "↖️",
     deity: "Vayu (God of Wind)",
     element: "Air",
-    description: "Northwest represents movement, change, and relationships. It's associated with air element and social connections.",
-    bestFor: ["Guest room", "Bathroom or toilet", "Garage or vehicle parking", "Store room", "Unmarried girls' bedroom"],
-    colors: [{ name: "White", code: "#FFFFFF" }, { name: "Gray", code: "#808080" }, { name: "Light Blue", code: "#B0E0E6" }],
-    benefits: ["Social connections and networking", "Movement and opportunities", "Support from friends", "Adaptability to changes"],
-    avoid: ["Master bedroom", "Pooja room", "Heavy storage", "Overhead water tank on this side"]
-  }
+    description:
+      "Northwest represents movement, change, and relationships. It's associated with air element and social connections.",
+    bestFor: [
+      "Guest room",
+      "Bathroom or toilet",
+      "Garage or vehicle parking",
+      "Store room",
+      "Unmarried girls' bedroom",
+    ],
+    colors: [
+      { name: "White", code: "#FFFFFF" },
+      { name: "Gray", code: "#808080" },
+      { name: "Light Blue", code: "#B0E0E6" },
+    ],
+    benefits: [
+      "Social connections and networking",
+      "Movement and opportunities",
+      "Support from friends",
+      "Adaptability to changes",
+    ],
+    avoid: [
+      "Master bedroom",
+      "Pooja room",
+      "Heavy storage",
+      "Overhead water tank on this side",
+    ],
+  },
 ];
 
 export const vastuColors = [
@@ -271,7 +552,8 @@ export const vastuColors = [
     element: "Space",
     energy: "Purity, Peace, and Clarity",
     bestFor: ["Pooja room", "Northeast corner", "Living room", "Study room"],
-    effects: "Promotes mental peace, clarity, and positive energy. Reflects light and makes spaces feel larger."
+    effects:
+      "Promotes mental peace, clarity, and positive energy. Reflects light and makes spaces feel larger.",
   },
   {
     name: "Yellow & Gold",
@@ -280,7 +562,8 @@ export const vastuColors = [
     element: "Earth",
     energy: "Happiness, Wisdom, and Prosperity",
     bestFor: ["Study room", "Children's bedroom", "Living room", "Dining area"],
-    effects: "Enhances concentration, promotes happiness, and attracts prosperity. Good for mental stimulation."
+    effects:
+      "Enhances concentration, promotes happiness, and attracts prosperity. Good for mental stimulation.",
   },
   {
     name: "Green",
@@ -289,7 +572,8 @@ export const vastuColors = [
     element: "Wood",
     energy: "Growth, Harmony, and Health",
     bestFor: ["Bedroom", "Study room", "Living room", "North or East walls"],
-    effects: "Promotes growth, healing, and balance. Creates a calming and refreshing environment."
+    effects:
+      "Promotes growth, healing, and balance. Creates a calming and refreshing environment.",
   },
   {
     name: "Blue",
@@ -297,8 +581,14 @@ export const vastuColors = [
     shades: ["#87CEEB", "#4169E1", "#0066CC", "#000080"],
     element: "Water",
     energy: "Calmness, Trust, and Communication",
-    bestFor: ["Bedroom", "Study room", "Meditation space", "North or East walls"],
-    effects: "Brings mental peace, improves communication, and promotes restful sleep."
+    bestFor: [
+      "Bedroom",
+      "Study room",
+      "Meditation space",
+      "North or East walls",
+    ],
+    effects:
+      "Brings mental peace, improves communication, and promotes restful sleep.",
   },
   {
     name: "Red & Orange",
@@ -306,8 +596,14 @@ export const vastuColors = [
     shades: ["#FFC0CB", "#FF8C00", "#FF6B00", "#DC143C"],
     element: "Fire",
     energy: "Energy, Passion, and Enthusiasm",
-    bestFor: ["Kitchen", "Southeast corner", "Dining room (as accent)", "South walls"],
-    effects: "Stimulates energy, passion, and activity. Use sparingly as it can be overwhelming."
+    bestFor: [
+      "Kitchen",
+      "Southeast corner",
+      "Dining room (as accent)",
+      "South walls",
+    ],
+    effects:
+      "Stimulates energy, passion, and activity. Use sparingly as it can be overwhelming.",
   },
   {
     name: "Brown & Earthy Tones",
@@ -315,9 +611,15 @@ export const vastuColors = [
     shades: ["#F5F5DC", "#D2B48C", "#A0522D", "#8B4513"],
     element: "Earth",
     energy: "Stability, Security, and Grounding",
-    bestFor: ["Southwest bedroom", "Living room", "South or West walls", "Furniture"],
-    effects: "Provides stability, grounding, and sense of security. Creates warm and welcoming atmosphere."
-  }
+    bestFor: [
+      "Southwest bedroom",
+      "Living room",
+      "South or West walls",
+      "Furniture",
+    ],
+    effects:
+      "Provides stability, grounding, and sense of security. Creates warm and welcoming atmosphere.",
+  },
 ];
 
 export const vastuRemedies = [
@@ -329,9 +631,9 @@ export const vastuRemedies = [
       "Hang a Swastik or Om symbol above the door",
       "Use bright lighting at the entrance",
       "Keep entrance clean and decorated with rangoli",
-      "Place green plants on either side of the door"
+      "Place green plants on either side of the door",
     ],
-    note: "If South-facing door cannot be changed, these remedies can minimize negative effects."
+    note: "If South-facing door cannot be changed, these remedies can minimize negative effects.",
   },
   {
     icon: "🚽",
@@ -341,9 +643,9 @@ export const vastuRemedies = [
       "Keep an image of Lord Ganesha outside the toilet",
       "Use sea salt and camphor for cleansing",
       "Install an exhaust fan for continuous ventilation",
-      "Keep toilet door closed and covered with curtain"
+      "Keep toilet door closed and covered with curtain",
     ],
-    note: "This is highly inauspicious. Consider relocating if doing major renovation."
+    note: "This is highly inauspicious. Consider relocating if doing major renovation.",
   },
   {
     icon: "🛏️",
@@ -353,9 +655,9 @@ export const vastuRemedies = [
       "Use copper strips on Northeast wall",
       "Hang a picture of mountains on Southwest wall",
       "Sleep with head towards South or East",
-      "Use earthy colors like brown or yellow"
+      "Use earthy colors like brown or yellow",
     ],
-    note: "Northeast bedroom affects health and finances. Shift to Southwest if possible."
+    note: "Northeast bedroom affects health and finances. Shift to Southwest if possible.",
   },
   {
     icon: "🍳",
@@ -365,9 +667,9 @@ export const vastuRemedies = [
       "Use red or orange colors in kitchen",
       "Install a Vastu copper helix on wall",
       "Keep a crystal bowl with rock salt",
-      "Ensure good ventilation and lighting"
+      "Ensure good ventilation and lighting",
     ],
-    note: "If kitchen cannot be moved, ensure stove placement is correct."
+    note: "If kitchen cannot be moved, ensure stove placement is correct.",
   },
   {
     icon: "🪜",
@@ -377,9 +679,9 @@ export const vastuRemedies = [
       "Hang a wind chime on the staircase",
       "Use bright lighting on the staircase",
       "Paint in light colors like white or cream",
-      "Place plants at the start of staircase"
+      "Place plants at the start of staircase",
     ],
-    note: "This creates significant Vastu defects. Professional consultation recommended."
+    note: "This creates significant Vastu defects. Professional consultation recommended.",
   },
   {
     icon: "💧",
@@ -389,9 +691,9 @@ export const vastuRemedies = [
       "Ensure proper waterproofing",
       "Check and repair drainage systems",
       "Use dehumidifiers in damp areas",
-      "Apply Vastu-approved waterproofing solutions"
+      "Apply Vastu-approved waterproofing solutions",
     ],
-    note: "Water leakage indicates financial losses. Urgent repair is essential."
+    note: "Water leakage indicates financial losses. Urgent repair is essential.",
   },
   {
     icon: "🕸️",
@@ -401,9 +703,9 @@ export const vastuRemedies = [
       "Remove broken items immediately",
       "Donate unused items to charity",
       "Organize storage in Southwest",
-      "Keep pathways and corners clean"
+      "Keep pathways and corners clean",
     ],
-    note: "Clutter blocks positive energy flow and causes stagnation in life."
+    note: "Clutter blocks positive energy flow and causes stagnation in life.",
   },
   {
     icon: "🌳",
@@ -413,9 +715,9 @@ export const vastuRemedies = [
       "Avoid large trees in North or East",
       "Plant trees at safe distance (minimum 6 feet)",
       "Remove dead or dying trees immediately",
-      "Keep small plants in North or East instead"
+      "Keep small plants in North or East instead",
     ],
-    note: "Large trees too close can obstruct positive energy and cause structural issues."
+    note: "Large trees too close can obstruct positive energy and cause structural issues.",
   },
   {
     icon: "🪞",
@@ -425,10 +727,10 @@ export const vastuRemedies = [
       "Place mirrors on North or East walls only",
       "Cover mirrors in bedroom at night",
       "Don't place mirrors facing each other",
-      "Use smaller mirrors instead of large ones"
+      "Use smaller mirrors instead of large ones",
     ],
-    note: "Mirrors reflect energy. Wrong placement can amplify negative energies."
-  }
+    note: "Mirrors reflect energy. Wrong placement can amplify negative energies.",
+  },
 ];
 
 export const vastuDosAndDonts = {
@@ -447,7 +749,7 @@ export const vastuDosAndDonts = {
     "Keep cash locker in North facing South",
     "Ensure regular cleaning and maintenance of the house",
     "Use natural materials like wood and stone where possible",
-    "Keep indoor plants for fresh air and positive energy"
+    "Keep indoor plants for fresh air and positive energy",
   ],
   donts: [
     "Never have toilet or bathroom in Northeast corner",
@@ -465,6 +767,6 @@ export const vastuDosAndDonts = {
     "Avoid sharp corners pointing towards sleeping or sitting areas",
     "Don't keep too many mirrors in the house",
     "Never leave clutter in corners, especially Northeast",
-    "Avoid having staircase in Northeast or center of house"
-  ]
+    "Avoid having staircase in Northeast or center of house",
+  ],
 };

@@ -1,6 +1,6 @@
 /* ===========================
    CSS VARIABLES
-   Design System Tokens
+   Modern Minimalist Design System
    =========================== */
 
 :root {
@@ -8,41 +8,47 @@
      PRIMARY COLOR PALETTE
      =========================== */
   
-  /* Main Brand Colors */
-  --color-primary: #003366;
-  --color-primary-dark: #0F172A;
-  --color-primary-light: #1E4A7A;
+  /* Main Brand Colors - Modern Minimalist */
+  --color-primary: #1a1a1a;
+  --color-primary-dark: #000000;
+  --color-primary-light: #404040;
   
-  /* Accent Colors */
-  --color-accent: #FF8C00;
-  --color-accent-dark: #E07B00;
-  --color-accent-light: #FFA333;
+  /* Accent Colors - Refined Orange/Saffron */
+  --color-accent: #FF6B35;
+  --color-accent-dark: #E05A2C;
+  --color-accent-light: #FF8555;
+  
+  /* Vastu-specific colors */
+  --color-vastu-saffron: #FF9933;
+  --color-vastu-green: #138808;
+  --color-vastu-white: #FFFFFF;
   
   /* ===========================
      BACKGROUND COLORS
      =========================== */
   
-  --color-bg-dark: #F4F4F4;
+  --color-bg-dark: #FAFAFA;
   --color-bg-darker: #FFFFFF;
   --color-bg-card: #FFFFFF;
   --color-bg-overlay: rgba(0, 0, 0, 0.5);
+  --color-bg-subtle: #F5F5F5;
   
   /* ===========================
      TEXT COLORS
      =========================== */
   
-  --color-text: #1E293B;
-  --color-text-dim: #64748B;
-  --color-text-light: #94A3B8;
+  --color-text: #1a1a1a;
+  --color-text-dim: #666666;
+  --color-text-light: #999999;
   --color-text-white: #FFFFFF;
   
   /* ===========================
      BORDER COLORS
      =========================== */
   
-  --color-border: #E2E8F0;
-  --color-border-dark: #CBD5E1;
-  --color-border-light: #F1F5F9;
+  --color-border: #E5E5E5;
+  --color-border-dark: #CCCCCC;
+  --color-border-light: #F0F0F0;
 
   /* ===========================
      BUTTON COLORS
@@ -65,7 +71,7 @@
   
   /* Outline Button */
   --btn-outline-bg: transparent;
-  --btn-outline-bg-hover: rgba(30, 41, 59, 0.05);
+  --btn-outline-bg-hover: rgba(26, 26, 26, 0.05);
   --btn-outline-text: var(--color-text);
   --btn-outline-text-hover: var(--color-primary);
   --btn-outline-border: var(--color-border);
@@ -108,11 +114,12 @@
   --color-info-light: #DBEAFE;
 
   /* ===========================
-     TYPOGRAPHY
+     TYPOGRAPHY - Modern Minimalist
      =========================== */
   
-  --font-display: "lexend", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  --font-body: "popping", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  /* Using system fonts for clean, modern look */
+  --font-display: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", sans-serif;
+  --font-body: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
   
   /* Font Sizes */
   --font-size-xs: 0.75rem;      /* 12px */
@@ -155,7 +162,7 @@
      LAYOUT
      =========================== */
   
-  --container-max-width: 1300px;
+  --container-max-width: 1200px;
   --container-padding: 2rem;
   
   /* Grid Gaps */
@@ -170,25 +177,25 @@
      =========================== */
   
   /* Transitions */
-  --transition-duration: 0.3s;
+  --transition-duration: 0.2s;
   --transition-timing: cubic-bezier(0.4, 0, 0.2, 1);
   --transition: all var(--transition-duration) var(--transition-timing);
   --transition-fast: all 0.15s ease;
-  --transition-slow: all 0.5s ease;
+  --transition-slow: all 0.4s ease;
   
-  /* Shadows */
-  --shadow-sm: 0 2px 8px rgba(30, 41, 59, 0.08);
-  --shadow-md: 0 4px 16px rgba(30, 41, 59, 0.12);
-  --shadow-lg: 0 8px 32px rgba(30, 41, 59, 0.15);
-  --shadow-xl: 0 16px 48px rgba(30, 41, 59, 0.20);
-  --shadow-inner: inset 0 2px 4px rgba(0, 0, 0, 0.06);
+  /* Shadows - Minimal & Refined */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.12);
+  --shadow-xl: 0 8px 24px rgba(0, 0, 0, 0.16);
+  --shadow-inner: inset 0 1px 2px rgba(0, 0, 0, 0.04);
   
-  /* Border Radius */
+  /* Border Radius - Clean & Modern */
   --radius-sm: 4px;
-  --radius-md: 6px;
-  --radius-lg: 8px;
-  --radius-xl: 12px;
-  --radius-2xl: 16px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 24px;
   --radius-full: 9999px;
   
   /* Z-index Scale */
@@ -209,35 +216,37 @@
 
 :root[data-theme="dark"] {
   /* Primary Colors */
-  --color-primary: #3B82F6;
-  --color-primary-dark: #2563EB;
-  --color-primary-light: #60A5FA;
+  --color-primary: #FFFFFF;
+  --color-primary-dark: #F5F5F5;
+  --color-primary-light: #E5E5E5;
   
   /* Accent Colors */
-  --color-accent: #94A3B8;
-  --color-accent-dark: #64748B;
-  --color-accent-light: #CBD5E1;
+  --color-accent: #FF6B35;
+  --color-accent-dark: #FF8555;
+  --color-accent-light: #FFA080;
   
   /* Background Colors */
-  --color-bg-dark: #1E293B;
-  --color-bg-darker: #0F172A;
-  --color-bg-card: #334155;
+  --color-bg-dark: #1a1a1a;
+  --color-bg-darker: #0a0a0a;
+  --color-bg-card: #262626;
+  --color-bg-subtle: #333333;
   
   /* Text Colors */
-  --color-text: #F1F5F9;
-  --color-text-dim: #94A3B8;
-  --color-text-light: #CBD5E1;
+  --color-text: #FFFFFF;
+  --color-text-dim: #999999;
+  --color-text-light: #666666;
   
   /* Border Colors */
-  --color-border: #475569;
-  --color-border-dark: #334155;
-  --color-border-light: #64748B;
+  --color-border: #333333;
+  --color-border-dark: #404040;
+  --color-border-light: #262626;
   
   /* Button Colors - Dark Mode */
   --btn-primary-bg: var(--color-primary);
   --btn-primary-bg-hover: var(--color-primary-dark);
+  --btn-primary-text: #000000;
   --btn-secondary-bg-hover: var(--color-primary);
-  --btn-outline-bg-hover: rgba(59, 130, 246, 0.1);
+  --btn-outline-bg-hover: rgba(255, 255, 255, 0.1);
   --btn-ghost-bg-hover: var(--color-bg-card);
   --btn-nav-cta-bg: var(--color-primary);
   --btn-nav-cta-bg-hover: var(--color-primary-dark);
