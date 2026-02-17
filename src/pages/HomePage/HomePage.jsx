@@ -548,37 +548,54 @@ function HomePage() {
                 from initial conceptual designs to detailed structural analysis.
               </p>
               <div className="about-highlights">
-                <div
-                  className="highlight-item"
-                  data-aos="zoom-in"
-                  data-aos-delay="100"
-                >
-                  <div className="highlight-icon">🎓</div>
-                  <div className="highlight-content">
-                    <h4>Education</h4>
-                    <p>Bachelor of Engineering in Civil Engineering</p>
+                <div className="highlight-item" data-aos="zoom-in" data-aos-delay="100">
+                  <span className="highlight-bar" />
+                  <span className="highlight-num">01</span>
+                  <div className="highlight-face">
+                    <div className="highlight-icon">🎓</div>
+                    <div className="highlight-content">
+                      <h4>Education</h4>
+                      <p>Bachelor of Engineering in Civil Engineering</p>
+                    </div>
+                  </div>
+                  <div className="highlight-hover">
+                    <span className="highlight-hover-icon">🎓</span>
+                    <span className="highlight-hover-title">Education</span>
+                    <span className="highlight-hover-text">Bachelor of Engineering in Civil Engineering</span>
                   </div>
                 </div>
-                <div
-                  className="highlight-item"
-                  data-aos="zoom-in"
-                  data-aos-delay="200"
-                >
-                  <div className="highlight-icon">💼</div>
-                  <div className="highlight-content">
-                    <h4>Experience</h4>
-                    <p>Specialized in Structural &amp; Architectural Design</p>
+
+                <div className="highlight-item" data-aos="zoom-in" data-aos-delay="200">
+                  <span className="highlight-bar" />
+                  <span className="highlight-num">02</span>
+                  <div className="highlight-face">
+                    <div className="highlight-icon">💼</div>
+                    <div className="highlight-content">
+                      <h4>Experience</h4>
+                      <p>Specialized in Structural &amp; Architectural Design</p>
+                    </div>
+                  </div>
+                  <div className="highlight-hover">
+                    <span className="highlight-hover-icon">💼</span>
+                    <span className="highlight-hover-title">Experience</span>
+                    <span className="highlight-hover-text">Specialized in Structural &amp; Architectural Design</span>
                   </div>
                 </div>
-                <div
-                  className="highlight-item"
-                  data-aos="zoom-in"
-                  data-aos-delay="300"
-                >
-                  <div className="highlight-icon">📍</div>
-                  <div className="highlight-content">
-                    <h4>Location</h4>
-                    <p>{SITE.location}, West Bengal, India</p>
+
+                <div className="highlight-item" data-aos="zoom-in" data-aos-delay="300">
+                  <span className="highlight-bar" />
+                  <span className="highlight-num">03</span>
+                  <div className="highlight-face">
+                    <div className="highlight-icon">📍</div>
+                    <div className="highlight-content">
+                      <h4>Location</h4>
+                      <p>{SITE.location}, West Bengal, India</p>
+                    </div>
+                  </div>
+                  <div className="highlight-hover">
+                    <span className="highlight-hover-icon">📍</span>
+                    <span className="highlight-hover-title">Location</span>
+                    <span className="highlight-hover-text">{SITE.location}, West Bengal, India</span>
                   </div>
                 </div>
               </div>

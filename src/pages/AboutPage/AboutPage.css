@@ -104,101 +104,233 @@
    EDUCATION TIMELINE
    =========================== */
 
+/* ═══════════════════════════════════════════════════════════════════════
+   EDUCATION ITEM — same design as SkillCard
+   left bar │ icon badge │ year + degree + school │ number tag
+   Hover: navy overlay slides up from bottom, orange corner accent
+   ═══════════════════════════════════════════════════════════════════════ */
+
 .education-timeline {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 0.75rem;
 }
 
+/* ── Card shell ─────────────────────────────────────────────────────── */
 .education-item {
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
-  border: 1px solid var(--color-border);
-  margin-bottom: 1.5rem;
-  transition: var(--transition);
-  padding: 1rem;
-  border-left: 4px solid var(--color-primary);
-  background: var(--color-bg-card);
-  border-radius: 8px;
   position: relative;
+  display: flex;
+  align-items: stretch;
+  height: 96px;
+  background: #ffffff;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
   overflow: hidden;
+  cursor: default;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  padding: 0;
+  margin-bottom: 0;
 }
 
-.education-item::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(30, 41, 59, 0.03), transparent);
-  transition: left 0.5s ease;
-  z-index: 1;
-}
-
-.education-item:hover::before {
-  left: 100%;
-}
-
+.education-item::before,
 .education-item::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-  transition: left 0.6s ease;
-  z-index: 2;
-  pointer-events: none;
-}
-
-.education-item:hover::after {
-  left: 100%;
+  display: none;
 }
 
 .education-item:hover {
   border-color: var(--color-primary);
-  transform: translateX(6px);
-  box-shadow: var(--shadow-md);
+  box-shadow: 0 6px 24px rgba(0, 51, 102, 0.12);
+  transform: none;
   background: #ffffff;
 }
 
-.education-icon {
-  font-size: 2.5rem;
-  color: var(--color-primary);
-  min-width: 60px;
-  text-align: center;
+/* ── Left accent bar ────────────────────────────────────────────────── */
+.education-item-bar {
+  display: block;
+  width: 4px;
+  background: var(--color-accent, #FF8C00);
+  flex-shrink: 0;
+  border-radius: 10px 0 0 10px;
+  transition: background 0.3s ease;
+}
+
+.education-item:hover .education-item-bar {
+  background: var(--color-primary);
+}
+
+/* ── Number tag ─────────────────────────────────────────────────────── */
+.education-item-num {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  font-family: var(--font-display);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #CBD5E1;
+  z-index: 2;
+  line-height: 1;
+  transition: color 0.3s ease;
+}
+
+.education-item:hover .education-item-num {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* ── Static face ────────────────────────────────────────────────────── */
+.education-item-face {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0 1rem;
+  flex: 1;
   position: relative;
-  z-index: 3;
+  z-index: 2;
+  transition: opacity 0.25s ease;
+}
+
+.education-item:hover .education-item-face {
+  opacity: 0;
+}
+
+/* Icon badge */
+.education-icon-wrap {
+  width: 46px;
+  height: 46px;
+  flex-shrink: 0;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.education-item:hover .education-icon-wrap {
+  transform: scale(1.1) rotate(-6deg);
+}
+
+.education-icon {
+  font-size: 1.5rem;
+  line-height: 1;
+  display: block;
+  color: inherit;
+  min-width: auto;
+  text-align: left;
+}
+
+/* Text block */
+.education-item-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
 }
 
 .education-year {
   font-family: var(--font-display);
-  font-size: 0.9rem;
+  font-size: 0.62rem;
   font-weight: 700;
-  color: var(--color-primary);
-  margin-bottom: 0.3rem;
-  position: relative;
-  z-index: 3;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-accent, #FF8C00);
+  line-height: 1;
+  position: static;
+  z-index: auto;
+  margin-bottom: 0;
 }
 
 .education-degree {
   font-family: var(--font-display);
-  font-size: 1rem;
+  font-size: 0.9rem;
   font-weight: 600;
-  margin-bottom: 0.3rem;
   color: var(--color-text);
-  position: relative;
-  z-index: 3;
+  margin: 0;
+  line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  position: static;
+  z-index: auto;
 }
 
 .education-school {
+  font-size: 0.75rem;
   color: var(--color-text-dim);
-  font-size: 0.8rem;
-  position: relative;
+  line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  position: static;
+  z-index: auto;
+}
+
+/* ── Hover overlay — slides up from bottom ──────────────────────────── */
+.education-item-hover {
+  position: absolute;
+  inset: 0;
+  background: var(--color-primary);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 1.25rem;
+  gap: 0.15rem;
+  transform: translateY(100%);
+  transition: transform 0.38s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 3;
+  border-radius: 10px;
+}
+
+.education-item:hover .education-item-hover {
+  transform: translateY(0);
+}
+
+.education-hover-icon {
+  font-size: 1rem;
+  line-height: 1;
+  opacity: 0.35;
+  display: block;
+  margin-bottom: 0.1rem;
+}
+
+.education-hover-year {
+  font-family: var(--font-display);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-accent, #FF8C00);
+  line-height: 1;
+}
+
+.education-hover-degree {
+  font-family: var(--font-display);
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1.25;
+}
+
+.education-hover-school {
+  font-size: 0.74rem;
+  color: rgba(255, 255, 255, 0.72);
+  line-height: 1.4;
+}
+
+/* Orange triangle corner accent */
+.education-item-hover::after {
+  content: '';
+  display: block;
+  position: absolute;
+  bottom: -1px;
+  right: -1px;
+  width: 36px;
+  height: 36px;
+  background: var(--color-accent, #FF8C00);
+  clip-path: polygon(100% 0, 100% 100%, 0 100%);
+  border-radius: 0 0 10px 0;
+  opacity: 0.8;
 }
 
 /* ===========================
@@ -403,78 +535,195 @@
   margin-bottom: 1.5rem;
 }
 
+/* ═══════════════════════════════════════════════════════════════════════
+   HIGHLIGHT ITEMS (About Me section) — same design as SkillCard
+   left bar │ icon badge │ title + text │ number tag
+   Hover: navy overlay slides up from bottom, orange corner accent
+   ═══════════════════════════════════════════════════════════════════════ */
+
 .about-highlights {
-  display: grid;
-  gap: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
   margin-top: 1rem;
 }
 
+/* ── Card shell ─────────────────────────────────────────────────────── */
 .highlight-item {
-  display: flex;
-  align-items: flex-start;
-  gap: 1.25rem;
-  padding: 1.5rem;
-  background: var(--color-bg-card);
-  border-radius: 8px;
-  border: 1px solid var(--color-border);
-  transition: var(--transition);
   position: relative;
+  display: flex;
+  align-items: stretch;
+  height: 88px;
+  background: #ffffff;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
   overflow: hidden;
+  cursor: default;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  padding: 0;
+  gap: 0;
 }
 
-.highlight-item::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-  transition: left 0.6s ease;
-  z-index: 1;
-  pointer-events: none;
-}
-
-.highlight-item:hover::before {
-  left: 100%;
+.highlight-item::before,
+.highlight-item::after {
+  display: none;
 }
 
 .highlight-item:hover {
-  transform: translateX(8px);
-  box-shadow: var(--shadow-md);
   border-color: var(--color-primary);
+  box-shadow: 0 6px 24px rgba(0, 51, 102, 0.12);
+  transform: none;
 }
 
+/* ── Left accent bar ────────────────────────────────────────────────── */
+.highlight-bar {
+  display: block;
+  width: 4px;
+  background: var(--color-accent, #FF8C00);
+  flex-shrink: 0;
+  border-radius: 10px 0 0 10px;
+  transition: background 0.3s ease;
+}
+
+.highlight-item:hover .highlight-bar {
+  background: var(--color-primary);
+}
+
+/* ── Number tag ─────────────────────────────────────────────────────── */
+.highlight-num {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  font-family: var(--font-display);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #CBD5E1;
+  z-index: 2;
+  line-height: 1;
+  transition: color 0.3s ease;
+}
+
+.highlight-item:hover .highlight-num {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* ── Static face ────────────────────────────────────────────────────── */
+.highlight-face {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0 1rem;
+  flex: 1;
+  position: relative;
+  z-index: 2;
+  transition: opacity 0.25s ease;
+}
+
+.highlight-item:hover .highlight-face {
+  opacity: 0;
+}
+
+/* Icon badge */
 .highlight-icon {
-  font-size: 2rem;
-  min-width: 3rem;
-  height: 3rem;
+  width: 46px;
+  height: 46px;
+  min-width: 46px;
+  font-size: 1.5rem;
+  flex-shrink: 0;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 100%);
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, var(--color-bg-dark) 0%, #e0f2fe 100%);
-  border-radius: 8px;
-  position: relative;
-  z-index: 2;
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  position: static;
+  z-index: auto;
 }
 
+.highlight-item:hover .highlight-icon {
+  transform: scale(1.1) rotate(-6deg);
+}
+
+/* Text block */
 .highlight-content {
-  position: relative;
-  z-index: 2;
+  flex: 1;
+  min-width: 0;
+  position: static;
+  z-index: auto;
 }
 
 .highlight-content h4 {
   font-family: var(--font-display);
-  font-size: 1.1rem;
+  font-size: 0.92rem;
   font-weight: 600;
   color: var(--color-text);
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.15rem;
+  line-height: 1.3;
 }
 
 .highlight-content p {
-  font-size: 0.95rem;
+  font-size: 0.78rem;
   color: var(--color-text-dim);
-  line-height: 1.6;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* ── Hover overlay — slides up from bottom ──────────────────────────── */
+.highlight-hover {
+  position: absolute;
+  inset: 0;
+  background: var(--color-primary);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 1.25rem;
+  gap: 0.2rem;
+  transform: translateY(100%);
+  transition: transform 0.38s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 3;
+  border-radius: 10px;
+}
+
+.highlight-item:hover .highlight-hover {
+  transform: translateY(0);
+}
+
+.highlight-hover-icon {
+  font-size: 1rem;
+  opacity: 0.35;
+  line-height: 1;
+  display: block;
+  margin-bottom: 0.1rem;
+}
+
+.highlight-hover-title {
+  font-family: var(--font-display);
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1.2;
+}
+
+.highlight-hover-text {
+  font-size: 0.76rem;
+  color: rgba(255, 255, 255, 0.78);
+  line-height: 1.5;
+}
+
+/* Orange triangle corner accent */
+.highlight-hover::after {
+  content: '';
+  display: block;
+  position: absolute;
+  bottom: -1px;
+  right: -1px;
+  width: 36px;
+  height: 36px;
+  background: var(--color-accent, #FF8C00);
+  clip-path: polygon(100% 0, 100% 100%, 0 100%);
+  border-radius: 0 0 10px 0;
+  opacity: 0.8;
 }
 
 .about-cta {
@@ -901,12 +1150,6 @@
     font-size: 1rem;
   }
 
-  .highlight-item {
-    flex-direction: column;
-    text-align: center;
-    align-items: center;
-  }
-
   .about-cta {
     flex-direction: column;
   }
@@ -984,10 +1227,6 @@
     background-size: 30px 30px;
   }
 
-  .education-item {
-    padding: 1rem 0.75rem;
-  }
-
   .contact-card h3 {
     font-size: 1.25rem;
   }
@@ -996,10 +1235,6 @@
 @media (max-width: 480px) {
   .about-section {
     margin-bottom: 1.5rem;
-  }
-
-  .education-degree {
-    font-size: 0.95rem;
   }
 
   /* Contact Section Mobile */
@@ -1335,4 +1570,33 @@
     gap: 0.75rem;
     padding: 0 0.75rem;
   }
+}
+/* ═══════════════════════════════════════════════════════════════════════
+   EDUCATION + HIGHLIGHT CARDS — RESPONSIVE
+   ═══════════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 768px) {
+  .education-item  { height: 86px; }
+  .highlight-item  { height: 80px; }
+
+  .education-icon-wrap,
+  .highlight-icon {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    font-size: 1.3rem;
+  }
+
+  .education-icon { font-size: 1.3rem; }
+  .education-degree { font-size: 0.84rem; }
+  .highlight-content h4 { font-size: 0.88rem; }
+  .highlight-content p  { font-size: 0.74rem; }
+}
+
+@media (max-width: 480px) {
+  .education-item  { height: 82px; }
+  .highlight-item  { height: 76px; }
+  .education-item-face,
+  .highlight-face  { gap: 0.75rem; padding: 0 0.75rem; }
+  .education-degree { font-size: 0.8rem; }
 }

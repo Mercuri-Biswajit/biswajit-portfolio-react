@@ -59,7 +59,7 @@ function AboutPage() {
               </h2>
               <div className="education-timeline">
                 {education.map((item, i) => (
-                  <EducationItem key={i} {...item} />
+                  <EducationItem key={i} {...item} index={i} />
                 ))}
               </div>
             </div>
