@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 import { SkillCard, ProjectCard } from "../../components/cards";
-import { ProjectModal } from "../../components/modals";
 import { skills } from "../../data/skills";
 import { projects } from "../../data/projects";
 import { SITE, MATERIAL_CONSTANTS } from "../../config/constants";
@@ -11,9 +10,250 @@ import { formatCurrency, formatNumber, safeFloat } from "../../utils/helpers";
 // STANDALONE CSS - No dependencies on other CSS files
 import "./HomePage.css";
 
+// ════════════════════════════════════════════════════════════════
+// ProjectModal — inlined so HomePage.jsx is self-contained
+// Includes Case Study tab alongside original Structural Specs tab
+// ════════════════════════════════════════════════════════════════
+
+function ProjectModal({ project, onClose }) {
+  const [activeTab, setActiveTab] = useState("specs");
+
+  /* Lock body scroll + ESC listener */
+  useEffect(() => {
+    const handleKey = (e) => {
+      if (e.key === "Escape") onClose();
+    };
+    document.addEventListener("keydown", handleKey);
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.removeEventListener("keydown", handleKey);
+      document.body.style.overflow = "";
+    };
+  }, [onClose]);
+
+  /* Reset to Specs tab when a different project opens */
+  useEffect(() => {
+    setActiveTab("specs");
+  }, [project?.id]);
+
+  if (!project) return null;
+
+  const { caseStudy } = project;
+  const hasCaseStudy = !!caseStudy;
+
+  const handleBackdropClick = (e) => {
+    if (e.target === e.currentTarget) onClose();
+  };
+
+  return (
+    <div
+      className="project-modal active"
+      onClick={handleBackdropClick}
+      role="dialog"
+      aria-modal="true"
+      aria-label={project.title}
+    >
+      <div className="project-modal-content">
+        {/* Close button */}
+        <button
+          className="project-modal-close"
+          onClick={onClose}
+          aria-label="Close modal"
+        >
+          ✕
+        </button>
+
+        {/* Hero image */}
+        <img
+          src={project.image}
+          alt={project.title}
+          className="project-modal-image"
+        />
+
+        <div className="project-modal-body">
+          {/* Header */}
+          <div className="project-modal-header">
+            <div>
+              <div className="project-modal-id">
+                PROJECT #{String(project.id).padStart(2, "0")}
+              </div>
+              <h2 className="project-modal-title">{project.title}</h2>
+            </div>
+            <span className="project-card-category-badge">
+              {project.category}
+            </span>
+          </div>
+
+          {/* Info grid — always visible */}
+          <div className="project-modal-info-grid">
+            <div className="project-modal-info-item">
+              <span className="project-modal-info-label">Plot Area</span>
+              <span className="project-modal-info-value">
+                {project.plotArea}
+              </span>
+            </div>
+            <div className="project-modal-info-item">
+              <span className="project-modal-info-label">Estimated Cost</span>
+              <span className="project-modal-info-value">
+                {project.estimatedCost}
+              </span>
+            </div>
+            <div className="project-modal-info-item">
+              <span className="project-modal-info-label">Structure Type</span>
+              <span className="project-modal-info-value">
+                {project.structure}
+              </span>
+            </div>
+            <div className="project-modal-info-item">
+              <span className="project-modal-info-label">Foundation</span>
+              <span className="project-modal-info-value">
+                {project.foundation}
+              </span>
+            </div>
+          </div>
+
+          {/* Tab bar — only when caseStudy data exists */}
+          {hasCaseStudy && (
+            <div className="project-modal-tabs">
+              <button
+                className={`project-modal-tab-btn${activeTab === "specs" ? " active" : ""}`}
+                onClick={() => setActiveTab("specs")}
+              >
+                Structural Specs
+              </button>
+              <button
+                className={`project-modal-tab-btn${activeTab === "casestudy" ? " active" : ""}`}
+                onClick={() => setActiveTab("casestudy")}
+              >
+                Case Study
+              </button>
+            </div>
+          )}
+
+          {/* TAB — STRUCTURAL SPECS */}
+          {activeTab === "specs" && (
+            <div
+              className="project-modal-description"
+              dangerouslySetInnerHTML={{ __html: project.description }}
+            />
+          )}
+
+          {/* TAB — CASE STUDY */}
+          {activeTab === "casestudy" && hasCaseStudy && (
+            <div className="project-case-study">
+              {/* 1 · Problem Statement */}
+              <div className="case-study-block">
+                <div className="case-study-block-header">
+                  <span className="case-study-icon">🎯</span>
+                  <h4 className="case-study-block-title">Problem Statement</h4>
+                </div>
+                <p className="case-study-text">{caseStudy.problem}</p>
+              </div>
+
+              {/* 2 · Solution Approach */}
+              <div className="case-study-block">
+                <div className="case-study-block-header">
+                  <span className="case-study-icon">💡</span>
+                  <h4 className="case-study-block-title">Solution Approach</h4>
+                </div>
+                <p className="case-study-text">{caseStudy.solution}</p>
+              </div>
+
+              {/* 3 · Challenges Faced */}
+              <div className="case-study-block">
+                <div className="case-study-block-header">
+                  <span className="case-study-icon">⚠️</span>
+                  <h4 className="case-study-block-title">Challenges Faced</h4>
+                </div>
+                <ul className="case-study-list">
+                  {caseStudy.challenges.map((challenge, i) => (
+                    <li key={i} className="case-study-list-item">
+                      {challenge}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* 4 · Results & Outcomes */}
+              <div className="case-study-block">
+                <div className="case-study-block-header">
+                  <span className="case-study-icon">✅</span>
+                  <h4 className="case-study-block-title">
+                    Results &amp; Outcomes
+                  </h4>
+                </div>
+                <div className="case-study-results-grid">
+                  {Object.entries(caseStudy.results).map(([key, value]) => {
+                    const labelMap = {
+                      costSaving: "Cost Saving",
+                      timeToComplete: "Completion Time",
+                      clientSatisfaction: "Client Satisfaction",
+                      structuralRating: "Compliance",
+                    };
+                    return (
+                      <div key={key} className="case-study-result-item">
+                        <span className="case-study-result-label">
+                          {labelMap[key] ?? key}
+                        </span>
+                        <span className="case-study-result-value">{value}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* 5 · Before & After */}
+              <div className="case-study-block">
+                <div className="case-study-block-header">
+                  <span className="case-study-icon">🔄</span>
+                  <h4 className="case-study-block-title">Before &amp; After</h4>
+                </div>
+                <div className="case-study-comparison">
+                  <div className="case-study-comparison-col before">
+                    <span className="case-study-comparison-label">Before</span>
+                    <ul className="case-study-list">
+                      {caseStudy.comparison.before.map((item, i) => (
+                        <li key={i} className="case-study-list-item">
+                          {item}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div className="case-study-comparison-col after">
+                    <span className="case-study-comparison-label">After</span>
+                    <ul className="case-study-list">
+                      {caseStudy.comparison.after.map((item, i) => (
+                        <li key={i} className="case-study-list-item">
+                          {item}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Tags — always visible */}
+          <div className="project-modal-tags">
+            {project.tags.map((tag, i) => (
+              <span key={i} className="project-modal-tag">
+                {tag}
+              </span>
+            ))}
+          </div>
+        </div>
+        {/* /project-modal-body */}
+      </div>
+      {/* /project-modal-content */}
+    </div>
+  );
+}
+
 function HomePage() {
   const [selectedProject, setSelectedProject] = useState(null);
-  
+
   // Calculator state
   const [calcArea, setCalcArea] = useState("");
   const [calcRate, setCalcRate] = useState("");
@@ -28,13 +268,13 @@ function HomePage() {
   // Lock body scroll when materials modal is open
   useEffect(() => {
     if (showMaterials) {
-      document.body.style.overflow = 'hidden';
+      document.body.style.overflow = "hidden";
     } else {
-      document.body.style.overflow = '';
+      document.body.style.overflow = "";
     }
-    
+
     return () => {
-      document.body.style.overflow = '';
+      document.body.style.overflow = "";
     };
   }, [showMaterials]);
 
@@ -59,7 +299,7 @@ function HomePage() {
 
   const handleShowMaterials = () => {
     const area = safeFloat(calcArea, 0);
-    
+
     if (area <= 0 || !calcTotal) {
       alert("Please calculate the total first.");
       return;
@@ -74,7 +314,7 @@ function HomePage() {
       cement: cementQty,
       steel: steelQty,
       sand: sandQty,
-      aggregate: aggregateQty
+      aggregate: aggregateQty,
     });
     setShowMaterials(true);
   };
@@ -129,13 +369,13 @@ function HomePage() {
             <span className="section-number">01</span>
             <h2 className="section-title">QUICK ESTIMATE</h2>
           </div>
-          
+
           <div className="calculator-card" data-aos="fade-up">
             <div className="calculator-inputs">
               <div className="calc-input-group">
                 <label className="calc-label">Built-up Area (sq.ft)</label>
-                <input 
-                  type="number" 
+                <input
+                  type="number"
                   className="calc-input"
                   placeholder="Enter area in sq.ft"
                   value={calcArea}
@@ -143,11 +383,13 @@ function HomePage() {
                   onKeyDown={(e) => e.key === "Enter" && handleCalculate()}
                 />
               </div>
-              
+
               <div className="calc-input-group">
-                <label className="calc-label">Construction Rate (₹/sq.ft)</label>
-                <input 
-                  type="number" 
+                <label className="calc-label">
+                  Construction Rate (₹/sq.ft)
+                </label>
+                <input
+                  type="number"
                   className="calc-input"
                   placeholder="Enter rate per sq.ft"
                   value={calcRate}
@@ -158,7 +400,10 @@ function HomePage() {
             </div>
 
             <div className="calc-btn-wrapper">
-              <button className="btn btn-primary calc-btn" onClick={handleCalculate}>
+              <button
+                className="btn btn-primary calc-btn"
+                onClick={handleCalculate}
+              >
                 CALCULATE TOTAL
               </button>
             </div>
@@ -167,12 +412,18 @@ function HomePage() {
               <div className="calculator-results" data-aos="zoom-in">
                 <div className="total-cost-display">
                   <span className="total-label">Estimated Total Cost</span>
-                  <span className="total-amount">{formatCurrency(calcTotal)}</span>
-                  <span className="total-meta">
-                    {safeFloat(calcArea, 0).toLocaleString("en-IN")} sq.ft × ₹{safeFloat(calcRate, 0).toLocaleString("en-IN")}/sq.ft
+                  <span className="total-amount">
+                    {formatCurrency(calcTotal)}
                   </span>
-                  
-                  <button className="btn btn-secondary calc-materials-btn" onClick={handleShowMaterials}>
+                  <span className="total-meta">
+                    {safeFloat(calcArea, 0).toLocaleString("en-IN")} sq.ft × ₹
+                    {safeFloat(calcRate, 0).toLocaleString("en-IN")}/sq.ft
+                  </span>
+
+                  <button
+                    className="btn btn-secondary calc-materials-btn"
+                    onClick={handleShowMaterials}
+                  >
                     CLICK FOR MATERIAL
                   </button>
                 </div>
@@ -183,62 +434,70 @@ function HomePage() {
 
         {/* Material Popup Modal */}
         {showMaterials && materials && (
-          <div 
-            className="materials-modal"
-            role="dialog"
-            aria-modal="true"
-          >
-            <div 
+          <div className="materials-modal" role="dialog" aria-modal="true">
+            <div
               className="materials-modal-overlay"
               onClick={() => setShowMaterials(false)}
             />
             <div className="materials-modal-content">
-              <button 
-                className="materials-modal-close" 
+              <button
+                className="materials-modal-close"
                 onClick={() => setShowMaterials(false)}
                 aria-label="Close modal"
               >
                 &times;
               </button>
-              
+
               <h3 className="materials-title">Material Requirements</h3>
-              
+
               <div className="materials-grid">
                 <div className="material-item">
                   <span className="material-icon">🏗️</span>
                   <div className="material-info">
                     <span className="material-name">Cement</span>
-                    <span className="material-qty">{formatNumber(materials.cement, 0)} bags</span>
+                    <span className="material-qty">
+                      {formatNumber(materials.cement, 0)} bags
+                    </span>
                   </div>
                 </div>
-                
+
                 <div className="material-item">
                   <span className="material-icon">⚙️</span>
                   <div className="material-info">
                     <span className="material-name">Steel</span>
-                    <span className="material-qty">{formatNumber(materials.steel, 0)} kg</span>
+                    <span className="material-qty">
+                      {formatNumber(materials.steel, 0)} kg
+                    </span>
                   </div>
                 </div>
-                
+
                 <div className="material-item">
                   <span className="material-icon">🏖️</span>
                   <div className="material-info">
                     <span className="material-name">Sand</span>
-                    <span className="material-qty">{formatNumber(materials.sand, 2)} m³</span>
+                    <span className="material-qty">
+                      {formatNumber(materials.sand, 2)} m³
+                    </span>
                   </div>
                 </div>
-                
+
                 <div className="material-item">
                   <span className="material-icon">🪨</span>
                   <div className="material-info">
                     <span className="material-name">Aggregate</span>
-                    <span className="material-qty">{formatNumber(materials.aggregate, 2)} m³</span>
+                    <span className="material-qty">
+                      {formatNumber(materials.aggregate, 2)} m³
+                    </span>
                   </div>
                 </div>
               </div>
-              
+
               <div className="materials-note">
-                <p>💡 <strong>Note:</strong> Material quantities are based on standard RCC construction. For detailed cost breakdown, visit our <Link to="/calculator">Advanced Calculator</Link>.</p>
+                <p>
+                  💡 <strong>Note:</strong> Material quantities are based on
+                  standard RCC construction. For detailed cost breakdown, visit
+                  our <Link to="/calculator">Advanced Calculator</Link>.
+                </p>
               </div>
             </div>
           </div>
@@ -342,7 +601,7 @@ function HomePage() {
               <h3 className="skills-subtitle">Core Skills</h3>
               <div className="skills-grid">
                 {skills.map((skill, i) => (
-                  <SkillCard key={i} {...skill} />
+                  <SkillCard key={i} {...skill} index={i} />
                 ))}
               </div>
             </div>
