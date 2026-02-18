@@ -1,14 +1,15 @@
+/* eslint-disable no-unused-vars */
 // ═══════════════════════════════════════════════════════════════════════════
 // FULL BOQ CALCULATOR — WB PWD RATES
 // Exports: calcStandardBOQ | calcPremiumBOQ | calcFloorWiseBOQ
 // ═══════════════════════════════════════════════════════════════════════════
 
-import * as STD from "../../../pages/CalculatorPage/config/wbPwdRatesStandard";
-import * as PRE from "../../../pages/CalculatorPage/config/wbPwdRatesPremium";
+import * as STD from "../../config/wbPwdRatesStandard";
+import * as PRE from "../../config/wbPwdRatesPremium";
 
-// ─────────────────────────────────────────────────────────────────────────
+// ───────────────────────────────────────────────────────────────────────────
 // UNIT HELPERS
-// ─────────────────────────────────────────────────────────────────────────
+// ───────────────────────────────────────────────────────────────────────────
 const toSqm = (sqft) => Math.round(sqft * 0.0929 * 100) / 100;
 const toCum = (cft) => Math.round(cft * 0.02832 * 100) / 100;
 const r2 = (n) => Math.round(n * 100) / 100;
@@ -27,10 +28,9 @@ function getEscalation(RATES, floorIndex) {
   return RATES.FLOOR_ESCALATION[clampedIdx] ?? 1.12;
 }
 
-// ─────────────────────────────────────────────────────────────────────────
-// CORE: build foundation BOQ items (once for whole building)
-// Returns { items, materialQty }
-// ─────────────────────────────────────────────────────────────────────────
+// ───────────────────────────────────────────────────────────────────────────
+// CORE: build site-prep & foundation BOQ items (once for whole building)
+// ───────────────────────────────────────────────────────────────────────────
 function buildFoundation(plotArea, RATES) {
   const items = [];
   const matQty = {
@@ -55,7 +55,6 @@ function buildFoundation(plotArea, RATES) {
       amount: amt,
       labourDays: r2((ir.labourDaysPerUnit ?? 0) * qty),
     });
-    // accumulate material quantities
     if (ir.cementBagsPerUnit) matQty.cement += ir.cementBagsPerUnit * qty;
     if (ir.steelKgPerUnit) matQty.steel += ir.steelKgPerUnit * qty;
     if (ir.sandCftPerUnit) matQty.sand += ir.sandCftPerUnit * qty;
@@ -63,27 +62,43 @@ function buildFoundation(plotArea, RATES) {
     if (ir.bricksPerUnit) matQty.bricks += ir.bricksPerUnit * qty;
   };
 
-  // excavation  (3 ft deep)
+  // ── SITE PREPARATION ──────────────────────────────────────────────────
+  // Site cleaning: full plot area
+  addItem("siteCleaning", toSqm(plotArea), "sqm");
+
+  // Anti-termite: full plot area (applied once pre-construction)
+  addItem("antiTermite", toSqm(plotArea), "sqm");
+
+  // ── EARTHWORK & PCC ───────────────────────────────────────────────────
   const excCum = toCum(plotArea * 3);
   addItem("excavation", excCum, "cum");
 
-  // PCC bed
   const pccCum = toCum(plotArea * 0.5);
   addItem("pcc148", pccCum, "cum");
 
-  // RCC footing  (1.5 cft per sqft plot)
+  // ── FOOTING ───────────────────────────────────────────────────────────
   const footKey =
     RATES.GRADE_KEY === "premium" ? "rccM25Footing" : "rccM20Footing";
   const footCum = toCum(plotArea * 1.5);
   addItem(footKey, footCum, "cum");
 
+  // ── SUB-STRUCTURE ─────────────────────────────────────────────────────
+  // DPC: full plot footprint
+  addItem("dpcConcrete", toSqm(plotArea), "sqm");
+
+  // Sand filling in plinth: ~300 mm average depth
+  addItem("sandFilling", toCum(plotArea * 1.0), "cum");
+
+  // ── SEPTIC TANK ───────────────────────────────────────────────────────
+  // ~1.5 cum capacity for a 2-3 BHK residential building
+  addItem("septicTank", 1.5, "cum");
+
   return { items, matQty };
 }
 
-// ─────────────────────────────────────────────────────────────────────────
+// ───────────────────────────────────────────────────────────────────────────
 // CORE: build per-floor BOQ items
-// Returns { items, materialQty }
-// ─────────────────────────────────────────────────────────────────────────
+// ───────────────────────────────────────────────────────────────────────────
 function buildFloorItems(floorArea, plotArea, RATES, floorIndex, isTopFloor) {
   const esc = getEscalation(RATES, floorIndex);
   const items = [];
@@ -121,7 +136,7 @@ function buildFloorItems(floorArea, plotArea, RATES, floorIndex, isTopFloor) {
 
   const isPremium = RATES.GRADE_KEY === "premium";
 
-  // ── RCC Frame ────────────────────────────────────────────────────────
+  // ── STRUCTURAL RCC ────────────────────────────────────────────────────
   const colKey = isPremium ? "rccM25Column" : "rccM20Column";
   const beamKey = isPremium ? "rccM25Beam" : "rccM20Beam";
   const slabKey = isPremium ? "rccM25Slab" : "rccM20Slab";
@@ -130,39 +145,45 @@ function buildFloorItems(floorArea, plotArea, RATES, floorIndex, isTopFloor) {
   addItem(beamKey, toCum(floorArea * 0.055));
   addItem(slabKey, toCum(floorArea * (isPremium ? 0.44 : 0.42)));
 
-  // ── Masonry ──────────────────────────────────────────────────────────
-  // 230 mm external walls ≈ 60 %, 115 mm partitions ≈ 40 %
+  // ── MASONRY ───────────────────────────────────────────────────────────
   addItem("brickwork230", toCum(floorArea * 3.5 * 0.75 * 0.6));
   addItem("brickwork115", toCum(floorArea * 3.5 * 0.75 * 0.4));
 
-  // ── Plastering ────────────────────────────────────────────────────────
-  const plasterSqm = toSqm(floorArea * 3.5 * 2); // both faces
+  // ── PLASTERING ────────────────────────────────────────────────────────
+  const plasterSqm = toSqm(floorArea * 3.5 * 2);
   addItem("plasterInternal", plasterSqm);
   if (floorIndex === 0) {
     addItem("plasterExternal", toSqm(floorArea * 0.6));
   }
 
-  // ── Flooring ──────────────────────────────────────────────────────────
+  // ── FLOORING & DADO ───────────────────────────────────────────────────
   const floorSqm = toSqm(floorArea);
   addItem(isPremium ? "flooringVitrified" : "flooringCeramic", floorSqm);
-
-  // ── Dado (wet areas ≈ 12 % of floor, height 2.5 m) ──────────────────
   addItem(
     isPremium ? "dadoLargeFormat" : "dadoCeramic",
     toSqm(floorArea * 0.12 * 2.5),
   );
 
-  // ── Painting ──────────────────────────────────────────────────────────
+  // ── SKIRTING ─────────────────────────────────────────────────────────
+  // Perimeter of floor × 1 rmt per linear metre (100 mm height)
+  const perimeterRmt = r2(Math.sqrt(floorArea) * 4 * 0.0254 * 100); // approx from sqft → rmt
+  // Simpler: assume ~0.35 rmt per sqft of floor area
+  addItem("skirting", r2(floorArea * 0.35));
+
+  // ── WALL PUTTY ───────────────────────────────────────────────────────
+  // Applied to all internal plastered surfaces before painting
+  addItem("wallPutty", plasterSqm);
+
+  // ── PAINTING ──────────────────────────────────────────────────────────
   addItem("paintInternal", plasterSqm);
   if (floorIndex === 0) {
     addItem("paintExternal", toSqm(floorArea * 0.6));
   }
 
-  // ── Doors & Windows ───────────────────────────────────────────────────
+  // ── DOORS & WINDOWS ───────────────────────────────────────────────────
   const numDoors = Math.max(2, Math.round(floorArea / 250));
   const numWindows = Math.max(2, Math.round(floorArea / 120));
 
-  // Main entrance on ground floor
   if (floorIndex === 0) {
     addItem("doorMain", 1);
     addItem(isPremium ? "windowUPVC" : "windowAluminium", numWindows);
@@ -172,30 +193,41 @@ function buildFloorItems(floorArea, plotArea, RATES, floorIndex, isTopFloor) {
     addItem(isPremium ? "windowUPVC" : "windowAluminium", numWindows);
   }
 
-  // Grills
   addItem(isPremium ? "grillDecorative" : "grillMS", toSqm(numWindows * 1.0));
 
-  // ── Electrical & Plumbing ─────────────────────────────────────────────
+  // ── ELECTRICAL & PLUMBING ─────────────────────────────────────────────
   addItem("electrical", floorArea);
   addItem("plumbing", floorArea);
-
-  // ── Wet-area waterproofing ────────────────────────────────────────────
   addItem("wpWetArea", toSqm(floorArea * 0.12));
 
-  // ── Terrace waterproofing (top floor only) ────────────────────────────
-  if (isTopFloor) {
-    addItem("wpTerrace", toSqm(plotArea));
+  // ── KITCHEN ───────────────────────────────────────────────────────────
+  // Granite platform: ~2 sqm per floor (one kitchen per floor)
+  addItem("granitePlatform", toSqm(floorArea * 0.02));
+  // Kitchen sink: 1 per floor
+  addItem("kitchenSink", 1);
+
+  // ── STAIR & RAILING ───────────────────────────────────────────────────
+  addItem("stairRailing", 4.5);
+
+  // ── FALSE CEILING (ground floor only, or all floors for premium) ──────
+  if (isPremium || floorIndex === 0) {
+    // False ceiling for living + dining area (~40% of floor area)
+    addItem("falseCeiling", floorArea * 0.4);
   }
 
-  // ── Stair railing (ground floor — one run per floor transition) ───────
-  addItem("stairRailing", 4.5);
+  // ── TERRACE / TOP FLOOR ───────────────────────────────────────────────
+  if (isTopFloor) {
+    addItem("wpTerrace", toSqm(plotArea));
+    // Headroom / staircase cover on roof
+    addItem("headroomRoof", toSqm(plotArea * 0.08));
+  }
 
   return { items, matQty };
 }
 
-// ─────────────────────────────────────────────────────────────────────────
-// COMBINE matQty objects
-// ─────────────────────────────────────────────────────────────────────────
+// ───────────────────────────────────────────────────────────────────────────
+// HELPERS
+// ───────────────────────────────────────────────────────────────────────────
 function mergeMatQty(a, b) {
   const keys = [...new Set([...Object.keys(a), ...Object.keys(b)])];
   const out = {};
@@ -205,9 +237,6 @@ function mergeMatQty(a, b) {
   return out;
 }
 
-// ─────────────────────────────────────────────────────────────────────────
-// SUMMARISE
-// ─────────────────────────────────────────────────────────────────────────
 function summarise(items, GST_RATE) {
   const subtotal = items.reduce((s, i) => s + i.amount, 0);
   const gst = Math.round(subtotal * GST_RATE);
@@ -247,9 +276,9 @@ function notes(RATES) {
   return base;
 }
 
-// ─────────────────────────────────────────────────────────────────────────
+// ───────────────────────────────────────────────────────────────────────────
 // PUBLIC: calcStandardBOQ
-// ─────────────────────────────────────────────────────────────────────────
+// ───────────────────────────────────────────────────────────────────────────
 export function calcStandardBOQ(inputs) {
   const { length, breadth, floors, includeBasement } = inputs;
   const plotArea = length * breadth;
@@ -301,9 +330,9 @@ export function calcStandardBOQ(inputs) {
   };
 }
 
-// ─────────────────────────────────────────────────────────────────────────
+// ───────────────────────────────────────────────────────────────────────────
 // PUBLIC: calcPremiumBOQ
-// ─────────────────────────────────────────────────────────────────────────
+// ───────────────────────────────────────────────────────────────────────────
 export function calcPremiumBOQ(inputs) {
   const { length, breadth, floors, includeBasement } = inputs;
   const plotArea = length * breadth;
@@ -355,10 +384,9 @@ export function calcPremiumBOQ(inputs) {
   };
 }
 
-// ─────────────────────────────────────────────────────────────────────────
+// ───────────────────────────────────────────────────────────────────────────
 // PUBLIC: calcFloorWiseBOQ
-// Returns array of per-floor sheets + grand summary
-// ─────────────────────────────────────────────────────────────────────────
+// ───────────────────────────────────────────────────────────────────────────
 export function calcFloorWiseBOQ(inputs) {
   const {
     length,
@@ -373,7 +401,6 @@ export function calcFloorWiseBOQ(inputs) {
 
   const sheets = [];
 
-  // Foundation sheet
   const { items: fItems, matQty: fMat } = buildFoundation(plotArea, RATES);
   fItems.forEach((item, idx) => {
     item.srNo = idx + 1;
@@ -389,7 +416,6 @@ export function calcFloorWiseBOQ(inputs) {
     totalLabour: totalLabourDays(fItems),
   });
 
-  // Per-floor sheets
   for (let i = 0; i < totalFloors; i++) {
     const { items, matQty } = buildFloorItems(
       plotArea,

@@ -3,7 +3,7 @@
 // BAR BENDING SCHEDULE CALCULATORS
 // ═══════════════════════════════════════════════════════════════════════════
 
-import { THUMB_RULES } from "../../../pages/CalculatorPage/config/calculatorConstants";
+import { THUMB_RULES } from "../../config/calculatorConstants";
 
 /**
  * Calculate Bar Bending Schedule summary

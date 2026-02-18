@@ -12,7 +12,7 @@ export {
   FINISH_GRADES,
   SOIL_CONDITIONS,
   MATERIAL_RATES,
-} from "../../pages/CalculatorPage/config/calculatorConstants";
+} from "../config/calculatorConstants.js";
 
 // Re-export calculator functions
 export { calcBuildingCost } from "./calculators/buildingCost";

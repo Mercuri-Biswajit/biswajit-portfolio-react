@@ -9,8 +9,8 @@ import {
   FINISHING_RATES,
   SLAB_CONSTANTS,
   CONVERSIONS,
-} from '../../config/constants.js';
-import { safeFloat } from '../helpers.js';
+} from '../config/constants.js';
+import { safeFloat } from './helpers.js';
 
 /**
  * Calculate building construction estimate

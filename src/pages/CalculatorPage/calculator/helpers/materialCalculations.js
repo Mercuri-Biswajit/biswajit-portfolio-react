@@ -3,7 +3,7 @@
 // MATERIAL QUANTITY & SUMMARY CALCULATIONS
 // ═══════════════════════════════════════════════════════════════════════════
 
-import { THUMB_RULES } from "../../../pages/CalculatorPage/config/calculatorConstants";
+import { THUMB_RULES } from "../../config/calculatorConstants";
 
 /**
  * Calculate material quantities based on area

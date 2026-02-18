@@ -9,7 +9,7 @@ import {
   FINISH_GRADES,
   SOIL_CONDITIONS,
   MATERIAL_RATES,
-} from "../../../pages/CalculatorPage/config/calculatorConstants";
+} from "../../config/calculatorConstants";
 
 /**
  * Calculate comprehensive building construction cost

@@ -13,7 +13,7 @@ import {
   calcStandardBOQ,
   calcPremiumBOQ,
   calcFloorWiseBOQ,
-} from "../../utils/calculator/advanced";
+} from "./calculator/advanced";
 
 import { useBeamDesign } from "./hooks/useBeamDesign";
 import { useColumnDesign } from "./hooks/useColumnDesign";
