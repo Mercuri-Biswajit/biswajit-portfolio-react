@@ -3,7 +3,7 @@
 // MATERIAL QUANTITY & SUMMARY CALCULATIONS
 // ═══════════════════════════════════════════════════════════════════════════
 
-import { THUMB_RULES } from "../../../config/calculatorConstants";
+import { THUMB_RULES } from "../../../pages/CalculatorPage/config/calculatorConstants";
 
 /**
  * Calculate material quantities based on area
@@ -29,31 +29,31 @@ export function calcMaterialSummary(materialQty, rates) {
       quantity: materialQty.cement,
       unit: "bags",
       rate: rates.cement,
-      amount: Math.round(materialQty.cement * rates.cement)
+      amount: Math.round(materialQty.cement * rates.cement),
     },
     steel: {
       quantity: materialQty.steel,
       unit: "kg",
       rate: rates.steel,
-      amount: Math.round(materialQty.steel * rates.steel)
+      amount: Math.round(materialQty.steel * rates.steel),
     },
     sand: {
       quantity: materialQty.sand,
       unit: "cft",
       rate: rates.sand,
-      amount: Math.round(materialQty.sand * rates.sand)
+      amount: Math.round(materialQty.sand * rates.sand),
     },
     aggregate: {
       quantity: materialQty.aggregate,
       unit: "cft",
       rate: rates.aggregate,
-      amount: Math.round(materialQty.aggregate * rates.aggregate)
+      amount: Math.round(materialQty.aggregate * rates.aggregate),
     },
     bricks: {
       quantity: materialQty.bricks,
       unit: "nos",
       rate: rates.bricks,
-      amount: Math.round(materialQty.bricks * rates.bricks)
-    }
+      amount: Math.round(materialQty.bricks * rates.bricks),
+    },
   };
 }

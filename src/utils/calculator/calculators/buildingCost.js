@@ -9,7 +9,7 @@ import {
   FINISH_GRADES,
   SOIL_CONDITIONS,
   MATERIAL_RATES,
-} from "../../../config/calculatorConstants";
+} from "../../../pages/CalculatorPage/config/calculatorConstants";
 
 /**
  * Calculate comprehensive building construction cost
@@ -63,7 +63,8 @@ export function calcBuildingCost(inputs) {
   const tilesCost = tiles * rates.tiles;
   const labourCost = labourDays * rates.labour;
 
-  const materialCost = cementCost + steelCost + sandCost + aggregateCost + bricksCost;
+  const materialCost =
+    cementCost + steelCost + sandCost + aggregateCost + bricksCost;
   const finishingCost = paintCost + tilesCost;
 
   const structureCost = materialCost * typeFactor * soilFactor;
@@ -75,7 +76,14 @@ export function calcBuildingCost(inputs) {
 
   const basementCost = includeBasement ? plotArea * basementDepth * 800 : 0;
 
-  const subtotal = structureCost + adjustedFinishing + labourCost + electricalCost + plumbingCost + sanitaryCost + basementCost;
+  const subtotal =
+    structureCost +
+    adjustedFinishing +
+    labourCost +
+    electricalCost +
+    plumbingCost +
+    sanitaryCost +
+    basementCost;
   const contingency = subtotal * 0.08;
   const totalCost = subtotal + contingency;
   const costPerSqft = totalCost / totalArea;

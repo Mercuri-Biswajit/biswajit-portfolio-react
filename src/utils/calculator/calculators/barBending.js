@@ -3,14 +3,15 @@
 // BAR BENDING SCHEDULE CALCULATORS
 // ═══════════════════════════════════════════════════════════════════════════
 
-import { THUMB_RULES } from "../../../config/calculatorConstants";
+import { THUMB_RULES } from "../../../pages/CalculatorPage/config/calculatorConstants";
 
 /**
  * Calculate Bar Bending Schedule summary
  */
 export function calcBarBending(inputs) {
   const { floors, includeBasement, length, breadth } = inputs;
-  const totalArea = length * breadth * floors + (includeBasement ? length * breadth : 0);
+  const totalArea =
+    length * breadth * floors + (includeBasement ? length * breadth : 0);
 
   const totalSteel = totalArea * THUMB_RULES.steel_kg_per_sqft;
 
@@ -32,16 +33,25 @@ export function calcBarBending(inputs) {
  * Calculate Complete Bar Bending Schedule
  */
 export function calcCompleteBBS(inputs) {
-  const { length, breadth, floors, floorHeight, avgColumnSpan, includeBasement } = inputs;
-  
-  const totalArea = length * breadth * floors + (includeBasement ? length * breadth : 0);
+  const {
+    length,
+    breadth,
+    floors,
+    floorHeight,
+    avgColumnSpan,
+    includeBasement,
+  } = inputs;
+
+  const totalArea =
+    length * breadth * floors + (includeBasement ? length * breadth : 0);
   const totalSteel = totalArea * THUMB_RULES.steel_kg_per_sqft;
-  
-  const numColumns = Math.ceil(length / avgColumnSpan) * Math.ceil(breadth / avgColumnSpan);
+
+  const numColumns =
+    Math.ceil(length / avgColumnSpan) * Math.ceil(breadth / avgColumnSpan);
   const columnHeight = floorHeight * floors * 304.8;
-  
+
   const bbsItems = [];
-  
+
   const colBarDia = floors <= 2 ? 12 : 16;
   const colBarsPerColumn = floors <= 2 ? 4 : 6;
   const colBarLength = columnHeight + 600;
@@ -55,9 +65,9 @@ export function calcCompleteBBS(inputs) {
     shape: "Straight",
     cuttingLength: Math.round(colBarLength),
     totalWeight: Math.round(numColumns * colBarsPerColumn * colBarWeight),
-    bendingDetails: "No bending - Straight bars with hooks at ends"
+    bendingDetails: "No bending - Straight bars with hooks at ends",
   });
-  
+
   const colWidth = floors <= 2 ? 229 : 305;
   const stirrupPerimeter = 2 * (colWidth + colWidth) + 200;
   const stirrupSpacing = 150;
@@ -72,10 +82,13 @@ export function calcCompleteBBS(inputs) {
     shape: "Rectangular",
     cuttingLength: Math.round(stirrupPerimeter),
     totalWeight: Math.round(numColumns * stirrupsPerColumn * stirrupWeight),
-    bendingDetails: `4 bends at 90°, hook length 100mm`
+    bendingDetails: `4 bends at 90°, hook length 100mm`,
   });
-  
-  const totalBeamLength = (length * Math.ceil(breadth / avgColumnSpan) + breadth * Math.ceil(length / avgColumnSpan)) * 304.8;
+
+  const totalBeamLength =
+    (length * Math.ceil(breadth / avgColumnSpan) +
+      breadth * Math.ceil(length / avgColumnSpan)) *
+    304.8;
   const beamTopBarWeight = (256 / 162) * (totalBeamLength / 1000) * 2;
   bbsItems.push({
     member: "Beam Top Bars",
@@ -86,9 +99,9 @@ export function calcCompleteBBS(inputs) {
     shape: "Straight with anchorage",
     cuttingLength: 12000,
     totalWeight: Math.round(beamTopBarWeight * floors),
-    bendingDetails: "90° hooks at supports, lap length 752mm (47d)"
+    bendingDetails: "90° hooks at supports, lap length 752mm (47d)",
   });
-  
+
   const beamBottomBarWeight = (256 / 162) * (totalBeamLength / 1000) * 2;
   bbsItems.push({
     member: "Beam Bottom Bars",
@@ -99,9 +112,9 @@ export function calcCompleteBBS(inputs) {
     shape: "Straight",
     cuttingLength: 12000,
     totalWeight: Math.round(beamBottomBarWeight * floors),
-    bendingDetails: "Straight bars with standard hooks"
+    bendingDetails: "Straight bars with standard hooks",
   });
-  
+
   const beamDepth = 305;
   const beamWidth = 229;
   const beamStirrupPerim = 2 * (beamWidth + beamDepth) + 200;
@@ -116,11 +129,11 @@ export function calcCompleteBBS(inputs) {
     shape: "Rectangular",
     cuttingLength: Math.round(beamStirrupPerim),
     totalWeight: Math.round(beamStirrupCount * beamStirrupWeight * floors),
-    bendingDetails: "4 bends at 90°, hooks 100mm"
+    bendingDetails: "4 bends at 90°, hooks 100mm",
   });
-  
+
   const slabBarSpacing = 150;
-  const slabBarsMain = Math.ceil(length * 304.8 / slabBarSpacing);
+  const slabBarsMain = Math.ceil((length * 304.8) / slabBarSpacing);
   const slabBarLength = breadth * 304.8;
   const slabMainWeight = (100 / 162) * (slabBarLength / 1000) * slabBarsMain;
   bbsItems.push({
@@ -132,11 +145,11 @@ export function calcCompleteBBS(inputs) {
     shape: "Straight",
     cuttingLength: Math.round(slabBarLength),
     totalWeight: Math.round(slabMainWeight * floors),
-    bendingDetails: "Straight bars, lap length 600mm (60d)"
+    bendingDetails: "Straight bars, lap length 600mm (60d)",
   });
-  
-  const slabBarsDist = Math.ceil(breadth * 304.8 / slabBarSpacing);
-  const slabDistWeight = (100 / 162) * (length * 304.8 / 1000) * slabBarsDist;
+
+  const slabBarsDist = Math.ceil((breadth * 304.8) / slabBarSpacing);
+  const slabDistWeight = (100 / 162) * ((length * 304.8) / 1000) * slabBarsDist;
   bbsItems.push({
     member: "Slab Distribution Bars",
     barDia: "10mm",
@@ -146,9 +159,9 @@ export function calcCompleteBBS(inputs) {
     shape: "Straight",
     cuttingLength: Math.round(length * 304.8),
     totalWeight: Math.round(slabDistWeight * floors),
-    bendingDetails: "Straight bars, lap length 600mm"
+    bendingDetails: "Straight bars, lap length 600mm",
   });
-  
+
   const footingSize = 1372;
   const footingBars = 10;
   const footingBarWeight = (144 / 162) * (footingSize / 1000);
@@ -161,15 +174,18 @@ export function calcCompleteBBS(inputs) {
     shape: "Straight with hooks",
     cuttingLength: Math.round(footingSize),
     totalWeight: Math.round(numColumns * footingBars * 2 * footingBarWeight),
-    bendingDetails: "90° hooks at ends, hook length 150mm"
+    bendingDetails: "90° hooks at ends, hook length 150mm",
   });
-  
-  const totalBBSWeight = bbsItems.reduce((sum, item) => sum + item.totalWeight, 0);
-  
+
+  const totalBBSWeight = bbsItems.reduce(
+    (sum, item) => sum + item.totalWeight,
+    0,
+  );
+
   return {
     totalWeight: totalBBSWeight,
     items: bbsItems,
     wastageAllowance: Math.round(totalBBSWeight * 0.07),
-    finalOrderQuantity: Math.round(totalBBSWeight * 1.07)
+    finalOrderQuantity: Math.round(totalBBSWeight * 1.07),
   };
 }

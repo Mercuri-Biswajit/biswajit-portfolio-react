@@ -1,9 +1,8 @@
 /* ═══════════════════════════════════════════════════════════════════════════
-   BEAM & COLUMN DESIGN - ADDITIONAL STYLES
-   Add these styles to your existing CSS file
+   BEAM & COLUMN DESIGN + BOQ — COMPONENT STYLES
    ═══════════════════════════════════════════════════════════════════════════ */
 
-/* Section Labels */
+/* ── Section Labels ────────────────────────────────────────────────────── */
 .calc-section-label {
   font-size: 0.95rem;
   font-weight: 600;
@@ -16,7 +15,6 @@
   gap: 8px;
 }
 
-/* Card Sections */
 .calc-card-section {
   margin-bottom: 25px;
   padding-bottom: 20px;
@@ -29,7 +27,6 @@
   padding-bottom: 0;
 }
 
-/* Input Hints */
 .calc-input-hint {
   display: block;
   font-size: 0.75rem;
@@ -38,7 +35,7 @@
   font-style: italic;
 }
 
-/* Detail Grid */
+/* ── Detail Grid ───────────────────────────────────────────────────────── */
 .calc-detail-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -70,7 +67,7 @@
   color: #1f2937;
 }
 
-/* Table Styles */
+/* ── Table ─────────────────────────────────────────────────────────────── */
 .calc-table-container {
   overflow-x: auto;
   margin-top: 15px;
@@ -116,7 +113,7 @@
   color: #374151;
 }
 
-/* Alert Styles */
+/* ── Alerts ────────────────────────────────────────────────────────────── */
 .calc-alert {
   padding: 15px 20px;
   border-radius: 8px;
@@ -155,47 +152,7 @@
   color: #92400e;
 }
 
-/* Responsive Grid Adjustments */
-@media (max-width: 768px) {
-  .calc-grid-3 {
-    grid-template-columns: 1fr;
-  }
-  
-  .calc-grid-2 {
-    grid-template-columns: 1fr;
-  }
-  
-  .calc-detail-grid {
-    grid-template-columns: 1fr;
-  }
-  
-  .calc-struct-grid {
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  }
-  
-  .calc-table {
-    font-size: 0.8rem;
-  }
-  
-  .calc-table th,
-  .calc-table td {
-    padding: 8px 10px;
-  }
-}
-
-/* Button Disabled State */
-.calc-btn-primary:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-  background: #9ca3af;
-}
-
-.calc-btn-primary:disabled:hover {
-  background: #9ca3af;
-  transform: none;
-}
-
-/* Enhanced Structure Cards for Results */
+/* ── Struct Section (design tabs) ──────────────────────────────────────── */
 .calc-struct-section {
   background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
   padding: 25px;
@@ -262,7 +219,6 @@
   font-style: italic;
 }
 
-/* Card Subtitle Enhancement */
 .calc-card-subtitle {
   font-size: 1.1rem;
   font-weight: 600;
@@ -275,29 +231,25 @@
   gap: 10px;
 }
 
-/* Print Styles */
-@media print {
-  .calc-btn-primary,
-  .calc-tab {
-    display: none;
-  }
-  
-  .calc-card,
-  .calc-struct-section {
-    page-break-inside: avoid;
-  }
-  
-  .calc-table-container {
-    overflow: visible;
-  }
+/* ── Button disabled ───────────────────────────────────────────────────── */
+.calc-btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: #9ca3af;
 }
 
-/* Animations */
+.calc-btn-primary:disabled:hover {
+  background: #9ca3af;
+  transform: none;
+}
+
+/* ── Animations ────────────────────────────────────────────────────────── */
 @keyframes slideIn {
   from {
     opacity: 0;
     transform: translateY(20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -308,7 +260,7 @@
   animation: slideIn 0.4s ease-out;
 }
 
-/* Utility Classes */
+/* ── Utility ───────────────────────────────────────────────────────────── */
 .text-success {
   color: #10b981;
 }
@@ -333,29 +285,54 @@
   text-align: center;
 }
 
-/* Loading Spinner (optional) */
-.calc-spinner {
-  border: 3px solid #f3f4f6;
-  border-top: 3px solid #3b82f6;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  animation: spin 1s linear infinite;
-  margin: 20px auto;
+/* ── Print ─────────────────────────────────────────────────────────────── */
+@media print {
+
+  .calc-btn-primary,
+  .calc-tab {
+    display: none;
+  }
+
+  .calc-card,
+  .calc-struct-section {
+    page-break-inside: avoid;
+  }
+
+  .calc-table-container {
+    overflow: visible;
+  }
 }
 
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
+/* ── Responsive ────────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
 
+  .calc-grid-3,
+  .calc-grid-2 {
+    grid-template-columns: 1fr;
+  }
+
+  .calc-detail-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .calc-struct-grid {
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  }
+
+  .calc-table {
+    font-size: 0.8rem;
+  }
+
+  .calc-table th,
+  .calc-table td {
+    padding: 8px 10px;
+  }
+}
 
 /* ═══════════════════════════════════════════════════════════════════════════
    BOQ COMPONENT STYLES
-   Add this block to design-calculator-styles.css
    ═══════════════════════════════════════════════════════════════════════════ */
 
-/* ── Wrapper ─────────────────────────────────────────────────────────────── */
 .boq-wrapper {
   display: flex;
   flex-direction: column;
@@ -363,7 +340,7 @@
   font-family: 'Arial', sans-serif;
 }
 
-/* ── Masthead ─────────────────────────────────────────────────────────────── */
+/* ── Masthead ──────────────────────────────────────────────────────────── */
 .boq-masthead {
   background: linear-gradient(135deg, #002060 0%, #003366 55%, #00468b 100%);
   border-radius: 14px;
@@ -384,15 +361,14 @@
   top: -20px;
   font-size: 9rem;
   font-weight: 900;
-  color: rgba(255,255,255,0.03);
+  color: rgba(255, 255, 255, 0.03);
   pointer-events: none;
-  letter-spacing: -4px;
 }
 
 .boq-masthead-tag {
   display: inline-block;
-  background: rgba(255,140,0,0.18);
-  border: 1px solid rgba(255,140,0,0.5);
+  background: rgba(255, 140, 0, 0.18);
+  border: 1px solid rgba(255, 140, 0, 0.5);
   color: #FF8C00;
   font-size: 0.72rem;
   font-weight: 700;
@@ -413,14 +389,13 @@
 
 .boq-masthead-sub {
   font-size: 0.85rem;
-  color: rgba(255,255,255,0.55);
+  color: rgba(255, 255, 255, 0.55);
   margin: 0;
-  letter-spacing: 0.03em;
 }
 
 .boq-grand-pill {
-  background: rgba(255,255,255,0.08);
-  border: 1px solid rgba(255,255,255,0.15);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 12px;
   padding: 1.25rem 1.75rem;
   text-align: center;
@@ -431,7 +406,7 @@
   display: block;
   font-size: 0.72rem;
   font-weight: 600;
-  color: rgba(255,255,255,0.55);
+  color: rgba(255, 255, 255, 0.55);
   text-transform: uppercase;
   letter-spacing: 0.12em;
   margin-bottom: 0.4rem;
@@ -449,11 +424,11 @@
 .boq-grand-approx {
   display: block;
   font-size: 0.78rem;
-  color: rgba(255,255,255,0.4);
+  color: rgba(255, 255, 255, 0.4);
   margin-top: 0.3rem;
 }
 
-/* ── Summary Cards Row ───────────────────────────────────────────────────── */
+/* ── Summary Cards ─────────────────────────────────────────────────────── */
 .boq-summary-row {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -472,14 +447,33 @@
 
 .boq-sum-card:hover {
   transform: translateY(-3px);
-  box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
 }
 
-.boq-sum-blue   { background: #EBF3FB; border-color: #BDD7EE; }
-.boq-sum-teal   { background: #E8F6F3; border-color: #A8D8CF; }
-.boq-sum-neutral{ background: #F4F4F4; border-color: #D8D8D8; }
-.boq-sum-amber  { background: #FFF8E6; border-color: #FFD966; }
-.boq-sum-green  { background: #E8F5E9; border-color: #A5D6A7; }
+.boq-sum-blue {
+  background: #EBF3FB;
+  border-color: #BDD7EE;
+}
+
+.boq-sum-teal {
+  background: #E8F6F3;
+  border-color: #A8D8CF;
+}
+
+.boq-sum-neutral {
+  background: #F4F4F4;
+  border-color: #D8D8D8;
+}
+
+.boq-sum-amber {
+  background: #FFF8E6;
+  border-color: #FFD966;
+}
+
+.boq-sum-green {
+  background: #E8F5E9;
+  border-color: #A5D6A7;
+}
 
 .boq-sum-icon {
   font-size: 1.4rem;
@@ -514,7 +508,7 @@
   margin-top: 0.2rem;
 }
 
-/* ── Materials Strip ─────────────────────────────────────────────────────── */
+/* ── Materials Strip ───────────────────────────────────────────────────── */
 .boq-materials-strip {
   background: #f8fafc;
   border: 1.5px solid #e2e8f0;
@@ -548,7 +542,9 @@
   flex: 1 1 160px;
 }
 
-.boq-mat-icon { font-size: 1.2rem; }
+.boq-mat-icon {
+  font-size: 1.2rem;
+}
 
 .boq-mat-info {
   display: flex;
@@ -573,7 +569,7 @@
   color: #94a3b8;
 }
 
-/* ── Filter / Controls Bar ───────────────────────────────────────────────── */
+/* ── Filter Controls ───────────────────────────────────────────────────── */
 .boq-controls {
   display: flex;
   align-items: center;
@@ -616,7 +612,7 @@
 }
 
 .boq-floor-tab-count {
-  background: rgba(255,255,255,0.2);
+  background: rgba(255, 255, 255, 0.2);
   border-radius: 10px;
   padding: 1px 7px;
   font-size: 0.72rem;
@@ -666,13 +662,13 @@
   padding: 2px;
 }
 
-/* ── Table ───────────────────────────────────────────────────────────────── */
+/* ── BOQ Table ─────────────────────────────────────────────────────────── */
 .boq-table-card {
   background: #fff;
   border: 1.5px solid #e2e8f0;
   border-radius: 14px;
   overflow: hidden;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
 }
 
 .boq-table-scroll {
@@ -696,15 +692,42 @@
   white-space: nowrap;
 }
 
-.boq-th-sl   { width: 52px; text-align: center; }
-.boq-th-desc { text-align: left; min-width: 320px; }
-.boq-th-num  { width: 110px; text-align: right; }
-.boq-th-sm   { width: 72px; text-align: center; }
-.boq-th-amt  { width: 140px; text-align: right; }
+.boq-th-sl {
+  width: 52px;
+  text-align: center;
+}
 
-.boq-tr { transition: background 0.15s; }
-.boq-tr:hover td { background: #f0f6ff !important; }
-.boq-tr-alt td { background: #f7f9fd; }
+.boq-th-desc {
+  text-align: left;
+  min-width: 320px;
+}
+
+.boq-th-num {
+  width: 110px;
+  text-align: right;
+}
+
+.boq-th-sm {
+  width: 72px;
+  text-align: center;
+}
+
+.boq-th-amt {
+  width: 140px;
+  text-align: right;
+}
+
+.boq-tr {
+  transition: background 0.15s;
+}
+
+.boq-tr:hover td {
+  background: #f0f6ff !important;
+}
+
+.boq-tr-alt td {
+  background: #f7f9fd;
+}
 
 .boq-td {
   padding: 0.65rem 1rem;
@@ -714,11 +737,32 @@
   line-height: 1.45;
 }
 
-.boq-td-sl   { text-align: center; font-weight: 600; color: #64748b; font-size: 0.78rem; }
-.boq-td-desc { text-align: left; }
-.boq-td-num  { text-align: right; color: #334155; font-variant-numeric: tabular-nums; }
-.boq-td-sm   { text-align: center; color: #64748b; font-size: 0.82rem; }
-.boq-td-amt  { text-align: right; }
+.boq-td-sl {
+  text-align: center;
+  font-weight: 600;
+  color: #64748b;
+  font-size: 0.78rem;
+}
+
+.boq-td-desc {
+  text-align: left;
+}
+
+.boq-td-num {
+  text-align: right;
+  color: #334155;
+  font-variant-numeric: tabular-nums;
+}
+
+.boq-td-sm {
+  text-align: center;
+  color: #64748b;
+  font-size: 0.82rem;
+}
+
+.boq-td-amt {
+  text-align: right;
+}
 
 .boq-amount-pill {
   display: inline-block;
@@ -727,7 +771,6 @@
   font-variant-numeric: tabular-nums;
 }
 
-/* Table Footer */
 .boq-table-footer {
   border-top: 2px solid #003366;
   padding: 0.75rem 1rem;
@@ -779,7 +822,7 @@
   color: #FF8C00;
 }
 
-/* ── Notes Card ──────────────────────────────────────────────────────────── */
+/* ── Notes ─────────────────────────────────────────────────────────────── */
 .boq-notes-card {
   background: #fffdf0;
   border: 1.5px solid #FFD966;
@@ -813,7 +856,7 @@
   line-height: 1.55;
 }
 
-/* ── Signature Block ─────────────────────────────────────────────────────── */
+/* ── Signature Block ───────────────────────────────────────────────────── */
 .boq-sig-row {
   display: flex;
   justify-content: space-between;
@@ -864,19 +907,19 @@
 .boq-stamp-text {
   font-size: 0.65rem;
   font-weight: 900;
-  color: rgba(0,51,102,0.3);
+  color: rgba(0, 51, 102, 0.3);
   letter-spacing: 0.15em;
   text-transform: uppercase;
 }
 
 .boq-stamp-sub {
   font-size: 0.55rem;
-  color: rgba(0,51,102,0.25);
+  color: rgba(0, 51, 102, 0.25);
   letter-spacing: 0.1em;
   margin-top: 2px;
 }
 
-/* ── Responsive ──────────────────────────────────────────────────────────── */
+/* ── BOQ Responsive ────────────────────────────────────────────────────── */
 @media (max-width: 768px) {
   .boq-masthead {
     flex-direction: column;
@@ -909,7 +952,8 @@
     font-size: 0.78rem;
   }
 
-  .boq-th, .boq-td {
+  .boq-th,
+  .boq-td {
     padding: 0.5rem 0.6rem;
   }
 
