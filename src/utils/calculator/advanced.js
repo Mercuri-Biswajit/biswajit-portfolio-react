@@ -21,7 +21,8 @@ export { calcFooting } from "./calculators/footing";
 export { calcBarBending, calcCompleteBBS } from "./calculators/barBending";
 export { calcProjectTimeline } from "./calculators/projectTimeline";
 export { calcStructureDesign } from "./calculators/structureDesign";
-export { calcFullBOQ } from "./calculators/fullBOQ";
+// export { calcFullBOQ } from "./calculators/fullBOQ";
+export { calcStandardBOQ, calcPremiumBOQ, calcFloorWiseBOQ } from "./calculators/fullBOQ";
 
 // Re-export helper functions (these were internal but now available if needed)
 export {

@@ -1,8 +1,9 @@
+/* eslint-disable no-unused-vars */
 // ═══════════════════════════════════════════════════════════════════════════
 // CALCULATOR TAB COMPONENTS - PROFESSIONAL VERSION
 // All calculator result tabs in one organized file
 // ═══════════════════════════════════════════════════════════════════════════
-
+import { useState } from "react";
 import { formatCurrency } from "../../utils/helpers";
 
 /**
@@ -426,111 +427,289 @@ export function CompleteBBS({ barBending, completeBBS }) {
 /**
  * Full Bill of Quantities Tab
  */
-export function FullBOQ({ boq }) {
-  return (
-    <div className="calc-result-card">
-      <h3 className="calc-breakdown-header">
-        <span>📄</span> Complete Bill of Quantities (BOQ)
-      </h3>
-      
-      {/* BOQ Summary Banner */}
-      <div className="calc-cost-banner" style={{ marginBottom: "2rem" }}>
-        <div className="calc-estimate-label">Grand Total (Including GST)</div>
-        <div className="calc-estimate-amount">
-          {formatCurrency(boq.summary.grandTotal)}
-        </div>
-        <div className="calc-estimate-meta">
-          <span>
-            Subtotal: <strong>{formatCurrency(boq.summary.subtotal)}</strong>
-          </span>
-          <span>
-            GST (18%): <strong>{formatCurrency(boq.summary.gst)}</strong>
-          </span>
-          <span>
-            Total Items: <strong>{boq.summary.totalItems}</strong>
-          </span>
-        </div>
-      </div>
 
-      {/* Detailed BOQ Table */}
-      <div className="calc-timeline-table">
-        <table className="calc-table">
-          <thead>
-            <tr>
-              <th>Sr. No.</th>
-              <th>Description of Work</th>
-              <th>Unit</th>
-              <th>Quantity</th>
-              <th>Rate (₹)</th>
-              <th>Amount (₹)</th>
-            </tr>
-          </thead>
-          <tbody>
-            {boq.items.map((item) => (
-              <tr key={item.srNo}>
-                <td><strong>{item.srNo}</strong></td>
-                <td>{item.description}</td>
-                <td>{item.unit}</td>
-                <td>{item.quantity}</td>
-                <td>{item.rate.toLocaleString("en-IN")}</td>
-                <td><strong>{item.amount.toLocaleString("en-IN")}</strong></td>
-              </tr>
-            ))}
-            <tr style={{ backgroundColor: "var(--color-bg-dark)", fontWeight: "bold" }}>
-              <td colSpan="5" style={{ textAlign: "right", paddingRight: "2rem" }}>
-                SUBTOTAL
-              </td>
-              <td>{boq.summary.subtotal.toLocaleString("en-IN")}</td>
-            </tr>
-            <tr>
-              <td colSpan="5" style={{ textAlign: "right", paddingRight: "2rem" }}>
-                GST @ 18%
-              </td>
-              <td>{boq.summary.gst.toLocaleString("en-IN")}</td>
-            </tr>
-            <tr style={{ backgroundColor: "var(--color-primary)", color: "white", fontWeight: "bold", fontSize: "1.1rem" }}>
-              <td colSpan="5" style={{ textAlign: "right", paddingRight: "2rem" }}>
-                GRAND TOTAL
-              </td>
-              <td>{boq.summary.grandTotal.toLocaleString("en-IN")}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+// export function FullBOQ({ boq }) {
+//   const [activeFloor, setActiveFloor] = useState("all");
+//   const [searchQuery, setSearchQuery] = useState("");
 
-      {/* Material Summary */}
-      <div className="calc-struct-section">
-        <h4 className="calc-struct-section-title">Key Material Summary</h4>
-        <div className="calc-struct-grid">
-          {Object.entries(boq.materialSummary).map(([material, data]) => (
-            <div key={material} className="calc-struct-card">
-              <div className="calc-struct-icon">
-                {material === 'cement' ? '🏗️' : 
-                 material === 'steel' ? '⚙️' : 
-                 material === 'sand' ? '🏖️' : 
-                 material === 'aggregate' ? '🪨' : '🧱'}
-              </div>
-              <div className="calc-struct-title">{material.charAt(0).toUpperCase() + material.slice(1)}</div>
-              <div className="calc-struct-value">
-                {data.quantity} {data.unit}
-              </div>
-              <div className="calc-struct-sub">
-                @ ₹{data.rate}/{data.unit} = ₹{data.amount.toLocaleString("en-IN")}
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
+//   // Group items by floor if boq has floor data, otherwise treat as single list
+//   const groundItems = boq.items.filter(
+//     (i) => !i.floor || i.floor === "Ground Floor" || i.srNo <= 34
+//   );
+//   const firstItems = boq.items.filter(
+//     (i) => i.floor === "First Floor" || i.srNo > 34
+//   );
+//   const hasFloors = firstItems.length > 0;
 
-      {/* Notes */}
-      <div className="calc-note">
-        <strong>📋 Important Notes:</strong>
-        <ul style={{ marginTop: "0.5rem", paddingLeft: "1.5rem" }}>
-          {boq.notes.map((note, idx) => (
-            <li key={idx}>{note}</li>
-          ))}
-        </ul>
-      </div>
-    </div>
-  );
-}
+//   const filterItems = (items) =>
+//     items.filter((item) =>
+//       searchQuery
+//         ? item.description?.toLowerCase().includes(searchQuery.toLowerCase())
+//         : true
+//     );
+
+//   const displayItems =
+//     activeFloor === "ground"
+//       ? filterItems(groundItems)
+//       : activeFloor === "first"
+//       ? filterItems(firstItems)
+//       : filterItems(boq.items);
+
+//   const grandTotal = boq.summary.grandTotal;
+//   const subtotal = boq.summary.subtotal;
+//   const gst = boq.summary.gst;
+
+//   return (
+//     <div className="boq-wrapper">
+//       {/* ── TOP HEADER STRIP ─────────────────────────────────────────── */}
+//       <div className="boq-masthead">
+//         <div className="boq-masthead-left">
+//           <div className="boq-masthead-tag">BILL OF QUANTITIES</div>
+//           <h2 className="boq-masthead-title">
+//             Proposed G+1 Floor Building
+//           </h2>
+//           <p className="boq-masthead-sub">
+//             As per IS&nbsp;456:2000 &nbsp;|&nbsp; PWD Schedule of Rates
+//           </p>
+//         </div>
+//         <div className="boq-masthead-right">
+//           <div className="boq-grand-pill">
+//             <span className="boq-grand-label">Grand Total</span>
+//             <span className="boq-grand-amount">{formatCurrency(grandTotal)}</span>
+//             <span className="boq-grand-approx">
+//               ≈ {Math.round(grandTotal / 100000)} Lakh
+//             </span>
+//           </div>
+//         </div>
+//       </div>
+
+//       {/* ── COST SUMMARY CARDS ──────────────────────────────────────── */}
+//       <div className="boq-summary-row">
+//         <div className="boq-sum-card boq-sum-blue">
+//           <div className="boq-sum-icon">🏗️</div>
+//           <div className="boq-sum-body">
+//             <div className="boq-sum-label">Ground Floor</div>
+//             <div className="boq-sum-value">
+//               {formatCurrency(
+//                 groundItems.reduce((s, i) => s + (i.amount || 0), 0) ||
+//                   subtotal * 0.76
+//               )}
+//             </div>
+//             <div className="boq-sum-meta">{groundItems.length || boq.summary.totalItems} line items</div>
+//           </div>
+//         </div>
+
+//         {hasFloors && (
+//           <div className="boq-sum-card boq-sum-teal">
+//             <div className="boq-sum-icon">🏢</div>
+//             <div className="boq-sum-body">
+//               <div className="boq-sum-label">First Floor</div>
+//               <div className="boq-sum-value">
+//                 {formatCurrency(
+//                   firstItems.reduce((s, i) => s + (i.amount || 0), 0)
+//                 )}
+//               </div>
+//               <div className="boq-sum-meta">{firstItems.length} line items</div>
+//             </div>
+//           </div>
+//         )}
+
+//         <div className="boq-sum-card boq-sum-neutral">
+//           <div className="boq-sum-icon">🧾</div>
+//           <div className="boq-sum-body">
+//             <div className="boq-sum-label">Sub-Total</div>
+//             <div className="boq-sum-value">{formatCurrency(subtotal)}</div>
+//             <div className="boq-sum-meta">Before GST</div>
+//           </div>
+//         </div>
+
+//         <div className="boq-sum-card boq-sum-amber">
+//           <div className="boq-sum-icon">📋</div>
+//           <div className="boq-sum-body">
+//             <div className="boq-sum-label">GST @ 18%</div>
+//             <div className="boq-sum-value">{formatCurrency(gst)}</div>
+//             <div className="boq-sum-meta">Applicable taxes</div>
+//           </div>
+//         </div>
+
+//         <div className="boq-sum-card boq-sum-green">
+//           <div className="boq-sum-icon">✅</div>
+//           <div className="boq-sum-body">
+//             <div className="boq-sum-label">Grand Total</div>
+//             <div className="boq-sum-value boq-sum-value--big">
+//               {formatCurrency(grandTotal)}
+//             </div>
+//             <div className="boq-sum-meta">Inc. all taxes</div>
+//           </div>
+//         </div>
+//       </div>
+
+//       {/* ── MATERIAL SUMMARY ─────────────────────────────────────────── */}
+//       {boq.materialSummary && (
+//         <div className="boq-materials-strip">
+//           <div className="boq-materials-title">Key Material Requirements</div>
+//           <div className="boq-materials-grid">
+//             {Object.entries(boq.materialSummary).map(([mat, data]) => (
+//               <div key={mat} className="boq-mat-chip">
+//                 <span className="boq-mat-icon">
+//                   {mat === "cement" ? "🏗️" : mat === "steel" ? "⚙️" : mat === "sand" ? "🏖️" : mat === "aggregate" ? "🪨" : "🧱"}
+//                 </span>
+//                 <div className="boq-mat-info">
+//                   <span className="boq-mat-name">
+//                     {mat.charAt(0).toUpperCase() + mat.slice(1)}
+//                   </span>
+//                   <span className="boq-mat-qty">
+//                     {data.quantity} {data.unit}
+//                   </span>
+//                   <span className="boq-mat-cost">
+//                     @ ₹{data.rate}/{data.unit}
+//                   </span>
+//                 </div>
+//               </div>
+//             ))}
+//           </div>
+//         </div>
+//       )}
+
+//       {/* ── FILTER BAR ───────────────────────────────────────────────── */}
+//       <div className="boq-controls">
+//         <div className="boq-floor-tabs">
+//           {[
+//             { key: "all", label: "All Items", count: boq.items.length },
+//             { key: "ground", label: "Ground Floor", count: groundItems.length },
+//             ...(hasFloors
+//               ? [{ key: "first", label: "First Floor", count: firstItems.length }]
+//               : []),
+//           ].map(({ key, label, count }) => (
+//             <button
+//               key={key}
+//               className={`boq-floor-tab ${activeFloor === key ? "active" : ""}`}
+//               onClick={() => setActiveFloor(key)}
+//             >
+//               {label}
+//               <span className="boq-floor-tab-count">{count}</span>
+//             </button>
+//           ))}
+//         </div>
+
+//         <div className="boq-search-wrap">
+//           <span className="boq-search-icon">🔍</span>
+//           <input
+//             className="boq-search"
+//             type="text"
+//             placeholder="Search items…"
+//             value={searchQuery}
+//             onChange={(e) => setSearchQuery(e.target.value)}
+//           />
+//           {searchQuery && (
+//             <button className="boq-search-clear" onClick={() => setSearchQuery("")}>
+//               ✕
+//             </button>
+//           )}
+//         </div>
+//       </div>
+
+//       {/* ── DETAILED TABLE ───────────────────────────────────────────── */}
+//       <div className="boq-table-card">
+//         <div className="boq-table-scroll">
+//           <table className="boq-table">
+//             <thead>
+//               <tr>
+//                 <th className="boq-th boq-th-sl">Sl.</th>
+//                 <th className="boq-th boq-th-desc">Description of Work</th>
+//                 <th className="boq-th boq-th-num">Quantity</th>
+//                 <th className="boq-th boq-th-sm">Unit</th>
+//                 <th className="boq-th boq-th-num">Rate (₹)</th>
+//                 <th className="boq-th boq-th-amt">Amount (₹)</th>
+//               </tr>
+//             </thead>
+//             <tbody>
+//               {displayItems.map((item, idx) => (
+//                 <tr key={item.srNo ?? idx} className={`boq-tr ${idx % 2 === 0 ? "boq-tr-alt" : ""}`}>
+//                   <td className="boq-td boq-td-sl">{item.srNo ?? idx + 1}</td>
+//                   <td className="boq-td boq-td-desc">{item.description}</td>
+//                   <td className="boq-td boq-td-num">
+//                     {typeof item.quantity === "number"
+//                       ? item.quantity.toLocaleString("en-IN", { maximumFractionDigits: 3 })
+//                       : item.quantity}
+//                   </td>
+//                   <td className="boq-td boq-td-sm">{item.unit}</td>
+//                   <td className="boq-td boq-td-num">
+//                     {typeof item.rate === "number"
+//                       ? item.rate.toLocaleString("en-IN", { maximumFractionDigits: 2 })
+//                       : item.rate}
+//                   </td>
+//                   <td className="boq-td boq-td-amt">
+//                     <span className="boq-amount-pill">
+//                       {typeof item.amount === "number"
+//                         ? "₹" + item.amount.toLocaleString("en-IN", { maximumFractionDigits: 0 })
+//                         : item.amount}
+//                     </span>
+//                   </td>
+//                 </tr>
+//               ))}
+//             </tbody>
+//           </table>
+//         </div>
+
+//         {/* Table footer totals */}
+//         <div className="boq-table-footer">
+//           <div className="boq-footer-row">
+//             <span className="boq-footer-label">Sub-Total</span>
+//             <span className="boq-footer-value">{formatCurrency(subtotal)}</span>
+//           </div>
+//           <div className="boq-footer-row">
+//             <span className="boq-footer-label">GST @ 18%</span>
+//             <span className="boq-footer-value">{formatCurrency(gst)}</span>
+//           </div>
+//           <div className="boq-footer-row boq-footer-grand">
+//             <span className="boq-footer-label">GRAND TOTAL</span>
+//             <span className="boq-footer-value">{formatCurrency(grandTotal)}</span>
+//           </div>
+//         </div>
+//       </div>
+
+//       {/* ── NOTES ────────────────────────────────────────────────────── */}
+//       <div className="boq-notes-card">
+//         <div className="boq-notes-header">
+//           <span>📋</span> Notes &amp; Conditions
+//         </div>
+//         <ol className="boq-notes-list">
+//           {(
+//             boq.notes ?? [
+//               "Rates are as per current PWD Schedule of Rates and prevailing market rates.",
+//               "All RCC work to be carried out as per IS 456:2000 using M-20 grade concrete.",
+//               "Steel reinforcement: Tor Steel / TMT Fe500 grade as per IS 1786.",
+//               "This estimate is subject to revision based on actual site conditions and final drawings.",
+//               "Contractor shall verify all measurements at site before commencement of work.",
+//               "GST and other applicable taxes are not included in the base estimate.",
+//               "Any item not covered in this BOQ shall be carried out as per Engineer-in-Charge's direction.",
+//             ]
+//           ).map((note, i) => (
+//             <li key={i}>{note}</li>
+//           ))}
+//         </ol>
+//       </div>
+
+//       {/* ── SIGNATURE BLOCK ──────────────────────────────────────────── */}
+//       <div className="boq-sig-row">
+//         <div className="boq-sig-box">
+//           <div className="boq-sig-line" />
+//           <div className="boq-sig-name">Civil Engineer / Estimator</div>
+//           <div className="boq-sig-role">Prepared By</div>
+//         </div>
+//         <div className="boq-sig-stamp">
+//           <div className="boq-stamp-inner">
+//             <div className="boq-stamp-text">ESTIMATE</div>
+//             <div className="boq-stamp-sub">IS 456:2000</div>
+//           </div>
+//         </div>
+//         <div className="boq-sig-box">
+//           <div className="boq-sig-line" />
+//           <div className="boq-sig-name">Owner / Client</div>
+//           <div className="boq-sig-role">Approved By</div>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// }

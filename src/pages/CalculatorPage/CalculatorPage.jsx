@@ -16,7 +16,9 @@ import {
   calcProjectTimeline,
   calcStructureDesign,
   calcCompleteBBS,
-  calcFullBOQ,
+  calcStandardBOQ,
+  calcPremiumBOQ,
+  calcFloorWiseBOQ,
 } from "../../utils/calculator/advanced";
 import { formatCurrency } from "../../utils/helpers";
 
@@ -27,8 +29,9 @@ import {
   StaircaseDesign,
   FoundationDesign,
   CompleteBBS,
-  FullBOQ,
 } from "./TabComponents";
+
+import { FullBOQ } from "./FullBOQTab";
 
 import { designBeam } from "../../utils/calculator/beamDesign";
 import { designColumn } from "../../utils/calculator/columnDesign";
@@ -41,7 +44,7 @@ import "./design-calculator-styles.css";
 function CalculatorsPage() {
   // ── Main Tab State ─────────────────────────────────────────────────────
   const [mainTab, setMainTab] = useState("costing"); // 'costing', 'beam', 'column'
-  
+
   // ── Input State ────────────────────────────────────────────────────────
   const [inputs, setInputs] = useState({
     // Basic Dimensions
@@ -104,13 +107,13 @@ function CalculatorsPage() {
 
   // Auto-populate beam/column inputs from structure design when results change
   useEffect(() => {
-    if (results?.structureDesign && mainTab === 'beam' && !beamInputs.b) {
+    if (results?.structureDesign && mainTab === "beam" && !beamInputs.b) {
       populateBeamFromStructure();
     }
   }, [mainTab, results]);
 
   useEffect(() => {
-    if (results?.structureDesign && mainTab === 'column' && !columnInputs.b) {
+    if (results?.structureDesign && mainTab === "column" && !columnInputs.b) {
       populateColumnFromStructure();
     }
   }, [mainTab, results]);
@@ -120,8 +123,9 @@ function CalculatorsPage() {
     try {
       // Validate required inputs
       if (!beamInputs.Mu || !beamInputs.Vu || !beamInputs.b || !beamInputs.D) {
-        setBeamResults({ 
-          error: "Please fill in all required fields: Mu, Vu, b (width), and D (depth)" 
+        setBeamResults({
+          error:
+            "Please fill in all required fields: Mu, Vu, b (width), and D (depth)",
         });
         return;
       }
@@ -139,28 +143,31 @@ function CalculatorsPage() {
       };
 
       // Validate numeric values
-      if (Object.values(numericInputs).some(val => val !== null && isNaN(val))) {
-        setBeamResults({ 
-          error: "Please enter valid numeric values for all fields" 
+      if (
+        Object.values(numericInputs).some((val) => val !== null && isNaN(val))
+      ) {
+        setBeamResults({
+          error: "Please enter valid numeric values for all fields",
         });
         return;
       }
 
       const results = designBeam(numericInputs);
-      
+
       // Ensure results object has expected structure
-      if (!results || typeof results !== 'object') {
-        setBeamResults({ 
-          error: "Beam design calculation returned invalid results" 
+      if (!results || typeof results !== "object") {
+        setBeamResults({
+          error: "Beam design calculation returned invalid results",
         });
         return;
       }
-      
+
       setBeamResults(results);
     } catch (error) {
       console.error("Beam calculation error:", error);
-      setBeamResults({ 
-        error: error.message || "An error occurred during beam design calculation" 
+      setBeamResults({
+        error:
+          error.message || "An error occurred during beam design calculation",
       });
     }
   };
@@ -169,9 +176,15 @@ function CalculatorsPage() {
   const handleColumnCalculate = () => {
     try {
       // Validate required inputs
-      if (!columnInputs.Pu || !columnInputs.b || !columnInputs.D || !columnInputs.L) {
-        setColumnResults({ 
-          error: "Please fill in all required fields: Pu, b (width), D (depth), and L (length)" 
+      if (
+        !columnInputs.Pu ||
+        !columnInputs.b ||
+        !columnInputs.D ||
+        !columnInputs.L
+      ) {
+        setColumnResults({
+          error:
+            "Please fill in all required fields: Pu, b (width), D (depth), and L (length)",
         });
         return;
       }
@@ -190,46 +203,59 @@ function CalculatorsPage() {
       };
 
       // Validate only the numeric fields (exclude restraintX and restraintY)
-      const numericFields = ['Pu', 'Mux', 'Muy', 'b', 'D', 'L', 'fck', 'fy', 'cover'];
-      const hasInvalidNumbers = numericFields.some(field => isNaN(numericInputs[field]));
-      
+      const numericFields = [
+        "Pu",
+        "Mux",
+        "Muy",
+        "b",
+        "D",
+        "L",
+        "fck",
+        "fy",
+        "cover",
+      ];
+      const hasInvalidNumbers = numericFields.some((field) =>
+        isNaN(numericInputs[field]),
+      );
+
       if (hasInvalidNumbers) {
-        setColumnResults({ 
-          error: "Please enter valid numeric values for all fields" 
+        setColumnResults({
+          error: "Please enter valid numeric values for all fields",
         });
         return;
       }
 
       const results = designColumn(numericInputs);
-      
+
       // Ensure results object has expected structure
-      if (!results || typeof results !== 'object') {
-        setColumnResults({ 
-          error: "Column design calculation returned invalid results" 
+      if (!results || typeof results !== "object") {
+        setColumnResults({
+          error: "Column design calculation returned invalid results",
         });
         return;
       }
-      
+
       setColumnResults(results);
     } catch (error) {
       console.error("Column calculation error:", error);
-      setColumnResults({ 
-        error: error.message || "An error occurred during column design calculation" 
-        });
+      setColumnResults({
+        error:
+          error.message || "An error occurred during column design calculation",
+      });
     }
   };
-  
+
   // Auto-populate beam inputs from structure design
   const populateBeamFromStructure = () => {
     if (!results?.structureDesign) return;
-    
+
     const beamSize = results.structureDesign.beams.size; // e.g., "9" × 12""
-    const sizeParts = beamSize.replace(/"/g, '').split('×');
+    const sizeParts = beamSize.replace(/"/g, "").split("×");
     if (sizeParts.length === 2) {
       const width = parseFloat(sizeParts[0].trim()) * 25.4; // Convert inches to mm
       const depth = parseFloat(sizeParts[1].trim()) * 25.4;
-      
-      setBeamInputs(prev => ({
+
+      setBeamInputs((prev) => ({
         ...prev,
         b: Math.round(width).toString(),
         D: Math.round(depth).toString(),
@@ -238,18 +264,18 @@ function CalculatorsPage() {
       }));
     }
   };
-  
+
   const populateColumnFromStructure = () => {
     if (!results?.structureDesign) return;
-    
+
     const columnSize = results.structureDesign.columns.size; // e.g., "9" × 12""
-    const sizeParts = columnSize.replace(/"/g, '').split('×');
+    const sizeParts = columnSize.replace(/"/g, "").split("×");
     if (sizeParts.length === 2) {
       const width = parseFloat(sizeParts[0].trim()) * 25.4; // Convert inches to mm
       const depth = parseFloat(sizeParts[1].trim()) * 25.4;
       const floorHeight = parseFloat(inputs.floorHeight) * 304.8; // Convert feet to mm
-      
-      setColumnInputs(prev => ({
+
+      setColumnInputs((prev) => ({
         ...prev,
         b: Math.round(width).toString(),
         D: Math.round(depth).toString(),
@@ -323,7 +349,12 @@ function CalculatorsPage() {
     const timeline = calcProjectTimeline(calcInputs);
     const structureDesign = calcStructureDesign(calcInputs);
     const completeBBS = calcCompleteBBS(calcInputs);
-    const fullBOQ = calcFullBOQ(calcInputs);
+    const standardBOQ = calcStandardBOQ(calcInputs);
+    const premiumBOQ = calcPremiumBOQ(calcInputs);
+    const floorWiseBOQ = calcFloorWiseBOQ({
+      ...calcInputs,
+      finishGrade: calcInputs.finishGrade,
+    });
 
     setResults({
       buildingCost,
@@ -333,7 +364,9 @@ function CalculatorsPage() {
       timeline,
       structureDesign,
       completeBBS,
-      fullBOQ,
+      standardBOQ,
+      premiumBOQ,
+      floorWiseBOQ,
     });
   };
 
@@ -372,10 +405,11 @@ function CalculatorsPage() {
               <span className="calc-hero-label">PROFESSIONAL TOOLS</span>
               <h1 className="calc-hero-title">Construction Calculator Suite</h1>
               <p className="calc-hero-description">
-                IS 456:2000 compliant tools for cost estimation, beam design, and column design
+                IS 456:2000 compliant tools for cost estimation, beam design,
+                and column design
               </p>
             </div>
-            
+
             {/* Main Tabs in Hero */}
             <div className="calc-main-tabs-hero">
               <button
@@ -385,10 +419,12 @@ function CalculatorsPage() {
                 <div className="calc-tab-icon-hero">💰</div>
                 <div className="calc-tab-content-hero">
                   <div className="calc-tab-label-hero">ESTIMATE COSTING</div>
-                  <div className="calc-tab-desc-hero">Complete building cost estimation</div>
+                  <div className="calc-tab-desc-hero">
+                    Complete building cost estimation
+                  </div>
                 </div>
               </button>
-              
+
               <button
                 className={`calc-main-tab-hero ${mainTab === "beam" ? "active" : ""}`}
                 onClick={() => {
@@ -401,10 +437,12 @@ function CalculatorsPage() {
                 <div className="calc-tab-icon-hero">🏗️</div>
                 <div className="calc-tab-content-hero">
                   <div className="calc-tab-label-hero">BEAM DESIGN</div>
-                  <div className="calc-tab-desc-hero">RCC beam structural analysis</div>
+                  <div className="calc-tab-desc-hero">
+                    RCC beam structural analysis
+                  </div>
                 </div>
               </button>
-              
+
               <button
                 className={`calc-main-tab-hero ${mainTab === "column" ? "active" : ""}`}
                 onClick={() => {
@@ -417,7 +455,9 @@ function CalculatorsPage() {
                 <div className="calc-tab-icon-hero">🏛️</div>
                 <div className="calc-tab-content-hero">
                   <div className="calc-tab-label-hero">COLUMN DESIGN</div>
-                  <div className="calc-tab-desc-hero">Column load capacity design</div>
+                  <div className="calc-tab-desc-hero">
+                    Column load capacity design
+                  </div>
                 </div>
               </button>
             </div>
@@ -426,7 +466,6 @@ function CalculatorsPage() {
       </section>
 
       <main className="calc-main">
-
         {/* Input Section - Only shown for Costing tab */}
         {mainTab === "costing" && (
           <section className="calc-input-section">
@@ -554,7 +593,9 @@ function CalculatorsPage() {
                 </div>
 
                 <div className="calc-input-group">
-                  <label className="calc-label-primary">Region / Location</label>
+                  <label className="calc-label-primary">
+                    Region / Location
+                  </label>
                   <select
                     className="calc-input-primary calc-select-input"
                     value={inputs.region}
@@ -600,7 +641,8 @@ function CalculatorsPage() {
                 <div className="calc-grid-3" style={{ marginTop: "1rem" }}>
                   <div className="calc-input-group">
                     <label className="calc-label-primary">
-                      Basement Depth <span className="calc-label-unit">feet</span>
+                      Basement Depth{" "}
+                      <span className="calc-label-unit">feet</span>
                     </label>
                     <input
                       type="number"
@@ -808,7 +850,13 @@ function CalculatorsPage() {
                   completeBBS={results.completeBBS}
                 />
               )}
-              {costingSubTab === "boq" && <FullBOQ boq={results.fullBOQ} />}
+              {costingSubTab === "boq" && (
+                <FullBOQ
+                  standardBOQ={results.standardBOQ}
+                  premiumBOQ={results.premiumBOQ}
+                  floorWiseBOQ={results.floorWiseBOQ}
+                />
+              )}
             </div>
 
             <div style={{ textAlign: "center", paddingTop: "2rem" }}>
@@ -822,8 +870,13 @@ function CalculatorsPage() {
         {mainTab === "beam" && (
           <section className="calc-results-section">
             {results?.structureDesign && (
-              <div className="calc-alert calc-alert-info" style={{ marginBottom: "1.5rem" }}>
-                <strong>ℹ️ Auto-populated from Structure Design:</strong> Beam dimensions and material grades have been filled based on your building estimate. You can modify them as needed.
+              <div
+                className="calc-alert calc-alert-info"
+                style={{ marginBottom: "1.5rem" }}
+              >
+                <strong>ℹ️ Auto-populated from Structure Design:</strong> Beam
+                dimensions and material grades have been filled based on your
+                building estimate. You can modify them as needed.
               </div>
             )}
             <BeamDesignTab
@@ -843,8 +896,13 @@ function CalculatorsPage() {
         {mainTab === "column" && (
           <section className="calc-results-section">
             {results?.structureDesign && (
-              <div className="calc-alert calc-alert-info" style={{ marginBottom: "1.5rem" }}>
-                <strong>ℹ️ Auto-populated from Structure Design:</strong> Column dimensions and material grades have been filled based on your building estimate. You can modify them as needed.
+              <div
+                className="calc-alert calc-alert-info"
+                style={{ marginBottom: "1.5rem" }}
+              >
+                <strong>ℹ️ Auto-populated from Structure Design:</strong> Column
+                dimensions and material grades have been filled based on your
+                building estimate. You can modify them as needed.
               </div>
             )}
             <ColumnDesignTab
