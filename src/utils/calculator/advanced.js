@@ -21,7 +21,6 @@ export { calcFooting } from "./calculators/footing";
 export { calcBarBending, calcCompleteBBS } from "./calculators/barBending";
 export { calcProjectTimeline } from "./calculators/projectTimeline";
 export { calcStructureDesign } from "./calculators/structureDesign";
-// export { calcFullBOQ } from "./calculators/fullBOQ";
 export {
   calcStandardBOQ,
   calcPremiumBOQ,

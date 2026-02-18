@@ -30,6 +30,7 @@ export const MATERIAL_CONSTANTS = {
   steel:     4.0,   // kg per sq.ft    (typical range 3.5–4.5 residential)
   sand:      0.044, // m³ per sq.ft    (1.55 cft → m³)
   aggregate: 0.088, // m³ per sq.ft    (3.1 cft → m³)
+  bricks:    9,     // bricks per sq.ft (typical range 7–9 for single brick wall)
 };
 
 // ===========================

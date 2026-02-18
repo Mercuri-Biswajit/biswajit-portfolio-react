@@ -309,12 +309,16 @@ function HomePage() {
     const steelQty = area * MATERIAL_CONSTANTS.steel;
     const sandQty = area * MATERIAL_CONSTANTS.sand;
     const aggregateQty = area * MATERIAL_CONSTANTS.aggregate;
+    // ── BRICK: ~8 bricks per sq.ft (standard 230×115×75 mm brick, 9" thick wall)
+    // Falls back gracefully if the constant isn't defined yet in constants.js
+    const brickQty = area * (MATERIAL_CONSTANTS.bricks ?? 8);
 
     setMaterials({
       cement: cementQty,
       steel: steelQty,
       sand: sandQty,
       aggregate: aggregateQty,
+      bricks: brickQty,
     });
     setShowMaterials(true);
   };
@@ -490,13 +494,26 @@ function HomePage() {
                     </span>
                   </div>
                 </div>
+
+                {/* ── BRICKS ── */}
+                <div className="material-item">
+                  <span className="material-icon">🧱</span>
+                  <div className="material-info">
+                    <span className="material-name">Bricks</span>
+                    <span className="material-qty">
+                      {formatNumber(materials.bricks, 0)} nos
+                    </span>
+                  </div>
+                </div>
               </div>
 
               <div className="materials-note">
                 <p>
                   💡 <strong>Note:</strong> Material quantities are based on
-                  standard RCC construction. For detailed cost breakdown, visit
-                  our <Link to="/calculator">Advanced Calculator</Link>.
+                  standard RCC construction. Brick quantity assumes 230×115×75
+                  mm modular bricks for 9″ external &amp; 4.5″ internal walls.
+                  For a detailed cost breakdown, visit our{" "}
+                  <Link to="/calculator">Advanced Calculator</Link>.
                 </p>
               </div>
             </div>
@@ -548,7 +565,11 @@ function HomePage() {
                 from initial conceptual designs to detailed structural analysis.
               </p>
               <div className="about-highlights">
-                <div className="highlight-item" data-aos="zoom-in" data-aos-delay="100">
+                <div
+                  className="highlight-item"
+                  data-aos="zoom-in"
+                  data-aos-delay="100"
+                >
                   <span className="highlight-bar" />
                   <span className="highlight-num">01</span>
                   <div className="highlight-face">
@@ -561,28 +582,42 @@ function HomePage() {
                   <div className="highlight-hover">
                     <span className="highlight-hover-icon">🎓</span>
                     <span className="highlight-hover-title">Education</span>
-                    <span className="highlight-hover-text">Bachelor of Engineering in Civil Engineering</span>
+                    <span className="highlight-hover-text">
+                      Bachelor of Engineering in Civil Engineering
+                    </span>
                   </div>
                 </div>
 
-                <div className="highlight-item" data-aos="zoom-in" data-aos-delay="200">
+                <div
+                  className="highlight-item"
+                  data-aos="zoom-in"
+                  data-aos-delay="200"
+                >
                   <span className="highlight-bar" />
                   <span className="highlight-num">02</span>
                   <div className="highlight-face">
                     <div className="highlight-icon">💼</div>
                     <div className="highlight-content">
                       <h4>Experience</h4>
-                      <p>Specialized in Structural &amp; Architectural Design</p>
+                      <p>
+                        Specialized in Structural &amp; Architectural Design
+                      </p>
                     </div>
                   </div>
                   <div className="highlight-hover">
                     <span className="highlight-hover-icon">💼</span>
                     <span className="highlight-hover-title">Experience</span>
-                    <span className="highlight-hover-text">Specialized in Structural &amp; Architectural Design</span>
+                    <span className="highlight-hover-text">
+                      Specialized in Structural &amp; Architectural Design
+                    </span>
                   </div>
                 </div>
 
-                <div className="highlight-item" data-aos="zoom-in" data-aos-delay="300">
+                <div
+                  className="highlight-item"
+                  data-aos="zoom-in"
+                  data-aos-delay="300"
+                >
                   <span className="highlight-bar" />
                   <span className="highlight-num">03</span>
                   <div className="highlight-face">
@@ -595,7 +630,9 @@ function HomePage() {
                   <div className="highlight-hover">
                     <span className="highlight-hover-icon">📍</span>
                     <span className="highlight-hover-title">Location</span>
-                    <span className="highlight-hover-text">{SITE.location}, West Bengal, India</span>
+                    <span className="highlight-hover-text">
+                      {SITE.location}, West Bengal, India
+                    </span>
                   </div>
                 </div>
               </div>
