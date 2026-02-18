@@ -411,6 +411,59 @@ export const ITEM_RATES = {
       "Roofing sheet (Tata Bluescope) with MS tubular truss structure",
     labourDaysPerUnit: 1.5,
   },
+
+  // ── PRELIMINARIES (Essential for Contractor Safety) ──────────────────────
+  mobilization: {
+    rate: 15000,
+    unit: "lump sum",
+    description:
+      "Mobilization of mixer machine, vibrator, bamboo, and labour shed construction",
+    labourDaysPerUnit: 10.0,
+  },
+  tempGodown: {
+    rate: 12000,
+    unit: "lump sum",
+    description:
+      "Temporary brick/tin shed for cement storage (keeps cement dry)",
+    labourDaysPerUnit: 5.0,
+  },
+  borewell: {
+    rate: 140,
+    unit: "rft", // Running foot depth
+    description:
+      "Installation of Submersible Boring (1.5 inch) for construction water",
+    labourDaysPerUnit: 0.1,
+    spec: "Standard PVC pipe boring excluding pump cost",
+  },
+
+  // ── AESTHETICS & EXTRA UTILITY (Client Satisfaction) ─────────────────────
+  rccLoft: {
+    rate: 380,
+    unit: "sqft",
+    description: "RCC Loft (Tak/Chajja) over door level for storage (2ft wide)",
+    labourDaysPerUnit: 0.3,
+    spec: "50mm thick RCC with high-density shuttering",
+  },
+  parapetWall: {
+    rate: 580,
+    unit: "rmt", // Running Meter
+    description:
+      "3ft high Brick Parapet wall (5 inch) with coping plaster on terrace",
+    labourDaysPerUnit: 0.4,
+  },
+  mainGate: {
+    rate: 105,
+    unit: "kg", // Gates are charged by Weight in WB
+    description: "MS Main Gate (Heavy Design) with primer & painting",
+    labourDaysPerUnit: 0.2, // per kg (fabrication time)
+  },
+  elevationDesign: {
+    rate: 25000,
+    unit: "lump sum",
+    description:
+      "Front Elevation Design elements (Grooves, Texture paint, Pergola)",
+    labourDaysPerUnit: 0.0,
+  },
 };
 
 // ─────────────────────────────────────────────────────────────────────────
