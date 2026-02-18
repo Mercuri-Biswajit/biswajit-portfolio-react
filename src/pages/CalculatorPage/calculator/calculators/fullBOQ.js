@@ -93,6 +93,20 @@ function buildFoundation(plotArea, RATES) {
   // ~1.5 cum capacity for a 2-3 BHK residential building
   addItem("septicTank", 1.5, "cum");
 
+  // ── PRELIMINARIES ─────────────────────────────────────────────────────
+  // Mobilization: lump sum once per project
+  addItem("mobilization", 1, "lump sum");
+  // Temporary godown for cement storage
+  addItem("tempGodown", 1, "lump sum");
+  // Borewell: ~100 rft depth (standard residential boring)
+  addItem("borewell", 100, "rft");
+
+  // ── GATE & ELEVATION ──────────────────────────────────────────────────
+  // Main gate: ~250 kg (heavy MS double-leaf gate)
+  addItem("mainGate", 250, "kg");
+  // Front elevation design: lump sum (premium/aesthetic item)
+  addItem("elevationDesign", 1, "lump sum");
+
   return { items, matQty };
 }
 
@@ -220,7 +234,13 @@ function buildFloorItems(floorArea, plotArea, RATES, floorIndex, isTopFloor) {
     addItem("wpTerrace", toSqm(plotArea));
     // Headroom / staircase cover on roof
     addItem("headroomRoof", toSqm(plotArea * 0.08));
+    // Parapet wall: full perimeter of plot (~4 × √plotArea rmt, 3ft high)
+    addItem("parapetWall", r2(Math.sqrt(plotArea) * 4 * 0.3048));
   }
+
+  // ── RCC LOFT / CHAJJA ─────────────────────────────────────────────────
+  // Over all external door/window openings (~0.15 rmt loft per sqft floor area)
+  addItem("rccLoft", r2(floorArea * 0.15));
 
   return { items, matQty };
 }

@@ -490,6 +490,12 @@
   grid-row: 1;
 }
 
+.direction-center-placeholder {
+  grid-column: 2;
+  grid-row: 2;
+  pointer-events: none;
+}
+
 .vastu-direction-details {
   background: var(--color-bg-card);
   border: 1px solid var(--color-border);
@@ -624,14 +630,26 @@
   padding: 2rem;
   color: var(--color-text-white);
   text-align: center;
+  position: relative;
+}
+
+.vastu-color-header::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.28);
+  border-radius: inherit;
+  pointer-events: none;
 }
 
 .vastu-color-header h3 {
   font-family: var(--font-display);
   font-size: 1.375rem;
   font-weight: 600;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
   letter-spacing: -0.01em;
+  position: relative;
+  z-index: 1;
 }
 
 .vastu-color-body {
