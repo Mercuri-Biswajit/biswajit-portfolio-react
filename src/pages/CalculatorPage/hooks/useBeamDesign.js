@@ -69,9 +69,13 @@ export function useBeamDesign() {
     }
   };
 
-  const populateFromStructure = (structureDesign, floorHeight) => {
+  const populateFromStructure = (structureDesign) => {
     const beamSize = structureDesign.beams.size;
-    const sizeParts = beamSize.replace(/"/g, "").split("Ã—");
+    // Use a regex that matches both the correct × character and any
+    // mojibake variants (Ã—, ×, ✕, x, X) that may appear depending
+    // on how the string was encoded or copy-pasted.
+    const sizeParts = beamSize.replace(/"/g, "").split(/\s*[×Ã—✕xX]\s*/);
+
     if (sizeParts.length === 2) {
       const width = parseFloat(sizeParts[0].trim()) * 25.4;
       const depth = parseFloat(sizeParts[1].trim()) * 25.4;

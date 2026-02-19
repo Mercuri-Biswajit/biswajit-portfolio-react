@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   BUILDING_TYPES,
   FINISH_GRADES,
@@ -6,12 +7,124 @@ import {
   MATERIAL_RATES,
 } from "../config/calculatorConstants";
 
+// ─── Validation rules ───────────────────────────────────────────────────────
+const RULES = {
+  length: { min: 5, max: 500, required: true, label: "Length" },
+  breadth: { min: 5, max: 500, required: true, label: "Breadth" },
+  floorHeight: { min: 8, max: 20, required: true, label: "Floor Height" },
+  basementDepth: { min: 5, max: 30, required: false, label: "Basement Depth" },
+  customCementRate: {
+    min: 100,
+    max: 1000,
+    required: false,
+    label: "Cement Rate",
+  },
+  customSteelRate: { min: 40, max: 500, required: false, label: "Steel Rate" },
+  customSandRate: { min: 10, max: 200, required: false, label: "Sand Rate" },
+  customAggregateRate: {
+    min: 10,
+    max: 200,
+    required: false,
+    label: "Aggregate Rate",
+  },
+};
+
+function validate(field, value) {
+  const rule = RULES[field];
+  if (!rule) return null;
+
+  const isEmpty = value === "" || value === null || value === undefined;
+
+  if (rule.required && isEmpty) return `${rule.label} is required.`;
+  if (!rule.required && isEmpty) return null; // optional blank is fine
+
+  const num = parseFloat(value);
+  if (isNaN(num)) return `${rule.label} must be a number.`;
+  if (num < rule.min) return `${rule.label} must be ≥ ${rule.min}.`;
+  if (num > rule.max) return `${rule.label} must be ≤ ${rule.max}.`;
+  return null;
+}
+
+function validateAll(inputs) {
+  const errors = {};
+  Object.keys(RULES).forEach((field) => {
+    // Only validate basementDepth when basement is included
+    if (field === "basementDepth" && !inputs.includeBasement) return;
+    const err = validate(field, inputs[field]);
+    if (err) errors[field] = err;
+  });
+  return errors;
+}
+
+// ─── Small inline error component ───────────────────────────────────────────
+function FieldError({ message }) {
+  if (!message) return null;
+  return (
+    <span
+      style={{
+        display: "block",
+        marginTop: "0.25rem",
+        fontSize: "0.75rem",
+        color: "var(--color-error, #e53e3e)",
+        fontWeight: 500,
+      }}
+    >
+      ⚠ {message}
+    </span>
+  );
+}
+
+// ─── Main component ──────────────────────────────────────────────────────────
 export function CostingInputPanel({
   inputs,
   updateField,
   onCalculate,
   onReset,
 }) {
+  const [errors, setErrors] = useState({});
+  const [touched, setTouched] = useState({});
+
+  // Mark field as touched and validate it on blur
+  const handleBlur = (field) => () => {
+    setTouched((prev) => ({ ...prev, [field]: true }));
+    const err = validate(field, inputs[field]);
+    setErrors((prev) => ({ ...prev, [field]: err }));
+  };
+
+  // Validate on change if the field has already been touched
+  const handleChange = (field) => (e) => {
+    updateField(field)(e);
+    if (touched[field]) {
+      const err = validate(field, e.target.value);
+      setErrors((prev) => ({ ...prev, [field]: err }));
+    }
+  };
+
+  // Full validation on submit attempt
+  const handleCalculate = () => {
+    const allErrors = validateAll(inputs);
+    // Mark all validated fields as touched so errors are visible
+    const allTouched = Object.keys(RULES).reduce((acc, f) => {
+      acc[f] = true;
+      return acc;
+    }, {});
+    setErrors(allErrors);
+    setTouched(allTouched);
+
+    if (Object.keys(allErrors).length > 0) return; // stop if errors exist
+    onCalculate();
+  };
+
+  const handleReset = () => {
+    setErrors({});
+    setTouched({});
+    onReset();
+  };
+
+  // Returns CSS class with error modifier when field has a visible error
+  const inputClass = (base, field) =>
+    `${base}${errors[field] && touched[field] ? " calc-input-error" : ""}`;
+
   return (
     <section className="calc-input-section">
       <div className="calc-section-header">
@@ -19,53 +132,71 @@ export function CostingInputPanel({
           <span className="label-icon">▣</span>
           BUILDING SPECIFICATIONS
         </div>
-        <button className="calc-btn-reset" onClick={onReset}>
+        <button className="calc-btn-reset" onClick={handleReset}>
           ↺ Reset All
         </button>
       </div>
 
-      {/* Basic Dimensions */}
+      {/* ── Basic Dimensions ──────────────────────────────────────── */}
       <div className="calc-card">
         <h3 className="calc-card-subtitle">Basic Dimensions</h3>
         <div className="calc-grid-3">
+          {/* Length */}
           <div className="calc-input-group">
             <label className="calc-label-primary">
               Length <span className="calc-label-unit">feet</span>
             </label>
             <input
               type="number"
-              className="calc-input-primary"
+              className={inputClass("calc-input-primary", "length")}
               placeholder="e.g. 40"
               value={inputs.length}
-              onChange={updateField("length")}
+              onChange={handleChange("length")}
+              onBlur={handleBlur("length")}
+              min={RULES.length.min}
+              max={RULES.length.max}
             />
+            {touched.length && <FieldError message={errors.length} />}
           </div>
+
+          {/* Breadth */}
           <div className="calc-input-group">
             <label className="calc-label-primary">
               Breadth <span className="calc-label-unit">feet</span>
             </label>
             <input
               type="number"
-              className="calc-input-primary"
+              className={inputClass("calc-input-primary", "breadth")}
               placeholder="e.g. 30"
               value={inputs.breadth}
-              onChange={updateField("breadth")}
+              onChange={handleChange("breadth")}
+              onBlur={handleBlur("breadth")}
+              min={RULES.breadth.min}
+              max={RULES.breadth.max}
             />
+            {touched.breadth && <FieldError message={errors.breadth} />}
           </div>
+
+          {/* Floor Height */}
           <div className="calc-input-group">
             <label className="calc-label-primary">
               Floor Height <span className="calc-label-unit">feet</span>
             </label>
             <input
               type="number"
-              className="calc-input-primary"
+              className={inputClass("calc-input-primary", "floorHeight")}
               placeholder="10"
               value={inputs.floorHeight}
-              onChange={updateField("floorHeight")}
+              onChange={handleChange("floorHeight")}
+              onBlur={handleBlur("floorHeight")}
+              min={RULES.floorHeight.min}
+              max={RULES.floorHeight.max}
             />
+            {touched.floorHeight && <FieldError message={errors.floorHeight} />}
           </div>
         </div>
 
+        {/* Number of Floors — button group, no free-text validation needed */}
         <div className="calc-input-group">
           <label className="calc-label-primary">Number of Floors</label>
           <div className="calc-floor-buttons">
@@ -84,7 +215,7 @@ export function CostingInputPanel({
         </div>
       </div>
 
-      {/* Building Type & Specifications */}
+      {/* ── Building Type & Specifications ────────────────────────── */}
       <div className="calc-card">
         <h3 className="calc-card-subtitle">Building Type & Specifications</h3>
         <div className="calc-grid-2">
@@ -147,7 +278,7 @@ export function CostingInputPanel({
         </div>
       </div>
 
-      {/* Advanced Options */}
+      {/* ── Advanced Options ──────────────────────────────────────── */}
       <div className="calc-card">
         <h3 className="calc-card-subtitle">Advanced Options</h3>
         <div className="calc-toggle-group">
@@ -179,17 +310,23 @@ export function CostingInputPanel({
               </label>
               <input
                 type="number"
-                className="calc-input-primary"
+                className={inputClass("calc-input-primary", "basementDepth")}
                 placeholder="8"
                 value={inputs.basementDepth}
-                onChange={updateField("basementDepth")}
+                onChange={handleChange("basementDepth")}
+                onBlur={handleBlur("basementDepth")}
+                min={RULES.basementDepth.min}
+                max={RULES.basementDepth.max}
               />
+              {touched.basementDepth && (
+                <FieldError message={errors.basementDepth} />
+              )}
             </div>
           </div>
         )}
       </div>
 
-      {/* Custom Material Rates */}
+      {/* ── Custom Material Rates ─────────────────────────────────── */}
       <div className="calc-card">
         <h3 className="calc-card-subtitle">
           Custom Material Rates{" "}
@@ -200,7 +337,7 @@ export function CostingInputPanel({
               fontWeight: 400,
             }}
           >
-            (Optional - Leave blank for default rates)
+            (Optional — leave blank for default rates)
           </span>
         </h3>
         <div className="calc-material-grid">
@@ -239,17 +376,21 @@ export function CostingInputPanel({
               </label>
               <input
                 type="number"
-                className="calc-input-secondary"
+                className={inputClass("calc-input-secondary", field)}
                 placeholder={MATERIAL_RATES[key].rate}
                 value={inputs[field]}
-                onChange={updateField(field)}
+                onChange={handleChange(field)}
+                onBlur={handleBlur(field)}
+                min={RULES[field].min}
+                max={RULES[field].max}
               />
+              {touched[field] && <FieldError message={errors[field]} />}
             </div>
           ))}
         </div>
       </div>
 
-      <button className="calc-btn-primary" onClick={onCalculate}>
+      <button className="calc-btn-primary" onClick={handleCalculate}>
         CALCULATE ESTIMATE →
       </button>
     </section>

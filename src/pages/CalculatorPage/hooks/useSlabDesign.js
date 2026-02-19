@@ -74,17 +74,21 @@ function r0(n) {
   return Math.round(n);
 }
 
-function designAst(Mu_kNm, d, fck, fy) {
+// COV is passed in so Ast_min uses the actual clear cover from inputs,
+// not the previously hardcoded literal 20.
+function designAst(Mu_kNm, d, fck, fy, cov) {
   const Mu = Mu_kNm * 1e6;
   const b = 1000;
   const R = Mu / (b * d * d);
   const term = 1 - Math.sqrt(1 - (4.6 * R) / fck);
   const pt = ((50 * fck) / fy) * term;
   const Ast_req = (pt / 100) * b * d;
-  const Ast_min = Math.max(
-    (0.12 / 100) * b * (d + parseFloat(20)),
-    (0.85 * b * d) / fy,
-  );
+
+  // FIX: was (d + parseFloat(20)) — now uses the actual cover value (cov)
+  // IS 456 Cl. 26.5.2: Ast_min = 0.12% of b × D (overall depth = d + cov)
+  const D_overall = d + cov;
+  const Ast_min = Math.max((0.12 / 100) * b * D_overall, (0.85 * b * d) / fy);
+
   return {
     Ast_req: r2(Ast_req),
     Ast_min: r2(Ast_min),
@@ -112,15 +116,7 @@ function devLength(dia, fck, fy) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// NEW: Compute beam Mu & Vu from slab results
-// The beam supporting the slab carries load from a tributary width.
-// For a simply-supported beam spanning ly, slab load transfers as:
-//   One-way  → full strip: w_beam = wu × (lx/2) per side → w_beam = wu × lx/2 (one side)
-//   Two-way  → trapezoidal / triangular distribution; we use the equivalent UDL method.
-//
-// Here we compute the beam on the LONG side (spanning ly, receiving load from lx/2 each side)
-// and on the SHORT side (spanning lx, receiving load from ly/2 each side).
-// Support factor k matches the same support condition used in slab design.
+// Compute beam Mu & Vu from slab results
 // ─────────────────────────────────────────────────────────────────────────────
 function computeBeamLoads(slabResults, inputs) {
   if (!slabResults || slabResults.error) return null;
@@ -130,7 +126,6 @@ function computeBeamLoads(slabResults, inputs) {
   const Ly = slabType === "two_way" ? parseFloat(inputs.ly) : null;
   const supportType = inputs.supportType;
 
-  // Moment factor k for beam (same support condition)
   const kMap = {
     simply_supported: 8,
     one_end_cont: 10,
@@ -140,10 +135,8 @@ function computeBeamLoads(slabResults, inputs) {
   const k = kMap[supportType] || 8;
 
   if (slabType === "one_way") {
-    // Beam along long span receives a UDL = wu × (lx/2) from each side (both sides of beam)
-    // Conservatively: w_beam = wu × lx  (full tributary on one beam)
-    const w_beam = wu * Lx; // kN/m
-    const beam_span = Lx; // the slab span IS the beam span here
+    const w_beam = wu * Lx;
+    const beam_span = Lx;
     const Mu = r2((w_beam * beam_span * beam_span) / k);
     const Vu = r2((w_beam * beam_span) / 2);
     return {
@@ -159,13 +152,9 @@ function computeBeamLoads(slabResults, inputs) {
     };
   }
 
-  // Two-way slab — use IS 456 equivalent UDL coefficients for load transfer to beams
-  // Short span beam (spanning lx): receives triangular load → equiv UDL = wu × lx / 3
-  // Long span beam (spanning ly):  receives trapezoidal  → equiv UDL = wu × lx/3 × (3 - (lx/ly)²) / 2
-  // (Standard textbook IS 456 equivalent UDL formulas)
-  const w_short = r2((wu * Lx) / 3); // kN/m on beam spanning lx
+  const w_short = r2((wu * Lx) / 3);
   const r = Lx / Ly;
-  const w_long = r2((wu * Lx * (3 - r * r)) / 6); // kN/m on beam spanning ly
+  const w_long = r2((wu * Lx * (3 - r * r)) / 6);
 
   const Mu_short = r2((w_short * Lx * Lx) / k);
   const Vu_short = r2((w_short * Lx) / 2);
@@ -194,12 +183,7 @@ function computeBeamLoads(slabResults, inputs) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// NEW: Compute column Pu from slab results
-// The column at each panel corner supports a tributary area = (lx/2) × (ly/2).
-// For one-way slab the tributary area = (lx/2) × (lx/2) (both sides).
-// Pu = wu × tributary_area × load_factor_for_self_weight_of_column (1.1 approx)
-// This gives the slab load on ONE interior column (worst case).
-// For an edge column use 0.5× and for corner column 0.25×.
+// Compute column Pu from slab results
 // ─────────────────────────────────────────────────────────────────────────────
 function computeColumnLoad(slabResults, inputs) {
   if (!slabResults || slabResults.error) return null;
@@ -208,12 +192,10 @@ function computeColumnLoad(slabResults, inputs) {
   const Lx = parseFloat(inputs.lx);
   const Ly = slabType === "two_way" ? parseFloat(inputs.ly) : Lx;
 
-  // Tributary area per column
-  const trib_interior = r2((Lx / 2) * (Ly / 2)); // m²
+  const trib_interior = r2((Lx / 2) * (Ly / 2));
   const trib_edge = r2(trib_interior / 2);
   const trib_corner = r2(trib_interior / 4);
 
-  // Factored slab load on column (× 1.1 accounts for column self-weight roughly)
   const Pu_interior = r2(wu * trib_interior * 1.1);
   const Pu_edge = r2(wu * trib_edge * 1.1);
   const Pu_corner = r2(wu * trib_corner * 1.1);
@@ -286,12 +268,13 @@ function designSlab(inputs) {
     Muy_neg = r2(Muy * 1.33);
   }
 
-  const steelX = designAst(Mux, d_prov, FCK, FY);
-  const steelX_neg = Mux_neg ? designAst(Mux_neg, d_prov, FCK, FY) : null;
+  // Pass COV into designAst so Ast_min uses the real overall depth
+  const steelX = designAst(Mux, d_prov, FCK, FY, COV);
+  const steelX_neg = Mux_neg ? designAst(Mux_neg, d_prov, FCK, FY, COV) : null;
   const d_y = isOneWay ? d_prov : d_prov - barDia_assumed;
-  const steelY = !isOneWay ? designAst(Muy, d_y, FCK, FY) : null;
+  const steelY = !isOneWay ? designAst(Muy, d_y, FCK, FY, COV) : null;
   const steelY_neg =
-    !isOneWay && Muy_neg ? designAst(Muy_neg, d_y, FCK, FY) : null;
+    !isOneWay && Muy_neg ? designAst(Muy_neg, d_y, FCK, FY, COV) : null;
 
   const barsX = barOptions(steelX.Ast_prov);
   const barsX_neg = steelX_neg ? barOptions(steelX_neg.Ast_prov) : [];
@@ -382,9 +365,7 @@ export function useSlabDesign() {
     try {
       const result = designSlab(inputs);
       if (!result.error) {
-        // Attach beam load data to results so SlabDesignTab can display it
         result.beamLoads = computeBeamLoads(result, inputs);
-        // Attach column load data
         result.columnLoad = computeColumnLoad(result, inputs);
       }
       setResults(result);
@@ -398,18 +379,11 @@ export function useSlabDesign() {
     setResults(null);
   };
 
-  /**
-   * Returns computed beam Mu & Vu based on latest slab results.
-   * Returns null if slab hasn't been calculated yet.
-   */
   const getBeamLoads = () => {
     if (!results || results.error) return null;
     return computeBeamLoads(results, inputs);
   };
 
-  /**
-   * Returns computed column Pu based on latest slab results.
-   */
   const getColumnLoad = () => {
     if (!results || results.error) return null;
     return computeColumnLoad(results, inputs);

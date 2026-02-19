@@ -1,7 +1,75 @@
 // ═══════════════════════════════════════════════════════════════════════════
-// BRICK MASONRY QUANTITY CALCULATOR TAB
+// BRICK MASONRY QUANTITY CALCULATOR TAB — Building-level inputs
 // ═══════════════════════════════════════════════════════════════════════════
+import { useState } from "react";
 
+// ─── Validation rules ────────────────────────────────────────────────────────
+const RULES = {
+  buildingLength: {
+    min: 5,
+    max: 500,
+    required: true,
+    label: "Building Length",
+  },
+  buildingBreadth: {
+    min: 5,
+    max: 500,
+    required: true,
+    label: "Building Breadth",
+  },
+  floorHeight: { min: 8, max: 20, required: true, label: "Floor Height" },
+  doorWidth: { min: 2, max: 8, required: false, label: "Door Width" },
+  doorHeight: { min: 5, max: 10, required: false, label: "Door Height" },
+  windowWidth: { min: 1, max: 8, required: false, label: "Window Width" },
+  windowHeight: { min: 1, max: 8, required: false, label: "Window Height" },
+  extraDeductionSqFt: {
+    min: 0,
+    max: 5000,
+    required: false,
+    label: "Extra Deduction",
+  },
+};
+
+function validate(field, value) {
+  const rule = RULES[field];
+  if (!rule) return null;
+  const isEmpty = value === "" || value === null || value === undefined;
+  if (rule.required && isEmpty) return `${rule.label} is required.`;
+  if (!rule.required && isEmpty) return null;
+  const num = parseFloat(value);
+  if (isNaN(num)) return `${rule.label} must be a number.`;
+  if (num < rule.min) return `${rule.label} must be ≥ ${rule.min}.`;
+  if (num > rule.max) return `${rule.label} must be ≤ ${rule.max}.`;
+  return null;
+}
+
+function validateAll(inputs) {
+  const errors = {};
+  Object.keys(RULES).forEach((field) => {
+    const err = validate(field, inputs[field]);
+    if (err) errors[field] = err;
+  });
+  return errors;
+}
+
+function FieldError({ message }) {
+  if (!message) return null;
+  return (
+    <span
+      style={{
+        display: "block",
+        marginTop: "0.25rem",
+        fontSize: "0.75rem",
+        color: "var(--color-error, #e53e3e)",
+        fontWeight: 500,
+      }}
+    >
+      ⚠ {message}
+    </span>
+  );
+}
+
+// ─── Main component ───────────────────────────────────────────────────────────
 export function BrickMasonryTab({
   inputs,
   onInputChange,
@@ -9,108 +77,294 @@ export function BrickMasonryTab({
   onReset,
   results,
 }) {
+  const [errors, setErrors] = useState({});
+  const [touched, setTouched] = useState({});
+
+  const handleBlur = (field) => () => {
+    setTouched((prev) => ({ ...prev, [field]: true }));
+    setErrors((prev) => ({ ...prev, [field]: validate(field, inputs[field]) }));
+  };
+
+  const handleChange = (e) => {
+    onInputChange(e);
+    const { name, value } = e.target;
+    if (touched[name]) {
+      setErrors((prev) => ({ ...prev, [name]: validate(name, value) }));
+    }
+  };
+
+  const handleCalculate = () => {
+    const allErrors = validateAll(inputs);
+    setErrors(allErrors);
+    setTouched(Object.keys(RULES).reduce((a, f) => ({ ...a, [f]: true }), {}));
+    if (Object.keys(allErrors).length > 0) return;
+    onCalculate();
+  };
+
+  const handleReset = () => {
+    setErrors({});
+    setTouched({});
+    onReset();
+  };
+
+  const inputClass = (field, base = "calc-input-primary") =>
+    `${base}${errors[field] && touched[field] ? " calc-input-error" : ""}`;
+
   return (
     <div className="calc-result-card">
       <h3 className="calc-breakdown-header">
         <span>🧱</span> Brick Masonry Quantity Calculator
       </h3>
 
-      {/* ── Inputs ────────────────────────────────────────────────── */}
       <div className="calc-card">
-        <h4 className="calc-card-subtitle">Wall Dimensions</h4>
-
+        {/* ── Building Dimensions ───────────────────────────────────── */}
+        <h4 className="calc-card-subtitle">Building Dimensions</h4>
         <div className="calc-card-section">
-          <h5 className="calc-section-label">Wall Size</h5>
           <div className="calc-grid-3">
-            <InputField
-              name="wallLength"
-              label="Wall Length (ft) *"
-              placeholder="40"
-              value={inputs.wallLength}
-              onChange={onInputChange}
-              hint="Total length of wall"
-            />
-            <InputField
-              name="wallHeight"
-              label="Wall Height (ft) *"
-              placeholder="10"
-              value={inputs.wallHeight}
-              onChange={onInputChange}
-              hint="Floor-to-floor or actual height"
-            />
+            <div className="calc-input-group">
+              <label className="calc-label-primary">
+                Building Length <span className="calc-label-unit">ft</span> *
+              </label>
+              <input
+                type="number"
+                onWheel={(e) => e.target.blur()}
+                name="buildingLength"
+                className={inputClass("buildingLength")}
+                placeholder="e.g. 40"
+                value={inputs.buildingLength}
+                onChange={handleChange}
+                onBlur={handleBlur("buildingLength")}
+              />
+              <small className="calc-input-hint">Outer dimension</small>
+              {touched.buildingLength && (
+                <FieldError message={errors.buildingLength} />
+              )}
+            </div>
+
+            <div className="calc-input-group">
+              <label className="calc-label-primary">
+                Building Breadth <span className="calc-label-unit">ft</span> *
+              </label>
+              <input
+                type="number"
+                onWheel={(e) => e.target.blur()}
+                name="buildingBreadth"
+                className={inputClass("buildingBreadth")}
+                placeholder="e.g. 30"
+                value={inputs.buildingBreadth}
+                onChange={handleChange}
+                onBlur={handleBlur("buildingBreadth")}
+              />
+              <small className="calc-input-hint">Outer dimension</small>
+              {touched.buildingBreadth && (
+                <FieldError message={errors.buildingBreadth} />
+              )}
+            </div>
+
+            <div className="calc-input-group">
+              <label className="calc-label-primary">
+                Floor Height <span className="calc-label-unit">ft</span> *
+              </label>
+              <input
+                type="number"
+                onWheel={(e) => e.target.blur()}
+                name="floorHeight"
+                className={inputClass("floorHeight")}
+                placeholder="10"
+                value={inputs.floorHeight}
+                onChange={handleChange}
+                onBlur={handleBlur("floorHeight")}
+              />
+              <small className="calc-input-hint">Floor-to-floor height</small>
+              {touched.floorHeight && (
+                <FieldError message={errors.floorHeight} />
+              )}
+            </div>
+          </div>
+
+          {/* Number of Floors */}
+          <div className="calc-input-group" style={{ marginTop: "1rem" }}>
+            <label className="calc-label-primary">Number of Floors</label>
+            <div className="calc-floor-buttons">
+              {[1, 2, 3, 4, 5].map((num) => (
+                <button
+                  key={num}
+                  className={`calc-floor-btn ${parseInt(inputs.floors) === num ? "active" : ""}`}
+                  onClick={() =>
+                    onInputChange({ target: { name: "floors", value: num } })
+                  }
+                >
+                  {num === 1 ? "G" : `G+${num - 1}`}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Wall Thickness */}
+          <div className="calc-grid-3" style={{ marginTop: "1rem" }}>
             <div className="calc-input-group">
               <label className="calc-label-primary">Wall Thickness *</label>
               <select
                 className="calc-input-primary calc-select-input"
                 name="wallThickness"
                 value={inputs.wallThickness}
-                onChange={onInputChange}
+                onChange={handleChange}
               >
-                <option value="4.5">4.5" — Half-brick / Partition wall</option>
+                <option value="4.5">4.5" — Half-brick / Partition</option>
                 <option value="9">9" — One-brick / External wall</option>
                 <option value="13.5">13.5" — One-and-half brick</option>
               </select>
-              <small className="calc-input-hint">Standard IS sizes</small>
+              <small className="calc-input-hint">IS standard sizes</small>
+            </div>
+          </div>
+        </div>
+
+        {/* ── Deductions ─────────────────────────────────────────────── */}
+        <h4 className="calc-card-subtitle" style={{ marginTop: "1.5rem" }}>
+          Deductions (Openings)
+        </h4>
+        <div className="calc-card-section">
+          <h5 className="calc-section-label">Doors</h5>
+          <div className="calc-grid-3">
+            <div className="calc-input-group">
+              <label className="calc-label-primary">No. of Doors</label>
+              <input
+                type="number"
+                onWheel={(e) => e.target.blur()}
+                name="numDoors"
+                className="calc-input-primary"
+                placeholder="2"
+                value={inputs.numDoors}
+                onChange={handleChange}
+              />
+              <small className="calc-input-hint">Total across all floors</small>
+            </div>
+            <div className="calc-input-group">
+              <label className="calc-label-primary">
+                Door Width <span className="calc-label-unit">ft</span>
+              </label>
+              <input
+                type="number"
+                onWheel={(e) => e.target.blur()}
+                name="doorWidth"
+                className={inputClass("doorWidth")}
+                placeholder="3.5"
+                value={inputs.doorWidth}
+                onChange={handleChange}
+                onBlur={handleBlur("doorWidth")}
+              />
+              <small className="calc-input-hint">Typical: 3–4 ft</small>
+              {touched.doorWidth && <FieldError message={errors.doorWidth} />}
+            </div>
+            <div className="calc-input-group">
+              <label className="calc-label-primary">
+                Door Height <span className="calc-label-unit">ft</span>
+              </label>
+              <input
+                type="number"
+                onWheel={(e) => e.target.blur()}
+                name="doorHeight"
+                className={inputClass("doorHeight")}
+                placeholder="7"
+                value={inputs.doorHeight}
+                onChange={handleChange}
+                onBlur={handleBlur("doorHeight")}
+              />
+              <small className="calc-input-hint">Typical: 7 ft</small>
+              {touched.doorHeight && <FieldError message={errors.doorHeight} />}
             </div>
           </div>
         </div>
 
         <div className="calc-card-section">
-          <h5 className="calc-section-label">Openings (Deductions)</h5>
+          <h5 className="calc-section-label">Windows</h5>
           <div className="calc-grid-3">
-            <InputField
-              name="numDoors"
-              label="No. of Doors"
-              placeholder="1"
-              value={inputs.numDoors}
-              onChange={onInputChange}
-              hint="Number of door openings"
-            />
-            <InputField
-              name="doorWidth"
-              label="Door Width (ft)"
-              placeholder="3.5"
-              value={inputs.doorWidth}
-              onChange={onInputChange}
-              hint="Typical: 3–4 ft"
-            />
-            <InputField
-              name="doorHeight"
-              label="Door Height (ft)"
-              placeholder="7"
-              value={inputs.doorHeight}
-              onChange={onInputChange}
-              hint="Typical: 7 ft"
-            />
-            <InputField
-              name="numWindows"
-              label="No. of Windows"
-              placeholder="2"
-              value={inputs.numWindows}
-              onChange={onInputChange}
-              hint="Number of window openings"
-            />
-            <InputField
-              name="windowWidth"
-              label="Window Width (ft)"
-              placeholder="4"
-              value={inputs.windowWidth}
-              onChange={onInputChange}
-              hint="Typical: 3–5 ft"
-            />
-            <InputField
-              name="windowHeight"
-              label="Window Height (ft)"
-              placeholder="4"
-              value={inputs.windowHeight}
-              onChange={onInputChange}
-              hint="Typical: 3.5–4.5 ft"
-            />
+            <div className="calc-input-group">
+              <label className="calc-label-primary">No. of Windows</label>
+              <input
+                type="number"
+                onWheel={(e) => e.target.blur()}
+                name="numWindows"
+                className="calc-input-primary"
+                placeholder="4"
+                value={inputs.numWindows}
+                onChange={handleChange}
+              />
+              <small className="calc-input-hint">Total across all floors</small>
+            </div>
+            <div className="calc-input-group">
+              <label className="calc-label-primary">
+                Window Width <span className="calc-label-unit">ft</span>
+              </label>
+              <input
+                type="number"
+                onWheel={(e) => e.target.blur()}
+                name="windowWidth"
+                className={inputClass("windowWidth")}
+                placeholder="4"
+                value={inputs.windowWidth}
+                onChange={handleChange}
+                onBlur={handleBlur("windowWidth")}
+              />
+              <small className="calc-input-hint">Typical: 3–5 ft</small>
+              {touched.windowWidth && (
+                <FieldError message={errors.windowWidth} />
+              )}
+            </div>
+            <div className="calc-input-group">
+              <label className="calc-label-primary">
+                Window Height <span className="calc-label-unit">ft</span>
+              </label>
+              <input
+                type="number"
+                onWheel={(e) => e.target.blur()}
+                name="windowHeight"
+                className={inputClass("windowHeight")}
+                placeholder="4"
+                value={inputs.windowHeight}
+                onChange={handleChange}
+                onBlur={handleBlur("windowHeight")}
+              />
+              <small className="calc-input-hint">Typical: 3.5–4.5 ft</small>
+              {touched.windowHeight && (
+                <FieldError message={errors.windowHeight} />
+              )}
+            </div>
           </div>
         </div>
 
         <div className="calc-card-section">
-          <h5 className="calc-section-label">Materials &amp; Mix</h5>
+          <h5 className="calc-section-label">Additional Deduction</h5>
+          <div className="calc-grid-3">
+            <div className="calc-input-group">
+              <label className="calc-label-primary">
+                Extra Deduction <span className="calc-label-unit">sq.ft</span>
+              </label>
+              <input
+                type="number"
+                onWheel={(e) => e.target.blur()}
+                name="extraDeductionSqFt"
+                className={inputClass("extraDeductionSqFt")}
+                placeholder="0"
+                value={inputs.extraDeductionSqFt}
+                onChange={handleChange}
+                onBlur={handleBlur("extraDeductionSqFt")}
+              />
+              <small className="calc-input-hint">
+                Ventilators, arches, AC slots, etc.
+              </small>
+              {touched.extraDeductionSqFt && (
+                <FieldError message={errors.extraDeductionSqFt} />
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* ── Materials & Mix ─────────────────────────────────────────── */}
+        <h4 className="calc-card-subtitle" style={{ marginTop: "1.5rem" }}>
+          Materials &amp; Mix
+        </h4>
+        <div className="calc-card-section">
           <div className="calc-grid-3">
             <div className="calc-input-group">
               <label className="calc-label-primary">Brick Type</label>
@@ -118,7 +372,7 @@ export function BrickMasonryTab({
                 className="calc-input-primary calc-select-input"
                 name="brickType"
                 value={inputs.brickType}
-                onChange={onInputChange}
+                onChange={handleChange}
               >
                 <option value="standard">
                   Standard Clay Brick (230×115×75mm)
@@ -128,9 +382,7 @@ export function BrickMasonryTab({
                   Hollow Concrete Block (400×200×200mm)
                 </option>
               </select>
-              <small className="calc-input-hint">
-                IS 1077 / IS 12894 specification
-              </small>
+              <small className="calc-input-hint">IS 1077 / IS 12894</small>
             </div>
             <div className="calc-input-group">
               <label className="calc-label-primary">
@@ -140,7 +392,7 @@ export function BrickMasonryTab({
                 className="calc-input-primary calc-select-input"
                 name="mortarRatio"
                 value={inputs.mortarRatio}
-                onChange={onInputChange}
+                onChange={handleChange}
               >
                 <option value="1:3">1:3 — Rich mix (waterproofing)</option>
                 <option value="1:4">1:4 — Strong structural</option>
@@ -158,7 +410,7 @@ export function BrickMasonryTab({
                 className="calc-input-primary calc-select-input"
                 name="wastagePercent"
                 value={inputs.wastagePercent}
-                onChange={onInputChange}
+                onChange={handleChange}
               >
                 <option value="3">3% — Controlled site</option>
                 <option value="5">5% — Standard (recommended)</option>
@@ -172,21 +424,90 @@ export function BrickMasonryTab({
           </div>
         </div>
 
+        {/* ── Foundation ─────────────────────────────────────────────── */}
+        <h4 className="calc-card-subtitle" style={{ marginTop: "1.5rem" }}>
+          Foundation Brickwork
+        </h4>
+        <div className="calc-card-section">
+          {/* Toggle */}
+          <div className="calc-input-group" style={{ marginBottom: "1rem" }}>
+            <label className="calc-label-primary">Include Foundation?</label>
+            <div className="calc-floor-buttons">
+              {[true, false].map((val) => (
+                <button
+                  key={String(val)}
+                  className={`calc-floor-btn ${String(inputs.includeFoundation) === String(val) ? "active" : ""}`}
+                  onClick={() =>
+                    onInputChange({
+                      target: { name: "includeFoundation", value: val },
+                    })
+                  }
+                >
+                  {val ? "Yes" : "No"}
+                </button>
+              ))}
+            </div>
+            <small className="calc-input-hint">
+              Adds brick footing below plinth level
+            </small>
+          </div>
+
+          {inputs.includeFoundation && (
+            <div className="calc-grid-3">
+              <div className="calc-input-group">
+                <label className="calc-label-primary">
+                  Foundation Depth <span className="calc-label-unit">ft</span>
+                </label>
+                <input
+                  type="number"
+                  onWheel={(e) => e.target.blur()}
+                  name="foundationDepth"
+                  className="calc-input-primary"
+                  placeholder="3"
+                  value={inputs.foundationDepth}
+                  onChange={handleChange}
+                />
+                <small className="calc-input-hint">
+                  Typical: 2.5–4 ft below plinth
+                </small>
+              </div>
+              <div className="calc-input-group">
+                <label className="calc-label-primary">
+                  Foundation Width{" "}
+                  <span className="calc-label-unit">inches</span>
+                </label>
+                <select
+                  className="calc-input-primary calc-select-input"
+                  name="foundationWidth"
+                  value={inputs.foundationWidth}
+                  onChange={handleChange}
+                >
+                  <option value="13.5">13.5" — 1½-brick (for 4.5" wall)</option>
+                  <option value="18">18" — 2-brick (for 9" wall)</option>
+                  <option value="27">
+                    27" — 3-brick (for 9" wall, standard)
+                  </option>
+                  <option value="36">36" — 4-brick (heavy load)</option>
+                </select>
+                <small className="calc-input-hint">
+                  Wider than superstructure wall
+                </small>
+              </div>
+            </div>
+          )}
+        </div>
+
         <div className="calc-action-row">
-          <button
-            className="calc-btn-primary"
-            onClick={onCalculate}
-            disabled={!inputs.wallLength || !inputs.wallHeight}
-          >
+          <button className="calc-btn-primary" onClick={handleCalculate}>
             <span>🧮</span> CALCULATE QUANTITIES
           </button>
-          <button className="calc-btn-secondary" onClick={onReset}>
+          <button className="calc-btn-secondary" onClick={handleReset}>
             ↺ Reset
           </button>
         </div>
       </div>
 
-      {/* ── Results ──────────────────────────────────────────────── */}
+      {/* ── Results ──────────────────────────────────────────────────── */}
       {results && !results.error && <BrickResults results={results} />}
       {results?.error && (
         <div className="calc-alert calc-alert-error">
@@ -197,8 +518,7 @@ export function BrickMasonryTab({
   );
 }
 
-// ── Results ─────────────────────────────────────────────────────────────────
-
+// ── Results ──────────────────────────────────────────────────────────────────
 function BrickResults({ results: r }) {
   return (
     <>
@@ -209,15 +529,21 @@ function BrickResults({ results: r }) {
         <div className="calc-struct-grid">
           <StructCard
             icon="📏"
+            title="Perimeter"
+            value={`${r.perimeter} ft`}
+            sub={`${r.floors} floor${r.floors > 1 ? "s" : ""}`}
+          />
+          <StructCard
+            icon="🏗️"
             title="Gross Wall Area"
-            value={`${r.grossArea} sq.ft`}
-            sub="Length × Height"
+            value={`${r.grossAreaTotal} sq.ft`}
+            sub={`${r.grossAreaPerFloor} sq.ft / floor`}
           />
           <StructCard
             icon="🚪"
-            title="Openings Deducted"
-            value={`${r.deductions} sq.ft`}
-            sub="Doors + Windows"
+            title="Total Deductions"
+            value={`${r.totalDeductionAllFloors} sq.ft`}
+            sub={`Doors + Windows + Extra`}
           />
           <StructCard
             icon="✅"
@@ -225,18 +551,34 @@ function BrickResults({ results: r }) {
             value={`${r.netArea} sq.ft`}
             sub={`${r.netAreaM2} sq.m`}
           />
-          <StructCard
-            icon="📦"
-            title="Brickwork Volume"
+        </div>
+
+        {/* Deduction breakdown */}
+        <div className="calc-detail-grid" style={{ marginTop: "0.75rem" }}>
+          <DetailItem
+            label="Door Area (all floors)"
+            value={`${r.doorArea * r.floors} sq.ft`}
+          />
+          <DetailItem
+            label="Window Area (all floors)"
+            value={`${r.windowArea * r.floors} sq.ft`}
+          />
+          {r.extraDeduction > 0 && (
+            <DetailItem
+              label="Extra Deduction (all floors)"
+              value={`${r.extraDeduction * r.floors} sq.ft`}
+            />
+          )}
+          <DetailItem
+            label="Brickwork Volume"
             value={`${r.brickworkVolCum} cum`}
-            sub={`Wall: ${r.wallThicknessLabel}`}
           />
         </div>
       </div>
 
       <div className="calc-card">
         <h4 className="calc-card-subtitle">
-          <span>🧱</span> Material Requirements
+          <span>🧱</span> Material Requirements — Superstructure
         </h4>
         <div className="calc-highlight-grid">
           <HighlightCard
@@ -250,7 +592,7 @@ function BrickResults({ results: r }) {
             value={r.bricksWithWaste.toLocaleString("en-IN")}
             unit="nos"
             modifier="accent"
-            note={`+${r.wastageCount} for wastage`}
+            note={`+${r.wastageCount.toLocaleString("en-IN")} for wastage`}
           />
           <HighlightCard
             label="Cement (Mortar)"
@@ -270,8 +612,93 @@ function BrickResults({ results: r }) {
           <DetailItem label="Bricks per cum" value={`${r.bricksPerCum} nos`} />
           <DetailItem label="Mortar Volume" value={`${r.mortarVolCum} cum`} />
           <DetailItem label="Mortar Mix" value={`CM ${r.mortarRatio}`} />
+          <DetailItem label="Wall Thickness" value={r.wallThicknessLabel} />
         </div>
       </div>
+
+      {r.includeFoundation && r.foundationVolCum > 0 && (
+        <div className="calc-card">
+          <h4 className="calc-card-subtitle">
+            <span>🏗️</span> Material Requirements — Foundation
+          </h4>
+          <div className="calc-detail-grid" style={{ marginBottom: "0.75rem" }}>
+            <DetailItem
+              label="Foundation Depth"
+              value={`${r.foundationDepthFt} ft`}
+            />
+            <DetailItem
+              label="Foundation Width"
+              value={`${r.foundationWidthIn}"`}
+            />
+            <DetailItem
+              label="Foundation Volume"
+              value={`${r.foundationVolCum} cum`}
+            />
+            <DetailItem
+              label="Mortar Volume"
+              value={`${r.foundationMortarVolCum} cum`}
+            />
+          </div>
+          <div className="calc-highlight-grid">
+            <HighlightCard
+              label="Foundation Bricks (Net)"
+              value={r.foundationBricksNet.toLocaleString("en-IN")}
+              unit="nos"
+              modifier="primary"
+            />
+            <HighlightCard
+              label="Bricks with Wastage"
+              value={r.foundationBricksWithWaste.toLocaleString("en-IN")}
+              unit="nos"
+              modifier="accent"
+              note={`+${r.foundationWastageCount.toLocaleString("en-IN")} for wastage`}
+            />
+            <HighlightCard
+              label="Cement (Mortar)"
+              value={r.foundationCementBags}
+              unit="bags (50 kg)"
+              modifier="purple"
+            />
+            <HighlightCard
+              label="Sand (Mortar)"
+              value={r.foundationSandCft}
+              unit="cft"
+              modifier="green"
+            />
+          </div>
+        </div>
+      )}
+
+      {r.includeFoundation && r.foundationVolCum > 0 && (
+        <div
+          className="calc-card"
+          style={{ borderLeft: "4px solid var(--color-accent, #ed8936)" }}
+        >
+          <h4 className="calc-card-subtitle">
+            <span>📦</span> Grand Total (Superstructure + Foundation)
+          </h4>
+          <div className="calc-highlight-grid">
+            <HighlightCard
+              label="Total Bricks (incl. wastage)"
+              value={r.totalBricksWithWaste.toLocaleString("en-IN")}
+              unit="nos"
+              modifier="accent"
+            />
+            <HighlightCard
+              label="Total Cement"
+              value={r.totalCementBags}
+              unit="bags (50 kg)"
+              modifier="purple"
+            />
+            <HighlightCard
+              label="Total Sand"
+              value={r.totalSandCft}
+              unit="cft"
+              modifier="green"
+            />
+          </div>
+        </div>
+      )}
 
       <div className="calc-card">
         <h4 className="calc-card-subtitle">
@@ -295,7 +722,12 @@ function BrickResults({ results: r }) {
         <strong>📌 Notes:</strong>
         <ul>
           <li>
-            Mortar joint thickness assumed <strong>10mm</strong> as per IS 1905.
+            Perimeter wall area calculated from all 4 outer sides × all floors.
+          </li>
+          <li>Door &amp; window counts are total for the entire building.</li>
+          <li>
+            Mortar joint thickness assumed <strong>10 mm</strong> as per IS
+            1905.
           </li>
           <li>
             Mortar volume fraction assumed <strong>30%</strong> of gross
@@ -303,7 +735,15 @@ function BrickResults({ results: r }) {
           </li>
           <li>Cement quantities include 20% bulking allowance for sand.</li>
           <li>
-            Order bricks in multiples of 500; always add 5–10% safety margin.
+            Foundation brickwork uses the same brick type and mortar ratio as
+            the superstructure; no deductions are applied to the foundation.
+          </li>
+          <li>
+            Labour estimate now covers total brickwork volume (superstructure +
+            foundation).
+          </li>
+          <li>
+            Order bricks in multiples of 500; always add a 5–10% safety margin.
           </li>
         </ul>
       </div>
@@ -311,25 +751,7 @@ function BrickResults({ results: r }) {
   );
 }
 
-// ── Sub-components ───────────────────────────────────────────────────────────
-
-function InputField({ name, label, hint, placeholder, value, onChange }) {
-  return (
-    <div className="calc-input-group">
-      <label className="calc-label-primary">{label}</label>
-      <input
-        type="number"
-        className="calc-input-primary"
-        name={name}
-        value={value || ""}
-        onChange={onChange}
-        placeholder={placeholder}
-      />
-      {hint && <small className="calc-input-hint">{hint}</small>}
-    </div>
-  );
-}
-
+// ── Sub-components ────────────────────────────────────────────────────────────
 function StructCard({ icon, title, value, sub }) {
   return (
     <div className="calc-struct-card">
