@@ -19,10 +19,10 @@ function Footer() {
                 />
               </Link>
             </div>
-            <address style={{ fontStyle: "normal" }}>
+            <address style={{ fontStyle: "normal", lineHeight: "1.8" }}>
               <strong>Er. Biswajit Deb Barman</strong>
               <br />
-              Civil Engineer
+              Civil Engineer &amp; Structural Designer
               <br />
               Chanditala, Raiganj, Uttar Dinajpur,
               <br />
@@ -60,7 +60,10 @@ function Footer() {
           </div>
         </div>
         <div className="footer-bottom">
-          <p>&copy; 2026 Built by Er. Biswajit Deb Barman | Civil Engineer – Raiganj, Uttar Dinajpur, West Bengal. All rights reserved.</p>
+          <p>
+            &copy; 2026 Built by Er. Biswajit Deb Barman | Civil Engineer –
+            Raiganj, Uttar Dinajpur, West Bengal. All rights reserved.
+          </p>
         </div>
       </div>
     </footer>
