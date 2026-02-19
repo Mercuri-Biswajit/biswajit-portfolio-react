@@ -22,7 +22,7 @@ function Footer() {
             <address style={{ fontStyle: "normal" }}>
               <strong>Er. Biswajit Deb Barman</strong>
               <br />
-              Civil Engineer &amp; Structural Designer
+              Civil Engineer
               <br />
               Chanditala, Raiganj, Uttar Dinajpur,
               <br />
