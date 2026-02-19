@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { Helmet } from "react-helmet-async";
 
 import { SkillCard, EducationItem } from "../../components/cards";
 import { skills } from "../../data/skills";
@@ -14,6 +15,11 @@ function AboutPage() {
 
   return (
     <>
+      <Helmet>
+        <title>{SITE.seo.about.title}</title>
+        <meta name="description" content={SITE.seo.about.description} />
+        <link rel="canonical" href={SITE.seo.about.canonical} />
+      </Helmet>
       {/* ── Page Header ──────────────────────────────── */}
       <section className="page-header">
         <div className="hero-animated-bg">

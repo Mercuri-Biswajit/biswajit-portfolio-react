@@ -1,4 +1,7 @@
 import { useEffect, useState } from "react";
+import { Helmet } from "react-helmet-async";
+import { SITE } from "../../config/constants";
+
 import VastuRoomPlanner from "./VastuRoomPlanner";
 import VastuStudy from "./VastuStudy";
 import "./VastuPage.css";
@@ -11,6 +14,12 @@ export default function VastuPage() {
   }, []);
 
   return (
+    <>
+    <Helmet>
+        <title>{SITE.seo.vastu.title}</title>
+        <meta name="description" content={SITE.seo.vastu.description} />
+        <link rel="canonical" href={SITE.seo.vastu.canonical} />
+      </Helmet>
     <div className="vastu-page">
       {/* ── Hero Section ── */}
       <section className="vastu-hero">
@@ -74,5 +83,6 @@ export default function VastuPage() {
       {/* ── Vastu Study Panel ── */}
       {mainTab === "study" && <VastuStudy />}
     </div>
+    </>
   );
 }

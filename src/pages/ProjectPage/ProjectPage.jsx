@@ -1,13 +1,15 @@
 import { useState, useEffect } from "react";
+import { Helmet } from "react-helmet-async";
+import { SITE } from "../../config/constants";
 
 // ── Data ────────────────────────────────────────────────────────
-import { projects } from "../../data/projects";          // ← projects.js
+import { projects } from "../../data/projects"; // ← projects.js
 
 // ── Components ──────────────────────────────────────────────────
 import { ProjectCard } from "../../components/cards";
 
 // ── Styles ──────────────────────────────────────────────────────
-import "./ProjectPage.css";                              // ← ProjectPage.css
+import "./ProjectPage.css"; // ← ProjectPage.css
 
 // ════════════════════════════════════════════════════════════════
 // ProjectModal — inlined so ProjectPage.jsx is self-contained
@@ -64,7 +66,6 @@ function ProjectModal({ project, onClose }) {
       aria-label={project.title}
     >
       <div className="project-modal-content">
-
         {/* ── Close button ─────────────────────────────── */}
         <button
           className="project-modal-close"
@@ -82,7 +83,6 @@ function ProjectModal({ project, onClose }) {
         />
 
         <div className="project-modal-body">
-
           {/* ── Header: number + title + category badge ── */}
           <div className="project-modal-header">
             <div>
@@ -100,19 +100,27 @@ function ProjectModal({ project, onClose }) {
           <div className="project-modal-info-grid">
             <div className="project-modal-info-item">
               <span className="project-modal-info-label">Plot Area</span>
-              <span className="project-modal-info-value">{project.plotArea}</span>
+              <span className="project-modal-info-value">
+                {project.plotArea}
+              </span>
             </div>
             <div className="project-modal-info-item">
               <span className="project-modal-info-label">Estimated Cost</span>
-              <span className="project-modal-info-value">{project.estimatedCost}</span>
+              <span className="project-modal-info-value">
+                {project.estimatedCost}
+              </span>
             </div>
             <div className="project-modal-info-item">
               <span className="project-modal-info-label">Structure Type</span>
-              <span className="project-modal-info-value">{project.structure}</span>
+              <span className="project-modal-info-value">
+                {project.structure}
+              </span>
             </div>
             <div className="project-modal-info-item">
               <span className="project-modal-info-label">Foundation</span>
-              <span className="project-modal-info-value">{project.foundation}</span>
+              <span className="project-modal-info-value">
+                {project.foundation}
+              </span>
             </div>
           </div>
 
@@ -150,7 +158,6 @@ function ProjectModal({ project, onClose }) {
           ══════════════════════════════════════════════ */}
           {activeTab === "casestudy" && hasCaseStudy && (
             <div className="project-case-study">
-
               {/* 1 · Problem Statement */}
               <div className="case-study-block">
                 <div className="case-study-block-header">
@@ -177,7 +184,9 @@ function ProjectModal({ project, onClose }) {
                 </div>
                 <ul className="case-study-list">
                   {caseStudy.challenges.map((challenge, i) => (
-                    <li key={i} className="case-study-list-item">{challenge}</li>
+                    <li key={i} className="case-study-list-item">
+                      {challenge}
+                    </li>
                   ))}
                 </ul>
               </div>
@@ -186,15 +195,17 @@ function ProjectModal({ project, onClose }) {
               <div className="case-study-block">
                 <div className="case-study-block-header">
                   <span className="case-study-icon">✅</span>
-                  <h4 className="case-study-block-title">Results &amp; Outcomes</h4>
+                  <h4 className="case-study-block-title">
+                    Results &amp; Outcomes
+                  </h4>
                 </div>
                 <div className="case-study-results-grid">
                   {Object.entries(caseStudy.results).map(([key, value]) => {
                     const labelMap = {
-                      costSaving:         "Cost Saving",
-                      timeToComplete:     "Completion Time",
+                      costSaving: "Cost Saving",
+                      timeToComplete: "Completion Time",
                       clientSatisfaction: "Client Satisfaction",
-                      structuralRating:   "Compliance",
+                      structuralRating: "Compliance",
                     };
                     return (
                       <div key={key} className="case-study-result-item">
@@ -215,12 +226,13 @@ function ProjectModal({ project, onClose }) {
                   <h4 className="case-study-block-title">Before &amp; After</h4>
                 </div>
                 <div className="case-study-comparison">
-
                   <div className="case-study-comparison-col before">
                     <span className="case-study-comparison-label">Before</span>
                     <ul className="case-study-list">
                       {caseStudy.comparison.before.map((item, i) => (
-                        <li key={i} className="case-study-list-item">{item}</li>
+                        <li key={i} className="case-study-list-item">
+                          {item}
+                        </li>
                       ))}
                     </ul>
                   </div>
@@ -229,26 +241,29 @@ function ProjectModal({ project, onClose }) {
                     <span className="case-study-comparison-label">After</span>
                     <ul className="case-study-list">
                       {caseStudy.comparison.after.map((item, i) => (
-                        <li key={i} className="case-study-list-item">{item}</li>
+                        <li key={i} className="case-study-list-item">
+                          {item}
+                        </li>
                       ))}
                     </ul>
                   </div>
-
                 </div>
               </div>
-
             </div>
           )}
 
           {/* ── Tags — always visible below both tabs ──── */}
           <div className="project-modal-tags">
             {project.tags.map((tag, i) => (
-              <span key={i} className="project-modal-tag">{tag}</span>
+              <span key={i} className="project-modal-tag">
+                {tag}
+              </span>
             ))}
           </div>
-
-        </div>{/* /project-modal-body */}
-      </div>{/* /project-modal-content */}
+        </div>
+        {/* /project-modal-body */}
+      </div>
+      {/* /project-modal-content */}
     </div>
   );
 }
@@ -281,6 +296,11 @@ function ProjectsPage() {
 
   return (
     <>
+      <Helmet>
+        <title>{SITE.seo.projects.title}</title>
+        <meta name="description" content={SITE.seo.projects.description} />
+        <link rel="canonical" href={SITE.seo.projects.canonical} />
+      </Helmet>
       {/* ── Page Header ────────────────────────────────────── */}
       <section className="page-header">
         <div className="hero-animated-bg">

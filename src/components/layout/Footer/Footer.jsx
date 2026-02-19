@@ -1,6 +1,6 @@
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 
-import { SITE } from '../../../config/constants';
+import { SITE } from "../../../config/constants";
 
 import "./Footer.css";
 
@@ -9,7 +9,6 @@ function Footer() {
     <footer className="footer">
       <div className="container">
         <div className="footer-content">
-
           <div className="footer-brand">
             <div className="logo">
               <Link to="/">
@@ -20,7 +19,21 @@ function Footer() {
                 />
               </Link>
             </div>
-            <p>Building the future, one structure at a time.</p>
+            <address style={{ fontStyle: "normal" }}>
+              <strong>Er. Biswajit Deb Barman</strong>
+              <br />
+              Civil Engineer &amp; Structural Designer
+              <br />
+              Chanditala, Raiganj, Uttar Dinajpur,
+              <br />
+              West Bengal – 733134, India
+              <br />
+              <a href="tel:+917602120054">+91-7602120054</a>
+              <br />
+              <a href="mailto:biswajitdebbarman.civil@gmail.com">
+                biswajitdebbarman.civil@gmail.com
+              </a>
+            </address>
           </div>
 
           <div className="footer-links">
@@ -34,15 +47,20 @@ function Footer() {
             </div>
             <div className="footer-column">
               <h4>Connect</h4>
-              <a href={SITE.linkedin} target="_blank" rel="noreferrer">LinkedIn</a>
-              <a href={SITE.facebook} target="_blank" rel="noreferrer">Facebook</a>
-              <a href={SITE.instagram} target="_blank" rel="noreferrer">Instagram</a>
+              <a href={SITE.linkedin} target="_blank" rel="noreferrer">
+                LinkedIn
+              </a>
+              <a href={SITE.facebook} target="_blank" rel="noreferrer">
+                Facebook
+              </a>
+              <a href={SITE.instagram} target="_blank" rel="noreferrer">
+                Instagram
+              </a>
             </div>
           </div>
-
         </div>
         <div className="footer-bottom">
-          <p>&copy; 2026 Er. Biswajit Deb Barman. All rights reserved.</p>
+          <p>&copy; 2026 Built by Er. Biswajit Deb Barman | Civil Engineer – Raiganj, Uttar Dinajpur, West Bengal. All rights reserved.</p>
         </div>
       </div>
     </footer>
