@@ -23,7 +23,10 @@ export function useBeamDesign() {
   const calculate = () => {
     try {
       if (!inputs.Mu || !inputs.Vu || !inputs.b || !inputs.D) {
-        setResults({ error: "Please fill in all required fields: Mu, Vu, b (width), and D (depth)" });
+        setResults({
+          error:
+            "Please fill in all required fields: Mu, Vu, b (width), and D (depth)",
+        });
         return;
       }
 
@@ -39,27 +42,36 @@ export function useBeamDesign() {
         cover: parseFloat(inputs.cover),
       };
 
-      if (Object.values(numericInputs).some((val) => val !== null && isNaN(val))) {
-        setResults({ error: "Please enter valid numeric values for all fields" });
+      if (
+        Object.values(numericInputs).some((val) => val !== null && isNaN(val))
+      ) {
+        setResults({
+          error: "Please enter valid numeric values for all fields",
+        });
         return;
       }
 
       const result = designBeam(numericInputs);
       if (!result || typeof result !== "object") {
-        setResults({ error: "Beam design calculation returned invalid results" });
+        setResults({
+          error: "Beam design calculation returned invalid results",
+        });
         return;
       }
 
       setResults(result);
     } catch (error) {
       console.error("Beam calculation error:", error);
-      setResults({ error: error.message || "An error occurred during beam design calculation" });
+      setResults({
+        error:
+          error.message || "An error occurred during beam design calculation",
+      });
     }
   };
 
   const populateFromStructure = (structureDesign, floorHeight) => {
     const beamSize = structureDesign.beams.size;
-    const sizeParts = beamSize.replace(/"/g, "").split("×");
+    const sizeParts = beamSize.replace(/"/g, "").split("Ã—");
     if (sizeParts.length === 2) {
       const width = parseFloat(sizeParts[0].trim()) * 25.4;
       const depth = parseFloat(sizeParts[1].trim()) * 25.4;
@@ -73,5 +85,31 @@ export function useBeamDesign() {
     }
   };
 
-  return { inputs, results, handleInputChange, calculate, populateFromStructure };
+  /**
+   * Populate Mu, Vu (and span) from slab beam-load calculation.
+   * @param {object} beamLoadEntry  — one of beamLoads.beamOnShortSide or beamOnLongSide
+   * @param {string} slabFck        — concrete grade from slab (to keep grades consistent)
+   * @param {string} slabFy         — steel grade from slab
+   */
+  const populateFromSlab = (beamLoadEntry, slabFck, slabFy) => {
+    if (!beamLoadEntry) return;
+    setInputs((prev) => ({
+      ...prev,
+      Mu: beamLoadEntry.Mu.toString(),
+      Vu: beamLoadEntry.Vu.toString(),
+      span: (beamLoadEntry.span * 1000).toString(), // convert m → mm
+      fck: slabFck || prev.fck,
+      fy: slabFy || prev.fy,
+    }));
+    setResults(null); // clear old results so user re-clicks Design Beam
+  };
+
+  return {
+    inputs,
+    results,
+    handleInputChange,
+    calculate,
+    populateFromStructure,
+    populateFromSlab,
+  };
 }

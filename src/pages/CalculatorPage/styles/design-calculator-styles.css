@@ -978,3 +978,754 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   BRICK MASONRY & PAINT ESTIMATOR — ADDITIONAL CLASSES
+   Append these to design-calculator-styles.css
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Action row (primary + secondary button side by side) ──────────────── */
+.calc-action-row {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-end;
+  margin-top: 1.5rem;
+}
+
+.calc-action-row .calc-btn-primary {
+  flex: 1;
+  margin-top: 0;
+}
+
+.calc-action-row .calc-btn-secondary {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+/* ── Highlight cards grid ──────────────────────────────────────────────── */
+.calc-highlight-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.calc-highlight-card {
+  border-radius: 10px;
+  padding: 1.1rem 1.25rem;
+  border: 2px solid transparent;
+}
+
+/* colour modifiers — map to existing CSS variables */
+.calc-highlight-card--primary {
+  background: rgba(0, 51, 102, 0.06);
+  border-color: rgba(0, 51, 102, 0.18);
+}
+
+.calc-highlight-card--primary .calc-highlight-value {
+  color: var(--color-primary);
+}
+
+.calc-highlight-card--accent {
+  background: rgba(255, 140, 0, 0.07);
+  border-color: rgba(255, 140, 0, 0.25);
+}
+
+.calc-highlight-card--accent .calc-highlight-value {
+  color: var(--color-accent);
+}
+
+.calc-highlight-card--purple {
+  background: rgba(124, 58, 237, 0.06);
+  border-color: rgba(124, 58, 237, 0.2);
+}
+
+.calc-highlight-card--purple .calc-highlight-value {
+  color: #7C3AED;
+}
+
+.calc-highlight-card--green {
+  background: rgba(5, 150, 105, 0.06);
+  border-color: rgba(5, 150, 105, 0.2);
+}
+
+.calc-highlight-card--green .calc-highlight-value {
+  color: #059669;
+}
+
+/* inner text elements */
+.calc-highlight-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--color-text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 0.4rem;
+}
+
+.calc-highlight-value {
+  font-size: 1.55rem;
+  font-weight: 800;
+  font-family: var(--font-display);
+  line-height: 1;
+}
+
+.calc-highlight-unit {
+  font-size: 0.78rem;
+  color: var(--color-text-dim);
+  margin-top: 0.3rem;
+}
+
+.calc-highlight-note {
+  font-size: 0.72rem;
+  font-weight: 600;
+  margin-top: 0.25rem;
+  /* inherits parent modifier colour via sibling selector below */
+}
+
+.calc-highlight-card--accent .calc-highlight-note {
+  color: var(--color-accent);
+}
+
+.calc-highlight-card--primary .calc-highlight-note {
+  color: var(--color-primary);
+}
+
+.calc-highlight-card--purple .calc-highlight-note {
+  color: #7C3AED;
+}
+
+.calc-highlight-card--green .calc-highlight-note {
+  color: #059669;
+}
+
+/* ── Paint can grid ────────────────────────────────────────────────────── */
+.calc-can-grid {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.75rem;
+}
+
+.calc-can-card {
+  background: var(--color-bg-light);
+  border: 2px solid #bae6fd;
+  border-radius: 10px;
+  padding: 1rem 1.5rem;
+  text-align: center;
+  min-width: 90px;
+}
+
+.calc-can-icon {
+  font-size: 1.5rem;
+  margin-bottom: 0.25rem;
+}
+
+.calc-can-count {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: var(--color-primary);
+  font-family: var(--font-display);
+}
+
+.calc-can-size {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #0284c7;
+}
+
+.calc-can-total {
+  font-size: 0.75rem;
+  color: var(--color-text-dim);
+  margin-top: 0.2rem;
+}
+
+/* ── Generic card helpers ──────────────────────────────────────────────── */
+.calc-card-desc {
+  font-size: 0.875rem;
+  color: var(--color-text-dim);
+  margin-bottom: 1rem;
+}
+
+.calc-card-hint {
+  font-size: 0.78rem;
+  color: var(--color-text-light);
+  margin-top: 0.5rem;
+}
+
+/* ── Note list normalisation ───────────────────────────────────────────── */
+.calc-note ul {
+  padding-left: 1.25rem;
+  margin-top: 0.5rem;
+  line-height: 1.8;
+}
+
+/* ── Responsive ────────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .calc-action-row {
+    flex-direction: column;
+  }
+
+  .calc-action-row .calc-btn-secondary {
+    width: 100%;
+    text-align: center;
+  }
+
+  .calc-highlight-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .calc-can-grid {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .calc-highlight-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   BRICK MASONRY & PAINT ESTIMATOR — ADDITIONAL CLASSES
+   Append these to design-calculator-styles.css
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Action row (primary + secondary button side by side) ──────────────── */
+.calc-action-row {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-end;
+  margin-top: 1.5rem;
+}
+
+.calc-action-row .calc-btn-primary {
+  flex: 1;
+  margin-top: 0;
+}
+
+.calc-action-row .calc-btn-secondary {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+/* ── Highlight cards grid ──────────────────────────────────────────────── */
+.calc-highlight-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.calc-highlight-card {
+  border-radius: 10px;
+  padding: 1.1rem 1.25rem;
+  border: 2px solid transparent;
+}
+
+/* colour modifiers — map to existing CSS variables */
+.calc-highlight-card--primary {
+  background: rgba(0, 51, 102, 0.06);
+  border-color: rgba(0, 51, 102, 0.18);
+}
+
+.calc-highlight-card--primary .calc-highlight-value {
+  color: var(--color-primary);
+}
+
+.calc-highlight-card--accent {
+  background: rgba(255, 140, 0, 0.07);
+  border-color: rgba(255, 140, 0, 0.25);
+}
+
+.calc-highlight-card--accent .calc-highlight-value {
+  color: var(--color-accent);
+}
+
+.calc-highlight-card--purple {
+  background: rgba(124, 58, 237, 0.06);
+  border-color: rgba(124, 58, 237, 0.2);
+}
+
+.calc-highlight-card--purple .calc-highlight-value {
+  color: #7C3AED;
+}
+
+.calc-highlight-card--green {
+  background: rgba(5, 150, 105, 0.06);
+  border-color: rgba(5, 150, 105, 0.2);
+}
+
+.calc-highlight-card--green .calc-highlight-value {
+  color: #059669;
+}
+
+/* inner text elements */
+.calc-highlight-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--color-text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 0.4rem;
+}
+
+.calc-highlight-value {
+  font-size: 1.55rem;
+  font-weight: 800;
+  font-family: var(--font-display);
+  line-height: 1;
+}
+
+.calc-highlight-unit {
+  font-size: 0.78rem;
+  color: var(--color-text-dim);
+  margin-top: 0.3rem;
+}
+
+.calc-highlight-note {
+  font-size: 0.72rem;
+  font-weight: 600;
+  margin-top: 0.25rem;
+  /* inherits parent modifier colour via sibling selector below */
+}
+
+.calc-highlight-card--accent  .calc-highlight-note { color: var(--color-accent); }
+.calc-highlight-card--primary .calc-highlight-note { color: var(--color-primary); }
+.calc-highlight-card--purple  .calc-highlight-note { color: #7C3AED; }
+.calc-highlight-card--green   .calc-highlight-note { color: #059669; }
+
+/* ── Paint can grid ────────────────────────────────────────────────────── */
+.calc-can-grid {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.75rem;
+}
+
+.calc-can-card {
+  background: var(--color-bg-light);
+  border: 2px solid #bae6fd;
+  border-radius: 10px;
+  padding: 1rem 1.5rem;
+  text-align: center;
+  min-width: 90px;
+}
+
+.calc-can-icon {
+  font-size: 1.5rem;
+  margin-bottom: 0.25rem;
+}
+
+.calc-can-count {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: var(--color-primary);
+  font-family: var(--font-display);
+}
+
+.calc-can-size {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #0284c7;
+}
+
+.calc-can-total {
+  font-size: 0.75rem;
+  color: var(--color-text-dim);
+  margin-top: 0.2rem;
+}
+
+/* ── Generic card helpers ──────────────────────────────────────────────── */
+.calc-card-desc {
+  font-size: 0.875rem;
+  color: var(--color-text-dim);
+  margin-bottom: 1rem;
+}
+
+.calc-card-hint {
+  font-size: 0.78rem;
+  color: var(--color-text-light);
+  margin-top: 0.5rem;
+}
+
+/* ── Note list normalisation ───────────────────────────────────────────── */
+.calc-note ul {
+  padding-left: 1.25rem;
+  margin-top: 0.5rem;
+  line-height: 1.8;
+}
+
+/* ── Responsive ────────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .calc-action-row {
+    flex-direction: column;
+  }
+
+  .calc-action-row .calc-btn-secondary {
+    width: 100%;
+    text-align: center;
+  }
+
+  .calc-highlight-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .calc-can-grid {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .calc-highlight-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Structural Design — beam/column sub-tab switcher ──────────────────── */
+.struct-subtab-row {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1.75rem;
+  border-bottom: 2px solid var(--color-border);
+  padding-bottom: 1rem;
+}
+
+.struct-subtab-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.65rem 1.5rem;
+  border: 2px solid var(--color-border);
+  border-radius: 10px;
+  background: rgba(0, 51, 102, 0.03);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+}
+
+.struct-subtab-btn:hover {
+  border-color: var(--color-primary);
+  background: rgba(0, 51, 102, 0.06);
+}
+
+.struct-subtab-btn.active {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  box-shadow: 0 3px 10px rgba(0, 51, 102, 0.25);
+}
+
+.struct-subtab-icon {
+  font-size: 1.25rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.struct-subtab-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.struct-subtab-label {
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--color-primary);
+  line-height: 1;
+}
+
+.struct-subtab-btn.active .struct-subtab-label {
+  color: #fff;
+}
+
+.struct-subtab-desc {
+  font-size: 0.68rem;
+  color: var(--color-text-dim);
+  line-height: 1;
+}
+
+.struct-subtab-btn.active .struct-subtab-desc {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* remove the inner card's outer border/shadow when nested */
+.struct-subtab-content .calc-result-card {
+  border: none;
+  box-shadow: none;
+  padding: 0;
+  animation: none;
+}
+
+@media (max-width: 600px) {
+  .struct-subtab-row {
+    flex-direction: column;
+  }
+
+  .struct-subtab-btn {
+    width: 100%;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   SLAB DESIGN TAB — CSS ADDITIONS
+   Append these to: design-calculator-styles.css  (or design-calculator-styles-additions.css)
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Slab type toggle ──────────────────────────────────────────────────── */
+.slab-type-toggle {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.slab-type-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  flex: 1;
+  min-width: 160px;
+  padding: 0.75rem 1rem;
+  background: var(--bg-surface, #f8f9fa);
+  border: 2px solid var(--border-color, #dee2e6);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: border-color 0.18s, background 0.18s, box-shadow 0.18s;
+  text-align: left;
+}
+
+.slab-type-btn:hover {
+  border-color: var(--primary, #0d6efd);
+  background: var(--primary-light, #e8f0fe);
+}
+
+.slab-type-btn.active {
+  border-color: var(--primary, #0d6efd);
+  background: var(--primary-light, #e8f0fe);
+  box-shadow: 0 2px 8px rgba(13, 110, 253, 0.18);
+}
+
+.slab-type-icon {
+  font-size: 1.4rem;
+  flex-shrink: 0;
+}
+
+.slab-type-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.slab-type-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-primary, #212529);
+}
+
+.slab-type-desc {
+  font-size: 0.72rem;
+  color: var(--text-muted, #6c757d);
+}
+
+/* ── Slab bar table ────────────────────────────────────────────────────── */
+.calc-table-container {
+  overflow-x: auto;
+  margin-top: 0.75rem;
+  border-radius: 8px;
+  border: 1px solid var(--border-color, #dee2e6);
+}
+
+.calc-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+}
+
+.calc-table thead tr {
+  background: var(--bg-surface, #f8f9fa);
+}
+
+.calc-table th,
+.calc-table td {
+  padding: 0.55rem 0.875rem;
+  text-align: left;
+  border-bottom: 1px solid var(--border-color, #dee2e6);
+  white-space: nowrap;
+}
+
+.calc-table th {
+  font-weight: 600;
+  color: var(--text-secondary, #495057);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.calc-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.calc-table tbody tr:hover {
+  background: var(--bg-hover, #f1f3f5);
+}
+
+/* Recommended row highlight */
+.slab-table-recommended {
+  background: var(--primary-light, #e8f0fe) !important;
+  font-weight: 600;
+}
+
+.slab-table-recommended td:first-child {
+  color: var(--primary, #0d6efd);
+}
+
+/* ── Detail grid for slab results ─────────────────────────────────────── */
+.calc-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 0.625rem;
+  margin: 0.75rem 0;
+}
+
+.calc-detail-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  padding: 0.6rem 0.875rem;
+  background: var(--bg-surface, #f8f9fa);
+  border: 1px solid var(--border-color, #dee2e6);
+  border-radius: 8px;
+}
+
+.calc-detail-item--accent {
+  background: var(--primary-light, #e8f0fe);
+  border-color: var(--primary, #0d6efd);
+}
+
+.calc-detail-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-muted, #6c757d);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.calc-detail-value {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-primary, #212529);
+}
+
+.calc-detail-note {
+  font-size: 0.7rem;
+  color: var(--text-muted, #6c757d);
+  font-style: italic;
+}
+
+/* ── Struct summary card grid (section summary) ───────────────────────── */
+.calc-struct-section {
+  margin-bottom: 1.25rem;
+}
+
+.calc-struct-section-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-primary, #212529);
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.calc-struct-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(165px, 1fr));
+  gap: 0.75rem;
+}
+
+.calc-struct-card {
+  padding: 0.875rem;
+  background: var(--bg-surface, #f8f9fa);
+  border: 1px solid var(--border-color, #dee2e6);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.calc-struct-icon {
+  font-size: 1.25rem;
+}
+
+.calc-struct-title {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-muted, #6c757d);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.calc-struct-value {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-primary, #212529);
+}
+
+.calc-struct-sub {
+  font-size: 0.72rem;
+  color: var(--text-muted, #6c757d);
+}
+
+/* ── Alert variants (if not already in main CSS) ─────────────────────── */
+.calc-alert {
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  margin-bottom: 1rem;
+}
+
+.calc-alert-error {
+  background: #fff5f5;
+  border: 1px solid #fc8181;
+  color: #c53030;
+}
+
+.calc-alert-warning {
+  background: #fffbeb;
+  border: 1px solid #f6ad55;
+  color: #92400e;
+}
+
+.calc-alert-info {
+  background: var(--primary-light, #e8f0fe);
+  border: 1px solid var(--primary, #0d6efd);
+  color: var(--text-primary, #212529);
+}
+
+/* ── Responsive ───────────────────────────────────────────────────────── */
+@media (max-width: 600px) {
+  .slab-type-toggle {
+    flex-direction: column;
+  }
+
+  .slab-type-btn {
+    min-width: unset;
+    width: 100%;
+  }
+
+  .calc-detail-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .calc-struct-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 400px) {
+  .calc-detail-grid,
+  .calc-struct-grid {
+    grid-template-columns: 1fr;
+  }
+}

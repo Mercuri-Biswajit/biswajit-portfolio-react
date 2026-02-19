@@ -1,4 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+// ═══════════════════════════════════════════════════════════════════════════
+// CALCULATOR PAGE — 4 main tabs
+//   costing | structural (beam + column) | brick | paint
+// Place in: src/pages/CalculatorPage/CalculatorPage.jsx
+// ═══════════════════════════════════════════════════════════════════════════
+
 import { useState, useEffect } from "react";
 
 import { formatCurrency } from "../../utils/helpers";
@@ -17,13 +23,17 @@ import {
 
 import { useBeamDesign } from "./hooks/useBeamDesign";
 import { useColumnDesign } from "./hooks/useColumnDesign";
+import { useSlabDesign } from "./hooks/useSlabDesign";
 import { useCostingInputs } from "./hooks/useCostingInputs";
+import { useBrickMasonry } from "./hooks/useBrickMasonry";
+import { usePaintEstimator } from "./hooks/usePaintEstimator";
 
 import { HeroSection } from "./components/HeroSection";
 import { CostingInputPanel } from "./components/CostingInputPanel";
 import { CostingResults } from "./components/CostingResults";
-import { BeamDesignTab } from "./components/BeamDesignTab";
-import { ColumnDesignTab } from "./components/ColumnDesignTab";
+import { StructuralDesignTab } from "./components/StructuralDesignTab";
+import { BrickMasonryTab } from "./components/BrickMasonryTab";
+import { PaintEstimatorTab } from "./components/PaintEstimatorTab";
 
 import "./styles/CalculatorPage.css";
 import "./styles/design-calculator-styles.css";
@@ -36,31 +46,23 @@ function CalculatorsPage() {
   const { inputs, updateField, resetInputs } = useCostingInputs();
   const beam = useBeamDesign();
   const column = useColumnDesign();
+  const slab = useSlabDesign();
+  const brick = useBrickMasonry();
+  const paint = usePaintEstimator();
 
-  // Auto-populate beam/column from structure design when switching tabs
+  // Auto-populate beam/column from structure design when switching to structural tab
   useEffect(() => {
-    if (
-      costingResults?.structureDesign &&
-      mainTab === "beam" &&
-      !beam.inputs.b
-    ) {
-      beam.populateFromStructure(
-        costingResults.structureDesign,
-        inputs.floorHeight,
-      );
-    }
-  }, [mainTab, costingResults]);
-
-  useEffect(() => {
-    if (
-      costingResults?.structureDesign &&
-      mainTab === "column" &&
-      !column.inputs.b
-    ) {
-      column.populateFromStructure(
-        costingResults.structureDesign,
-        inputs.floorHeight,
-      );
+    if (costingResults?.structureDesign && mainTab === "structural") {
+      if (!beam.inputs.b)
+        beam.populateFromStructure(
+          costingResults.structureDesign,
+          inputs.floorHeight,
+        );
+      if (!column.inputs.b)
+        column.populateFromStructure(
+          costingResults.structureDesign,
+          inputs.floorHeight,
+        );
     }
   }, [mainTab, costingResults]);
 
@@ -132,36 +134,28 @@ function CalculatorsPage() {
     setCostingSubTab("cost");
   };
 
+  const handleTabChange = (tab) => {
+    setMainTab(tab);
+    if (tab === "structural" && costingResults?.structureDesign) {
+      if (!beam.inputs.b)
+        beam.populateFromStructure(
+          costingResults.structureDesign,
+          inputs.floorHeight,
+        );
+      if (!column.inputs.b)
+        column.populateFromStructure(
+          costingResults.structureDesign,
+          inputs.floorHeight,
+        );
+    }
+  };
+
   return (
     <div className="calc-page">
-      <HeroSection
-        mainTab={mainTab}
-        onTabChange={(tab) => {
-          setMainTab(tab);
-          if (
-            tab === "beam" &&
-            costingResults?.structureDesign &&
-            !beam.inputs.b
-          ) {
-            beam.populateFromStructure(
-              costingResults.structureDesign,
-              inputs.floorHeight,
-            );
-          }
-          if (
-            tab === "column" &&
-            costingResults?.structureDesign &&
-            !column.inputs.b
-          ) {
-            column.populateFromStructure(
-              costingResults.structureDesign,
-              inputs.floorHeight,
-            );
-          }
-        }}
-      />
+      <HeroSection mainTab={mainTab} onTabChange={handleTabChange} />
 
       <main className="calc-main">
+        {/* ── COSTING ─────────────────────────────────────────────── */}
         {mainTab === "costing" && (
           <>
             <CostingInputPanel
@@ -183,44 +177,45 @@ function CalculatorsPage() {
           </>
         )}
 
-        {mainTab === "beam" && (
+        {/* ── STRUCTURAL DESIGN (beam + column + slab) ────────────── */}
+        {mainTab === "structural" && (
           <section className="calc-results-section">
             {costingResults?.structureDesign && (
               <div
                 className="calc-alert calc-alert-info"
                 style={{ marginBottom: "1.5rem" }}
               >
-                <strong>ℹ️ Auto-populated from Structure Design:</strong> Beam
-                dimensions and material grades have been filled based on your
-                building estimate. You can modify them as needed.
+                <strong>ℹ️ Auto-populated from Structure Design:</strong> Member
+                dimensions and material grades have been pre-filled from your
+                building estimate. Modify as needed.
               </div>
             )}
-            <BeamDesignTab
-              inputs={beam.inputs}
-              onInputChange={beam.handleInputChange}
-              onCalculate={beam.calculate}
-              results={beam.results}
+            <StructuralDesignTab beam={beam} column={column} slab={slab} />
+          </section>
+        )}
+
+        {/* ── BRICK MASONRY ────────────────────────────────────────── */}
+        {mainTab === "brick" && (
+          <section className="calc-results-section">
+            <BrickMasonryTab
+              inputs={brick.inputs}
+              onInputChange={brick.handleInputChange}
+              onCalculate={brick.calculate}
+              onReset={brick.reset}
+              results={brick.results}
             />
           </section>
         )}
 
-        {mainTab === "column" && (
+        {/* ── PAINT ESTIMATOR ─────────────────────────────────────── */}
+        {mainTab === "paint" && (
           <section className="calc-results-section">
-            {costingResults?.structureDesign && (
-              <div
-                className="calc-alert calc-alert-info"
-                style={{ marginBottom: "1.5rem" }}
-              >
-                <strong>ℹ️ Auto-populated from Structure Design:</strong> Column
-                dimensions and material grades have been filled based on your
-                building estimate. You can modify them as needed.
-              </div>
-            )}
-            <ColumnDesignTab
-              inputs={column.inputs}
-              onInputChange={column.handleInputChange}
-              onCalculate={column.calculate}
-              results={column.results}
+            <PaintEstimatorTab
+              inputs={paint.inputs}
+              onInputChange={paint.handleInputChange}
+              onCalculate={paint.calculate}
+              onReset={paint.reset}
+              results={paint.results}
             />
           </section>
         )}

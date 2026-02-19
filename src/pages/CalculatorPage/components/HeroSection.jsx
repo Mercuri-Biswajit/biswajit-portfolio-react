@@ -1,3 +1,8 @@
+// ═══════════════════════════════════════════════════════════════════════════
+// HERO SECTION — 4 tabs (beam + column merged into "Structural Design")
+// Place in: src/pages/CalculatorPage/components/HeroSection.jsx
+// ═══════════════════════════════════════════════════════════════════════════
+
 export function HeroSection({ mainTab, onTabChange }) {
   const tabs = [
     {
@@ -7,16 +12,22 @@ export function HeroSection({ mainTab, onTabChange }) {
       desc: "Complete building cost estimation",
     },
     {
-      key: "beam",
-      icon: "🏗️",
-      label: "BEAM DESIGN",
-      desc: "RCC beam structural analysis",
+      key: "structural",
+      icon: "🔩",
+      label: "STRUCTURAL DESIGN",
+      desc: "Beam & column IS 456:2000",
     },
     {
-      key: "column",
-      icon: "🏛️",
-      label: "COLUMN DESIGN",
-      desc: "Column load capacity design",
+      key: "brick",
+      icon: "🧱",
+      label: "BRICK MASONRY",
+      desc: "Quantity & mortar calculator",
+    },
+    {
+      key: "paint",
+      icon: "🎨",
+      label: "PAINT ESTIMATOR",
+      desc: "Area-based paint quantity",
     },
   ];
 
@@ -28,7 +39,8 @@ export function HeroSection({ mainTab, onTabChange }) {
             <span className="calc-hero-label">PROFESSIONAL TOOLS</span>
             <h1 className="calc-hero-title">Construction Calculator Suite</h1>
             <p className="calc-hero-description">
-              IS 456:2000 compliant tools for cost estimation, beam design, and column design
+              IS 456:2000 compliant tools for cost estimation, structural
+              design, and material quantity calculations
             </p>
           </div>
 
