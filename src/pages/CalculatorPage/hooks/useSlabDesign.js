@@ -193,6 +193,44 @@ function computeBeamLoads(slabResults, inputs) {
   };
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// NEW: Compute column Pu from slab results
+// The column at each panel corner supports a tributary area = (lx/2) × (ly/2).
+// For one-way slab the tributary area = (lx/2) × (lx/2) (both sides).
+// Pu = wu × tributary_area × load_factor_for_self_weight_of_column (1.1 approx)
+// This gives the slab load on ONE interior column (worst case).
+// For an edge column use 0.5× and for corner column 0.25×.
+// ─────────────────────────────────────────────────────────────────────────────
+function computeColumnLoad(slabResults, inputs) {
+  if (!slabResults || slabResults.error) return null;
+
+  const { wu, slabType } = slabResults;
+  const Lx = parseFloat(inputs.lx);
+  const Ly = slabType === "two_way" ? parseFloat(inputs.ly) : Lx;
+
+  // Tributary area per column
+  const trib_interior = r2((Lx / 2) * (Ly / 2)); // m²
+  const trib_edge = r2(trib_interior / 2);
+  const trib_corner = r2(trib_interior / 4);
+
+  // Factored slab load on column (× 1.1 accounts for column self-weight roughly)
+  const Pu_interior = r2(wu * trib_interior * 1.1);
+  const Pu_edge = r2(wu * trib_edge * 1.1);
+  const Pu_corner = r2(wu * trib_corner * 1.1);
+
+  return {
+    wu,
+    slabType,
+    trib_interior,
+    trib_edge,
+    trib_corner,
+    Pu_interior,
+    Pu_edge,
+    Pu_corner,
+    note: "Per floor. Multiply by number of floors for multi-storey columns.",
+  };
+}
+
 // ── Main design function ───────────────────────────────────────────────────
 function designSlab(inputs) {
   const { lx, ly, slabType, supportType, ll, ff, fck, fy, cover } = inputs;
@@ -346,6 +384,8 @@ export function useSlabDesign() {
       if (!result.error) {
         // Attach beam load data to results so SlabDesignTab can display it
         result.beamLoads = computeBeamLoads(result, inputs);
+        // Attach column load data
+        result.columnLoad = computeColumnLoad(result, inputs);
       }
       setResults(result);
     } catch (err) {
@@ -367,5 +407,21 @@ export function useSlabDesign() {
     return computeBeamLoads(results, inputs);
   };
 
-  return { inputs, results, handleInputChange, calculate, reset, getBeamLoads };
+  /**
+   * Returns computed column Pu based on latest slab results.
+   */
+  const getColumnLoad = () => {
+    if (!results || results.error) return null;
+    return computeColumnLoad(results, inputs);
+  };
+
+  return {
+    inputs,
+    results,
+    handleInputChange,
+    calculate,
+    reset,
+    getBeamLoads,
+    getColumnLoad,
+  };
 }

@@ -4,29 +4,14 @@
 // ═══════════════════════════════════════════════════════════════════════════
 
 import { useState } from "react";
-import { BeamDesignTab } from "./BeamDesignTab";
+import { BeamDesignTab }   from "./BeamDesignTab";
 import { ColumnDesignTab } from "./ColumnDesignTab";
-import { SlabDesignTab } from "./SlabDesignTab";
+import { SlabDesignTab }   from "./SlabDesignTab";
 
 const SUB_TABS = [
-  {
-    key: "slab",
-    icon: "⬜",
-    label: "Slab Design",
-    desc: "One-way & two-way — IS 456",
-  },
-  {
-    key: "beam",
-    icon: "🏗️",
-    label: "Beam Design",
-    desc: "Flexural & shear — IS 456",
-  },
-  {
-    key: "column",
-    icon: "🏛️",
-    label: "Column Design",
-    desc: "Axial & moment — IS 456",
-  },
+  { key: "slab",   icon: "⬜", label: "Slab Design",    desc: "One-way & two-way — IS 456" },
+  { key: "beam",   icon: "🏗️", label: "Beam Design",   desc: "Flexural & shear — IS 456" },
+  { key: "column", icon: "🏛️", label: "Column Design",  desc: "Axial & moment — IS 456"  },
 ];
 
 export function StructuralDesignTab({ beam, column, slab }) {
@@ -46,6 +31,21 @@ export function StructuralDesignTab({ beam, column, slab }) {
     // Switch to beam sub-tab
     setActiveSubTab("beam");
     // Scroll to top of section (optional UX nicety)
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  /**
+   * Called from SlabDesignTab when user clicks "Send to Column Design".
+   * columnLoad = computeColumnLoad() result, position = "interior"|"edge"|"corner"
+   */
+  const handleSendToColumn = (columnLoad, position) => {
+    column.populateFromSlab(
+      columnLoad,
+      position,
+      slab.results?.fck?.toString(),
+      slab.results?.fy?.toString(),
+    );
+    setActiveSubTab("column");
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
@@ -99,6 +99,7 @@ export function StructuralDesignTab({ beam, column, slab }) {
             onReset={slab.reset}
             results={slab.results}
             onSendToBeam={handleSendToBeam}
+            onSendToColumn={handleSendToColumn}
           />
         )}
       </div>

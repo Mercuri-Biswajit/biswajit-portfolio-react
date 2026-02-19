@@ -12,7 +12,8 @@ export function SlabDesignTab({
   onCalculate,
   onReset,
   results,
-  onSendToBeam, // NEW: callback(beamLoadEntry) → switches to beam tab
+  onSendToBeam, // callback(beamLoadEntry) → switches to beam tab
+  onSendToColumn, // NEW: callback(columnLoad, position) → switches to column tab
 }) {
   const isTwoWay = inputs.slabType === "two_way";
 
@@ -197,7 +198,11 @@ export function SlabDesignTab({
 
       {/* ── Results ─────────────────────────────────────────────────── */}
       {results && !results.error && (
-        <SlabResults results={results} onSendToBeam={onSendToBeam} />
+        <SlabResults
+          results={results}
+          onSendToBeam={onSendToBeam}
+          onSendToColumn={onSendToColumn}
+        />
       )}
       {results?.error && (
         <div className="calc-alert calc-alert-error">
@@ -210,9 +215,10 @@ export function SlabDesignTab({
 
 // ── Results ──────────────────────────────────────────────────────────────────
 
-function SlabResults({ results: r, onSendToBeam }) {
+function SlabResults({ results: r, onSendToBeam, onSendToColumn }) {
   const isOneWay = r.slabType === "one_way";
   const beamLoads = r.beamLoads || null;
+  const columnLoad = r.columnLoad || null;
 
   return (
     <>
@@ -308,9 +314,17 @@ function SlabResults({ results: r, onSendToBeam }) {
         </div>
       </div>
 
-      {/* ── NEW: Beam Load Transfer Panel ─────────────────────────────── */}
+      {/* ── Beam Load Transfer Panel ─────────────────────────────── */}
       {beamLoads && (
         <BeamLoadPanel beamLoads={beamLoads} onSendToBeam={onSendToBeam} />
+      )}
+
+      {/* ── Column Load Transfer Panel ────────────────────────────── */}
+      {columnLoad && (
+        <ColumnLoadPanel
+          columnLoad={columnLoad}
+          onSendToColumn={onSendToColumn}
+        />
       )}
 
       {/* Main reinforcement — X direction */}
@@ -415,6 +429,123 @@ function SlabResults({ results: r, onSendToBeam }) {
         </ul>
       </div>
     </>
+  );
+}
+
+// ── NEW: Column Load Transfer Panel ──────────────────────────────────────────
+
+function ColumnLoadPanel({ columnLoad, onSendToColumn }) {
+  if (!columnLoad) return null;
+
+  const positions = [
+    {
+      key: "interior",
+      label: "Interior Column",
+      trib: columnLoad.trib_interior,
+      Pu: columnLoad.Pu_interior,
+      icon: "🟦",
+      hint: "Surrounded by slabs on all 4 sides",
+    },
+    {
+      key: "edge",
+      label: "Edge Column",
+      trib: columnLoad.trib_edge,
+      Pu: columnLoad.Pu_edge,
+      icon: "🟧",
+      hint: "On perimeter — slab on 2–3 sides",
+    },
+    {
+      key: "corner",
+      label: "Corner Column",
+      trib: columnLoad.trib_corner,
+      Pu: columnLoad.Pu_corner,
+      icon: "🟥",
+      hint: "At building corner — slab on 1 side",
+    },
+  ];
+
+  return (
+    <div
+      className="calc-card"
+      style={{ border: "2px solid #10B981", backgroundColor: "#F0FDF4" }}
+    >
+      <h4 className="calc-card-subtitle" style={{ color: "#059669" }}>
+        <span>🏛️</span> Column Load Transfer (from Slab)
+      </h4>
+      <p
+        style={{ fontSize: "0.875rem", color: "#6B7280", marginBottom: "1rem" }}
+      >
+        Factored axial load (Pu) on columns based on tributary area method.
+        Includes a 1.1× factor for approximate column self-weight. Click{" "}
+        <strong>Send to Column Design</strong> for the position you want to
+        design.
+      </p>
+
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+          gap: "1rem",
+        }}
+      >
+        {positions.map(({ key, label, trib, Pu, icon, hint }) => (
+          <div
+            key={key}
+            style={{
+              background: "#fff",
+              borderRadius: "10px",
+              border: "1px solid #6EE7B7",
+              padding: "1rem",
+              display: "flex",
+              flexDirection: "column",
+              gap: "0.5rem",
+            }}
+          >
+            <div
+              style={{ fontWeight: 700, color: "#059669", fontSize: "0.95rem" }}
+            >
+              {icon} {label}
+            </div>
+            <div style={{ fontSize: "0.78rem", color: "#6B7280" }}>{hint}</div>
+
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "1fr 1fr",
+                gap: "0.4rem",
+                marginTop: "0.25rem",
+              }}
+            >
+              <MiniStat label="Tributary Area" value={`${trib} m²`} />
+              <MiniStat label="Pu (per floor)" value={`${Pu} kN`} accent />
+            </div>
+
+            {onSendToColumn && (
+              <button
+                className="calc-btn-primary"
+                style={{
+                  marginTop: "0.5rem",
+                  fontSize: "0.82rem",
+                  padding: "0.45rem 0.8rem",
+                  background: "#059669",
+                }}
+                onClick={() => onSendToColumn(columnLoad, key)}
+              >
+                → Send to Column Design
+              </button>
+            )}
+          </div>
+        ))}
+      </div>
+
+      <p
+        style={{ fontSize: "0.78rem", color: "#9CA3AF", marginTop: "0.75rem" }}
+      >
+        ⓘ For multi-storey buildings, multiply Pu by the number of floors above.
+        Column dimensions (b, D, L) must be entered manually in the Column
+        Design tab.
+      </p>
+    </div>
   );
 }
 

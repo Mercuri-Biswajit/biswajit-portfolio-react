@@ -26,7 +26,10 @@ export function useColumnDesign() {
   const calculate = () => {
     try {
       if (!inputs.Pu || !inputs.b || !inputs.D || !inputs.L) {
-        setResults({ error: "Please fill in all required fields: Pu, b (width), D (depth), and L (length)" });
+        setResults({
+          error:
+            "Please fill in all required fields: Pu, b (width), D (depth), and L (length)",
+        });
         return;
       }
 
@@ -43,22 +46,39 @@ export function useColumnDesign() {
         cover: parseFloat(inputs.cover),
       };
 
-      const numericFields = ["Pu", "Mux", "Muy", "b", "D", "L", "fck", "fy", "cover"];
+      const numericFields = [
+        "Pu",
+        "Mux",
+        "Muy",
+        "b",
+        "D",
+        "L",
+        "fck",
+        "fy",
+        "cover",
+      ];
       if (numericFields.some((f) => isNaN(numericInputs[f]))) {
-        setResults({ error: "Please enter valid numeric values for all fields" });
+        setResults({
+          error: "Please enter valid numeric values for all fields",
+        });
         return;
       }
 
       const result = designColumn(numericInputs);
       if (!result || typeof result !== "object") {
-        setResults({ error: "Column design calculation returned invalid results" });
+        setResults({
+          error: "Column design calculation returned invalid results",
+        });
         return;
       }
 
       setResults(result);
     } catch (error) {
       console.error("Column calculation error:", error);
-      setResults({ error: error.message || "An error occurred during column design calculation" });
+      setResults({
+        error:
+          error.message || "An error occurred during column design calculation",
+      });
     }
   };
 
@@ -80,5 +100,36 @@ export function useColumnDesign() {
     }
   };
 
-  return { inputs, results, handleInputChange, calculate, populateFromStructure };
+  /**
+   * Populate Pu from slab column-load calculation.
+   * @param {object} columnLoad  — result of computeColumnLoad() from useSlabDesign
+   * @param {string} position    — "interior" | "edge" | "corner"
+   * @param {string} slabFck     — concrete grade from slab
+   * @param {string} slabFy      — steel grade from slab
+   */
+  const populateFromSlab = (columnLoad, position, slabFck, slabFy) => {
+    if (!columnLoad) return;
+    const PuMap = {
+      interior: columnLoad.Pu_interior,
+      edge: columnLoad.Pu_edge,
+      corner: columnLoad.Pu_corner,
+    };
+    const Pu = PuMap[position] ?? columnLoad.Pu_interior;
+    setInputs((prev) => ({
+      ...prev,
+      Pu: Pu.toString(),
+      fck: slabFck || prev.fck,
+      fy: slabFy || prev.fy,
+    }));
+    setResults(null);
+  };
+
+  return {
+    inputs,
+    results,
+    handleInputChange,
+    calculate,
+    populateFromStructure,
+    populateFromSlab,
+  };
 }
