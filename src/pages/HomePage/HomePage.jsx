@@ -342,7 +342,6 @@ function HomePage() {
               </h1>
               <h2 className="hero-title">
                 <span className="line">ER. BISWAJIT</span>
-                {/* <span className="line">DEB</span> */}
                 <span className="line highlight">DEB BARMAN</span>
               </h2>
               <p className="hero-description">
