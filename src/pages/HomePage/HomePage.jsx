@@ -345,8 +345,8 @@ function HomePage() {
                 <span className="line highlight">DEB BARMAN</span>
               </h2>
               <p className="hero-description">
-                Structural Designer based in Raiganj, Uttar Dinajpur —
-                specializing in RCC structural design, WB PWD BOQ, IS 456:2000
+                Civil Engineer based in Raiganj, Uttar Dinajpur — specializing
+                in RCC structural design, WB PWD BOQ, IS 456:2000 architectural,
                 structures, and construction cost estimation for residential and
                 commercial projects across North Bengal.
               </p>
