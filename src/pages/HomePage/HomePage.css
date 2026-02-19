@@ -56,22 +56,6 @@
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   HOMEPAGE CONTAINER
-   ═══════════════════════════════════════════════════════════════════════════ */
-
-.home-page {
-  width: 100%;
-  min-height: 100vh;
-  background: var(--home-bg-dark);
-}
-
-.home-page .container {
-  max-width: 1300px;
-  margin: 0 auto;
-  padding: 0 2rem;
-}
-
-/* ═══════════════════════════════════════════════════════════════════════════
    SECTION HEADERS - HOMEPAGE STYLE
    ═══════════════════════════════════════════════════════════════════════════ */
 
@@ -106,158 +90,39 @@
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   HERO SECTION
+   HERO — COLOR OVERRIDES ONLY
+   Layout, responsive, animations all handled by global hero.css
    ═══════════════════════════════════════════════════════════════════════════ */
 
-.home-page .hero {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  position: relative;
-  overflow: hidden;
-  padding-top: 80px;
-}
-
-.home-page .hero-background {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  opacity: 1;
-  z-index: 1;
-}
-
-.home-page .hero-background::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 50%;
-  height: 100%;
-  background: radial-gradient(circle at top right, rgba(30, 41, 59, 0.05) 0%, transparent 70%);
-}
-
-.home-page .hero .container {
-  position: relative;
-  z-index: 2;
-  display: grid;
-  grid-template-columns: 1.2fr 1fr;
-  gap: 4rem;
-  align-items: center;
-}
-
-.home-page .hero-content {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-}
-
 .home-page .hero-label {
-  font-family: var(--home-font-display);
-  font-size: 1rem;
-  font-weight: 500;
-  letter-spacing: 0.3em;
   color: var(--home-text);
-  margin-bottom: 1rem;
-  animation: fadeInUp 0.8s ease-out;
-  text-transform: uppercase;
 }
 
 .home-page .hero-title {
-  font-family: var(--home-font-display);
-  font-size: clamp(2.5rem, 5vw, 4rem);
-  font-weight: 700;
-  line-height: 1.2;
-  margin-bottom: 2rem;
   color: var(--home-text);
 }
 
-.home-page .hero-title .line {
-  display: block;
-  animation: fadeInUp 0.8s ease-out;
-  animation-fill-mode: both;
-}
-
-.home-page .hero-title .line:nth-child(1) {
-  animation-delay: 0.2s;
-  color: var(--home-text);
-}
-
+.home-page .hero-title .line:nth-child(1),
 .home-page .hero-title .line:nth-child(2) {
-  animation-delay: 0.4s;
   color: var(--home-text);
 }
 
 .home-page .hero-title .line.highlight {
   color: var(--home-accent);
-  animation-delay: 0.6s;
 }
 
 .home-page .hero-description {
-  font-size: clamp(0.95rem, 1.5vw, 1rem);
   color: var(--home-text);
-  max-width: 600px;
-  margin-bottom: 3rem;
-  animation: fadeInUp 0.8s ease-out 0.8s both;
-  line-height: 1.8;
-}
-
-.home-page .hero-cta {
-  display: flex;
-  gap: 1.5rem;
-  animation: fadeInUp 0.8s ease-out 1s both;
-  flex-wrap: wrap;
-}
-
-/* Hero Visual */
-.home-page .hero-visual {
-  position: relative;
-  height: 500px;
-  animation: fadeIn 1.2s ease-out 1.2s both;
 }
 
 .home-page .hero-image-container {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  border-radius: 12px;
-  overflow: hidden;
   box-shadow: var(--home-shadow-lg);
-  z-index: 2;
-}
-
-.home-page .hero-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-
-.home-page .hero-image-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(135deg, rgba(30, 41, 59, 0.05) 0%, rgba(100, 116, 139, 0.03) 100%);
-  pointer-events: none;
 }
 
 .home-page .blueprint-grid {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
   background-image:
     linear-gradient(var(--home-border) 1px, transparent 1px),
     linear-gradient(90deg, var(--home-border) 1px, transparent 1px);
-  background-size: 40px 40px;
-  opacity: 0.3;
-  animation: gridPulse 4s ease-in-out infinite;
-  z-index: 1;
-  pointer-events: none;
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -743,291 +608,108 @@
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   ABOUT ME SECTION
+   CORE SKILLS STANDALONE SECTION
    ═══════════════════════════════════════════════════════════════════════════ */
 
-.home-page .about-me {
+.home-page .core-skills {
   padding: 6rem 0;
   background: var(--home-bg-dark);
-}
-
-.home-page .about-content {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 4rem;
-  align-items: start;
-  margin-top: 3rem;
-}
-
-.home-page .about-text {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-.home-page .about-subtitle {
-  font-family: var(--home-font-display);
-  font-size: 1.8rem;
-  font-weight: 600;
-  color: var(--home-primary);
-  margin-bottom: 0.5rem;
   position: relative;
-  padding-bottom: 0.5rem;
 }
 
-.home-page .about-subtitle::after {
+/* Subtle diagonal stripe background texture */
+.home-page .core-skills::before {
   content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 60px;
-  height: 3px;
-  background: var(--home-primary);
-  transition: width 0.3s ease;
-}
-
-.home-page .about-text:hover .about-subtitle::after {
-  width: 100px;
-}
-
-.home-page .about-description {
-  font-size: 1.1rem;
-  line-height: 1.8;
-  color: var(--home-text);
-  margin-bottom: 1.5rem;
-}
-
-.home-page .about-description strong {
-  color: var(--home-primary);
-  font-weight: 600;
-}
-
-/* ═══════════════════════════════════════════════════════════════════════════
-   HIGHLIGHT ITEMS — same design as SkillCard
-   left bar │ icon badge │ title + text │ number tag
-   Hover: navy overlay slides up from bottom, orange corner accent
-   ═══════════════════════════════════════════════════════════════════════════ */
-
-.home-page .about-highlights {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  margin-top: 1rem;
-}
-
-/* ── Card shell ─────────────────────────────────────────────────────── */
-.home-page .highlight-item {
-  position: relative;
-  display: flex;
-  align-items: stretch;
-  height: 88px;
-  background: #ffffff;
-  border: 1px solid var(--home-border);
-  border-radius: 10px;
-  overflow: hidden;
-  cursor: default;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
-  padding: 0;
-  gap: 0;
-}
-
-.home-page .highlight-item::before,
-.home-page .highlight-item::after {
-  display: none;
-}
-
-.home-page .highlight-item:hover {
-  border-color: var(--home-primary);
-  box-shadow: 0 6px 24px rgba(0, 51, 102, 0.12);
-  transform: none;
-}
-
-/* ── Left accent bar ────────────────────────────────────────────────── */
-.home-page .highlight-bar {
-  display: block;
-  width: 4px;
-  background: var(--home-accent);
-  flex-shrink: 0;
-  border-radius: 10px 0 0 10px;
-  transition: background 0.3s ease;
-}
-
-.home-page .highlight-item:hover .highlight-bar {
-  background: var(--home-primary);
-}
-
-/* ── Number tag ─────────────────────────────────────────────────────── */
-.home-page .highlight-num {
-  position: absolute;
-  top: 10px;
-  right: 12px;
-  font-family: var(--home-font-display);
-  font-size: 0.62rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  color: var(--home-border-dark);
-  z-index: 2;
-  line-height: 1;
-  transition: color 0.3s ease;
-}
-
-.home-page .highlight-item:hover .highlight-num {
-  color: rgba(255, 255, 255, 0.5);
-}
-
-/* ── Static face ────────────────────────────────────────────────────── */
-.home-page .highlight-face {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  padding: 0 1rem;
-  flex: 1;
-  position: relative;
-  z-index: 2;
-  transition: opacity 0.25s ease;
-}
-
-.home-page .highlight-item:hover .highlight-face {
-  opacity: 0;
-}
-
-/* Icon badge */
-.home-page .highlight-icon {
-  width: 46px;
-  height: 46px;
-  min-width: 46px;
-  font-size: 1.5rem;
-  flex-shrink: 0;
-  border-radius: 10px;
-  background: linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
-  position: static;
-  z-index: auto;
-}
-
-.home-page .highlight-item:hover .highlight-icon {
-  transform: scale(1.1) rotate(-6deg);
-}
-
-/* Text block */
-.home-page .highlight-content {
-  flex: 1;
-  min-width: 0;
-  position: static;
-  z-index: auto;
-}
-
-.home-page .highlight-content h4 {
-  font-family: var(--home-font-display);
-  font-size: 0.92rem;
-  font-weight: 600;
-  color: var(--home-text);
-  margin-bottom: 0.15rem;
-  line-height: 1.3;
-}
-
-.home-page .highlight-content p {
-  font-size: 0.78rem;
-  color: var(--home-text-dim);
-  line-height: 1.5;
-  margin: 0;
-}
-
-/* ── Hover overlay — slides up from bottom ──────────────────────────── */
-.home-page .highlight-hover {
   position: absolute;
   inset: 0;
-  background: var(--home-primary);
+  background-image: repeating-linear-gradient(-45deg,
+      transparent,
+      transparent 40px,
+      rgba(0, 51, 102, 0.025) 40px,
+      rgba(0, 51, 102, 0.025) 41px);
+  pointer-events: none;
+}
+
+/* ── Section header ─────────────────────────────────────────────────── */
+.home-page .skills-section-header {
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: 0 1.25rem;
-  gap: 0.2rem;
-  transform: translateY(100%);
-  transition: transform 0.38s cubic-bezier(0.4, 0, 0.2, 1);
-  z-index: 3;
-  border-radius: 10px;
-}
-
-.home-page .highlight-item:hover .highlight-hover {
-  transform: translateY(0);
-}
-
-.home-page .highlight-hover-icon {
-  font-size: 1rem;
-  opacity: 0.35;
-  line-height: 1;
-  display: block;
-  margin-bottom: 0.1rem;
-}
-
-.home-page .highlight-hover-title {
-  font-family: var(--home-font-display);
-  font-size: 0.92rem;
-  font-weight: 700;
-  color: #ffffff;
-  line-height: 1.2;
-}
-
-.home-page .highlight-hover-text {
-  font-size: 0.76rem;
-  color: rgba(255, 255, 255, 0.78);
-  line-height: 1.5;
-}
-
-/* Orange triangle corner accent */
-.home-page .highlight-hover::after {
-  content: '';
-  display: block;
-  position: absolute;
-  bottom: -1px;
-  right: -1px;
-  width: 36px;
-  height: 36px;
-  background: var(--home-accent);
-  clip-path: polygon(100% 0, 100% 100%, 0 100%);
-  border-radius: 0 0 10px 0;
-  opacity: 0.8;
-}
-
-.home-page .about-cta {
-  display: flex;
-  gap: 1rem;
-  margin-top: 1rem;
-}
-
-.home-page .about-skills {
-  display: flex;
-  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 3.5rem;
   gap: 2rem;
 }
 
-.home-page .skills-subtitle {
-  font-family: var(--home-font-display);
-  font-size: 1.8rem;
-  font-weight: 600;
-  color: var(--home-primary);
-  position: relative;
-  padding-bottom: 0.5rem;
+.home-page .skills-header-left {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
 }
 
-.home-page .skills-subtitle::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 60px;
-  height: 3px;
-  background: var(--home-primary);
+.home-page .skills-section-number {
+  font-family: var(--home-font-display);
+  font-size: 4rem;
+  font-weight: 700;
+  color: var(--home-primary);
+  opacity: 0.2;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.home-page .skills-section-title {
+  font-family: var(--home-font-display);
+  font-size: 3rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--home-text);
+  line-height: 1.1;
+  margin: 0 0 0.35rem 0;
+}
+
+.home-page .skills-section-tagline {
+  font-size: 1rem;
+  color: var(--home-text-dim);
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Decorative horizontal accent line */
+.home-page .skills-header-accent {
+  flex: 1;
+  height: 2px;
+  background: linear-gradient(90deg, var(--home-accent), transparent);
+  border-radius: 2px;
+  max-width: 220px;
+}
+
+/* ── 2-column skills grid ───────────────────────────────────────────── */
+.home-page .skills-grid-2col {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.85rem;
+}
+
+@media (max-width: 768px) {
+  .home-page .skills-grid-2col {
+    grid-template-columns: 1fr;
+  }
+
+  .home-page .skills-section-title {
+    font-size: 2rem;
+  }
+
+  .home-page .skills-section-number {
+    font-size: 3rem;
+  }
+
+  .home-page .skills-header-accent {
+    display: none;
+  }
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   SKILL CARD — HORIZONTAL REVEAL DESIGN
-   Layout : left accent bar │ icon badge │ name + description │ number tag
-   Hover  : navy overlay slides up from bottom, icon scales, text revealed
+   SKILL CARD — BLUEPRINT / TECHNICAL DOCUMENT DESIGN
+   Layout : ghost number watermark │ icon badge + name │ ruled line │ item list
+   Hover  : accent border + soft lift, dot markers animate navy
    ═══════════════════════════════════════════════════════════════════════════ */
 
 .home-page .skills-grid {
@@ -1040,18 +722,21 @@
 .home-page .skill-card {
   position: relative;
   display: flex;
-  align-items: stretch;
-  height: 88px;
+  flex-direction: column;
+  gap: 0;
+  padding: 1.5rem 1.5rem 1.25rem;
   background: #ffffff;
   border: 1px solid var(--home-border);
-  border-radius: 10px;
+  border-radius: 12px;
   overflow: hidden;
   cursor: default;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
-  /* reset any old rules */
-  padding: 0;
-  perspective: none;
-  transform: none;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.home-page .skill-card:hover {
+  border-color: var(--home-primary);
+  box-shadow: 0 8px 28px rgba(0, 51, 102, 0.13);
+  transform: translateY(-3px);
 }
 
 .home-page .skill-card::before,
@@ -1059,76 +744,53 @@
   display: none;
 }
 
-.home-page .skill-card:hover {
-  border-color: var(--home-primary);
-  box-shadow: 0 6px 24px rgba(0, 51, 102, 0.12);
-}
-
-/* ── Left accent bar — orange, grows taller on hover ────────────────── */
-.home-page .skill-card-bar {
-  display: block;
-  width: 4px;
-  background: var(--home-accent);
-  flex-shrink: 0;
-  border-radius: 10px 0 0 10px;
-  transform-origin: top;
-  transition: background 0.3s ease;
-}
-
-.home-page .skill-card:hover .skill-card-bar {
-  background: var(--home-primary);
-}
-
-/* ── Number tag — top right corner ─────────────────────────────────── */
-.home-page .skill-card-num {
+/* ── Ghost watermark number ─────────────────────────────────────────── */
+.home-page .skill-card-watermark {
   position: absolute;
-  top: 10px;
-  right: 12px;
+  top: -0.5rem;
+  right: 0.75rem;
   font-family: var(--home-font-display);
-  font-size: 0.62rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  color: var(--home-border-dark);
-  transition: color 0.3s ease, opacity 0.3s ease;
-  z-index: 2;
+  font-size: 5rem;
+  font-weight: 900;
   line-height: 1;
+  color: var(--home-primary);
+  opacity: 0.055;
+  pointer-events: none;
+  user-select: none;
+  letter-spacing: -0.04em;
+  transition: opacity 0.3s ease;
 }
 
-.home-page .skill-card:hover .skill-card-num {
-  color: rgba(255, 255, 255, 0.5);
+.home-page .skill-card:hover .skill-card-watermark {
+  opacity: 0.1;
 }
 
-/* ── Static face ────────────────────────────────────────────────────── */
-.home-page .skill-card-face {
+/* ── Header: icon badge + skill name ────────────────────────────────── */
+.home-page .skill-card-header {
   display: flex;
   align-items: center;
   gap: 1rem;
-  padding: 0 1rem 0 1rem;
-  flex: 1;
-  position: relative;
-  z-index: 2;
-  transition: opacity 0.25s ease;
+  margin-bottom: 1rem;
 }
 
-.home-page .skill-card:hover .skill-card-face {
-  opacity: 0;
-}
-
-/* Icon badge — soft blue-tinted square */
-.home-page .skill-icon-wrap {
-  width: 46px;
-  height: 46px;
-  flex-shrink: 0;
+.home-page .skill-icon-badge {
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
   border-radius: 10px;
   background: linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 100%);
+  border: 1px solid rgba(0, 51, 102, 0.1);
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
+    background 0.3s ease;
+  flex-shrink: 0;
 }
 
-.home-page .skill-card:hover .skill-icon-wrap {
-  transform: scale(1.1) rotate(-6deg);
+.home-page .skill-card:hover .skill-icon-badge {
+  transform: scale(1.1) rotate(-5deg);
+  background: linear-gradient(135deg, #DBEAFE 0%, #BFDBFE 100%);
 }
 
 .home-page .skill-icon {
@@ -1137,112 +799,96 @@
   display: block;
 }
 
-/* Text block */
-.home-page .skill-card-text {
-  flex: 1;
-  min-width: 0;
-}
-
 .home-page .skill-name {
   font-family: var(--home-font-display);
-  font-size: 0.95rem;
-  font-weight: 600;
+  font-size: 1rem;
+  font-weight: 700;
   color: var(--home-text);
-  margin: 0 0 0.2rem 0;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  line-height: 1.3;
-  position: static;
-  z-index: auto;
-}
-
-.home-page .skill-description {
-  font-size: 0.78rem;
-  color: var(--home-text-dim);
-  line-height: 1.5;
   margin: 0;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  position: static;
-  z-index: auto;
+  line-height: 1.3;
+  letter-spacing: 0.01em;
 }
 
-/* ── Hover overlay — slides up from bottom ──────────────────────────── */
-.home-page .skill-card-hover {
-  position: absolute;
-  inset: 0;
-  background: var(--home-primary);
+/* ── Horizontal ruled divider ───────────────────────────────────────── */
+.home-page .skill-card-rule {
+  display: block;
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, var(--home-accent) 24px, var(--home-border) 24px);
+  margin-bottom: 1rem;
+  border-radius: 1px;
+  flex-shrink: 0;
+}
+
+/* ── Sub-skill item list ─────────────────────────────────────────────── */
+.home-page .skill-items {
+  list-style: none;
+  margin: 0;
+  padding: 0;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  padding: 0 1.25rem 0 1.25rem;
-  gap: 0.2rem;
-  transform: translateY(100%);
-  transition: transform 0.38s cubic-bezier(0.4, 0, 0.2, 1);
-  z-index: 3;
-  border-radius: 10px;
+  gap: 0.45rem;
+  flex: 1;
 }
 
-.home-page .skill-card:hover .skill-card-hover {
-  transform: translateY(0);
+.home-page .skill-item {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.82rem;
+  color: var(--home-text-dim);
+  line-height: 1.45;
+  transition: color 0.25s ease;
 }
 
-.home-page .skill-hover-icon {
-  font-size: 1.1rem;
-  line-height: 1;
-  opacity: 0.4;
+.home-page .skill-card:hover .skill-item {
+  color: var(--home-text);
+}
+
+/* Animated dot marker */
+.home-page .skill-item-dot {
   display: block;
-  margin-bottom: 0.15rem;
-}
-
-.home-page .skill-hover-name {
-  font-family: var(--home-font-display);
-  font-size: 0.92rem;
-  font-weight: 700;
-  color: #ffffff;
-  line-height: 1.2;
-  letter-spacing: 0.02em;
-}
-
-.home-page .skill-hover-desc {
-  font-size: 0.76rem;
-  color: rgba(255, 255, 255, 0.78);
-  line-height: 1.5;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-/* Orange corner accent on hover overlay */
-.home-page .skill-card-hover::after {
-  content: '';
-  display: block;
-  position: absolute;
-  bottom: -1px;
-  right: -1px;
-  width: 36px;
-  height: 36px;
+  width: 5px;
+  height: 5px;
+  min-width: 5px;
+  border-radius: 50%;
   background: var(--home-accent);
-  clip-path: polygon(100% 0, 100% 100%, 0 100%);
-  border-radius: 0 0 10px 0;
-  opacity: 0.8;
+  transition: background 0.3s ease, transform 0.3s ease;
+  flex-shrink: 0;
+}
+
+.home-page .skill-card:hover .skill-item-dot {
+  background: var(--home-primary);
+  transform: scale(1.35);
+}
+
+/* ── Bottom accent foot bar ─────────────────────────────────────────── */
+.home-page .skill-card-foot {
+  display: block;
+  width: 40px;
+  height: 3px;
+  background: var(--home-accent);
+  border-radius: 2px;
+  margin-top: 1.25rem;
+  transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s ease;
+  flex-shrink: 0;
+}
+
+.home-page .skill-card:hover .skill-card-foot {
+  width: 72px;
+  background: var(--home-primary);
 }
 
 /* ── Responsive ─────────────────────────────────────────────────────── */
 @media (max-width: 768px) {
   .home-page .skill-card {
-    height: 80px;
+    padding: 1.25rem 1.25rem 1rem;
   }
 
-  .home-page .skill-icon-wrap {
-    width: 40px;
-    height: 40px;
+  .home-page .skill-icon-badge {
+    width: 42px;
+    height: 42px;
+    min-width: 42px;
   }
 
   .home-page .skill-icon {
@@ -1250,22 +896,21 @@
   }
 
   .home-page .skill-name {
-    font-size: 0.9rem;
+    font-size: 0.95rem;
   }
 
-  .home-page .skill-description {
-    font-size: 0.74rem;
+  .home-page .skill-item {
+    font-size: 0.8rem;
+  }
+
+  .home-page .skill-card-watermark {
+    font-size: 4rem;
   }
 }
 
 @media (max-width: 480px) {
   .home-page .skill-card {
-    height: 76px;
-  }
-
-  .home-page .skill-card-face {
-    gap: 0.75rem;
-    padding: 0 0.75rem;
+    padding: 1rem 1rem 0.875rem;
   }
 }
 
@@ -1377,20 +1022,6 @@
    ═══════════════════════════════════════════════════════════════════════════ */
 
 @media (max-width: 1024px) {
-  .home-page .hero .container {
-    grid-template-columns: 1fr;
-    gap: 2rem;
-  }
-
-  .home-page .hero-visual {
-    display: none;
-  }
-
-  .home-page .about-content {
-    grid-template-columns: 1fr;
-    gap: 3rem;
-  }
-
   .home-page .calculator-inputs {
     grid-template-columns: 1fr;
   }
@@ -1401,34 +1032,6 @@
 }
 
 @media (max-width: 768px) {
-  .home-page .container {
-    padding: 0 1.5rem;
-  }
-
-  .home-page .hero {
-    padding: 110px 0 50px;
-    min-height: auto;
-  }
-
-  .home-page .hero-title {
-    font-size: clamp(2rem, 8vw, 2.5rem);
-    margin-bottom: 1.5rem;
-  }
-
-  .home-page .hero-description {
-    font-size: 1rem;
-    margin-bottom: 2rem;
-  }
-
-  .home-page .hero-cta {
-    flex-direction: column;
-    gap: 1rem;
-  }
-
-  .home-page .hero-cta .btn {
-    width: 100%;
-  }
-
   .home-page .section-header {
     flex-direction: column;
     align-items: flex-start;
@@ -1501,28 +1104,6 @@
 }
 
 @media (max-width: 480px) {
-  .home-page .container {
-    padding: 0 1rem;
-  }
-
-  .home-page .hero {
-    padding: 100px 0 40px;
-  }
-
-  .home-page .hero-title {
-    font-size: clamp(1.75rem, 10vw, 2rem);
-  }
-
-  .home-page .hero-label {
-    font-size: 0.85rem;
-    letter-spacing: 0.2em;
-  }
-
-  .home-page .hero-description {
-    font-size: 0.95rem;
-    line-height: 1.6;
-  }
-
   .home-page .section-header {
     margin-bottom: 2rem;
   }
@@ -1585,17 +1166,11 @@
 
 @media (prefers-reduced-motion: reduce) {
 
-  .home-page .hero-label,
-  .home-page .hero-title .line,
-  .home-page .hero-description,
-  .home-page .hero-cta,
-  .home-page .hero-visual {
-    animation: none;
-  }
-
-  .home-page .blueprint-grid {
-    animation: none;
-    opacity: 0.2;
+  .home-page .skill-card,
+  .home-page .skill-card-foot,
+  .home-page .skill-item-dot,
+  .home-page .skill-icon-badge {
+    transition: none;
   }
 }
 
@@ -1604,23 +1179,9 @@
    ═══════════════════════════════════════════════════════════════════════════ */
 
 @media print {
-  .home-page .hero {
-    min-height: auto;
-    padding: 2rem 0;
-  }
 
-  .home-page .hero-background,
-  .home-page .hero-image-overlay,
-  .home-page .blueprint-grid {
-    display: none;
-  }
-
-  .home-page .hero .container {
-    grid-template-columns: 1fr;
-  }
-
-  .home-page .hero-cta,
-  .home-page .about-cta {
+  .home-page .project-modal,
+  .home-page .materials-modal {
     display: none;
   }
 }
@@ -2077,21 +1638,4 @@
     padding: 0.65rem 1rem;
     font-size: 0.8rem;
   }
-}
-/* ═══════════════════════════════════════════════════════════════════════════
-   HIGHLIGHT CARDS — RESPONSIVE
-   ═══════════════════════════════════════════════════════════════════════════ */
-
-@media (max-width: 768px) {
-  .home-page .highlight-item { height: 80px; }
-  .home-page .highlight-icon {
-    width: 40px; height: 40px; min-width: 40px; font-size: 1.3rem;
-  }
-  .home-page .highlight-content h4 { font-size: 0.88rem; }
-  .home-page .highlight-content p  { font-size: 0.74rem; }
-}
-
-@media (max-width: 480px) {
-  .home-page .highlight-item { height: 76px; }
-  .home-page .highlight-face { gap: 0.75rem; padding: 0 0.75rem; }
 }

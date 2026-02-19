@@ -75,13 +75,6 @@ function ProjectModal({ project, onClose }) {
           ✕
         </button>
 
-        {/* ── Hero image ───────────────────────────────── */}
-        <img
-          src={project.image}
-          alt={project.title}
-          className="project-modal-image"
-        />
-
         <div className="project-modal-body">
           {/* ── Header: number + title + category badge ── */}
           <div className="project-modal-header">

@@ -44,7 +44,7 @@ function AboutPage() {
         </div>
       </section>
 
-      {/* ── About Content ────────────────────────────── */}
+      {/* ── Skill and Education ────────────────────────────── */}
       <section className="about-page">
         <div className="container">
           <div className="about-grid">
@@ -69,7 +69,14 @@ function AboutPage() {
                 ))}
               </div>
             </div>
+          </div>
+        </div>
+      </section>
 
+      {/* ── Professional Summary ────────────────────────────── */}
+      <section className="contact-section">
+        <div className="container">
+          <div className="about-grid">
             {/* Professional Summary */}
             <div className="about-main">
               <div className="about-section" data-aos="fade-up">

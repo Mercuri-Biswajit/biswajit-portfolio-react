@@ -553,121 +553,30 @@ function HomePage() {
           </div>
         </section>
 
-        {/* ── About Me ─────────────────────────────────── */}
-        <section className="about-me">
+        {/* ── Core Skills ──────────────────────────────── */}
+        <section className="core-skills">
           <div className="container">
-            <div className="section-header" data-aos="fade-up">
-              <span className="section-number">03</span>
-              <h2 className="section-title">ABOUT ME</h2>
+            <div className="skills-section-header" data-aos="fade-up">
+              <div className="skills-header-left">
+                <span className="skills-section-number">03</span>
+                <div>
+                  <h2 className="skills-section-title">CORE SKILLS</h2>
+                  <p className="skills-section-tagline">
+                    Engineering expertise across every phase of construction
+                  </p>
+                </div>
+              </div>
+              <div className="skills-header-accent" aria-hidden="true" />
             </div>
-            <div className="about-content">
-              <div className="about-text" data-aos="fade-right">
-                <h3 className="about-subtitle">Professional Summary</h3>
-                <p className="about-description">
-                  Hello! I'm <strong>Er. Biswajit Deb Barman</strong>, a
-                  dedicated civil engineer with a passion for creating
-                  innovative and sustainable structural solutions.
-                </p>
-                <p className="about-description">
-                  My expertise spans across various aspects of civil
-                  engineering, from initial conceptual designs to detailed
-                  structural analysis.
-                </p>
-                <div className="about-highlights">
-                  <div
-                    className="highlight-item"
-                    data-aos="zoom-in"
-                    data-aos-delay="100"
-                  >
-                    <span className="highlight-bar" />
-                    <span className="highlight-num">01</span>
-                    <div className="highlight-face">
-                      <div className="highlight-icon">🎓</div>
-                      <div className="highlight-content">
-                        <h4>Education</h4>
-                        <p>Bachelor of Engineering in Civil Engineering</p>
-                      </div>
-                    </div>
-                    <div className="highlight-hover">
-                      <span className="highlight-hover-icon">🎓</span>
-                      <span className="highlight-hover-title">Education</span>
-                      <span className="highlight-hover-text">
-                        Bachelor of Engineering in Civil Engineering
-                      </span>
-                    </div>
-                  </div>
 
-                  <div
-                    className="highlight-item"
-                    data-aos="zoom-in"
-                    data-aos-delay="200"
-                  >
-                    <span className="highlight-bar" />
-                    <span className="highlight-num">02</span>
-                    <div className="highlight-face">
-                      <div className="highlight-icon">💼</div>
-                      <div className="highlight-content">
-                        <h4>Experience</h4>
-                        <p>
-                          Specialized in Structural &amp; Architectural Design
-                        </p>
-                      </div>
-                    </div>
-                    <div className="highlight-hover">
-                      <span className="highlight-hover-icon">💼</span>
-                      <span className="highlight-hover-title">Experience</span>
-                      <span className="highlight-hover-text">
-                        Specialized in Structural &amp; Architectural Design
-                      </span>
-                    </div>
-                  </div>
-
-                  <div
-                    className="highlight-item"
-                    data-aos="zoom-in"
-                    data-aos-delay="300"
-                  >
-                    <span className="highlight-bar" />
-                    <span className="highlight-num">03</span>
-                    <div className="highlight-face">
-                      <div className="highlight-icon">📍</div>
-                      <div className="highlight-content">
-                        <h4>Location</h4>
-                        <p>{SITE.location}, West Bengal, India</p>
-                      </div>
-                    </div>
-                    <div className="highlight-hover">
-                      <span className="highlight-hover-icon">📍</span>
-                      <span className="highlight-hover-title">Location</span>
-                      <span className="highlight-hover-text">
-                        {SITE.location}, West Bengal, India
-                      </span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="about-cta" data-aos="fade-up">
-                  <Link to="/about" className="btn btn-primary">
-                    MORE ABOUT ME
-                  </Link>
-                  <a
-                    href="/assets/files/Biswajit_Deb_Barman__CV.pdf"
-                    download
-                    className="btn btn-secondary"
-                  >
-                    DOWNLOAD RESUME
-                  </a>
-                </div>
-              </div>
-
-              <div className="about-skills" data-aos="fade-left">
-                <h3 className="skills-subtitle">Core Skills</h3>
-                <div className="skills-grid">
-                  {skills.map((skill, i) => (
-                    <SkillCard key={i} {...skill} index={i} />
-                  ))}
-                </div>
-              </div>
+            <div
+              className="skills-grid-2col"
+              data-aos="fade-up"
+              data-aos-delay="100"
+            >
+              {skills.map((skill, i) => (
+                <SkillCard key={i} {...skill} index={i} />
+              ))}
             </div>
           </div>
         </section>
