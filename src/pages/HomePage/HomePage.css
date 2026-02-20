@@ -1639,3 +1639,467 @@
     font-size: 0.8rem;
   }
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ABOUT THE ENGINEER — ATTRACTIVE REDESIGN
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.home-page .about-engineer {
+  padding: var(--home-spacing-xl) 0;
+  background: var(--home-bg-darker);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Diagonal stripe texture — mirrors the core-skills section */
+.home-page .about-engineer-texture {
+  position: absolute;
+  inset: 0;
+  background-image: repeating-linear-gradient(-45deg,
+      transparent,
+      transparent 40px,
+      rgba(0, 51, 102, 0.025) 40px,
+      rgba(0, 51, 102, 0.025) 41px);
+  pointer-events: none;
+}
+
+/* ── Section Header — mirrors skills-section-header ───────────────── */
+.home-page .about-engineer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 3.5rem;
+  gap: 2rem;
+}
+
+.home-page .about-engineer-header-left {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.home-page .about-section-number {
+  font-family: var(--home-font-display);
+  font-size: 4rem;
+  font-weight: 700;
+  color: var(--home-primary);
+  opacity: 0.2;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.home-page .about-section-title {
+  font-family: var(--home-font-display);
+  font-size: 3rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--home-text);
+  line-height: 1.1;
+  margin: 0 0 0.35rem 0;
+}
+
+.home-page .about-section-tagline {
+  font-size: 1rem;
+  color: var(--home-text-dim);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.home-page .about-header-accent {
+  flex: 1;
+  height: 2px;
+  background: linear-gradient(90deg, var(--home-accent), transparent);
+  border-radius: 2px;
+  max-width: 220px;
+}
+
+/* ── Main Card Shell ──────────────────────────────────────────────── */
+.home-page .about-engineer-card {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  border: 2px solid var(--home-border);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: var(--home-shadow-lg);
+  background: #ffffff;
+  position: relative;
+  transition: box-shadow 0.3s ease;
+}
+
+.home-page .about-engineer-card:hover {
+  box-shadow: 0 12px 48px rgba(0, 51, 102, 0.14);
+}
+
+/* Shimmer sweep on hover — matches project-card pattern */
+.home-page .about-engineer-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.7s ease;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.home-page .about-engineer-card:hover::before {
+  left: 100%;
+}
+
+/* ── Left — Identity Panel ────────────────────────────────────────── */
+.home-page .about-identity-panel {
+  background: linear-gradient(160deg, var(--home-primary) 0%, var(--home-primary-dark) 100%);
+  padding: 3rem 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 1rem;
+  position: relative;
+  z-index: 2;
+}
+
+/* Blueprint grid overlay inside identity panel */
+.home-page .about-identity-panel::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  background-size: 24px 24px;
+  pointer-events: none;
+}
+
+/* Avatar */
+.home-page .about-avatar {
+  position: relative;
+  width: 96px;
+  height: 96px;
+  margin-bottom: 0.5rem;
+  z-index: 3;
+}
+
+.home-page .about-avatar {
+  position: relative;
+  width: 140px;
+  height: 80px;
+  margin-bottom: 0.5rem;
+  z-index: 3;
+}
+
+.home-page .about-avatar-logo {
+  width: 140px;
+  height: 80px;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+  opacity: 0.92;
+}
+
+.home-page .about-avatar-initials {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--home-accent) 0%, var(--home-accent-dark) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--home-font-display);
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: 0.06em;
+  position: relative;
+  z-index: 2;
+}
+
+.home-page .about-avatar-ring {
+  position: absolute;
+  inset: -5px;
+  border-radius: 50%;
+  border: 2px dashed rgba(255, 140, 0, 0.5);
+  animation: aboutRingSpin 12s linear infinite;
+}
+
+@keyframes aboutRingSpin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Name & designation */
+.home-page .about-name {
+  font-family: var(--home-font-display);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0;
+  line-height: 1.3;
+  position: relative;
+  z-index: 3;
+}
+
+.home-page .about-designation {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin: 0;
+  letter-spacing: 0.04em;
+  position: relative;
+  z-index: 3;
+}
+
+/* Location badge */
+.home-page .about-location-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.85);
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: var(--home-radius-full);
+  padding: 0.3rem 0.85rem;
+  position: relative;
+  z-index: 3;
+}
+
+.home-page .about-location-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--home-accent);
+  display: inline-block;
+  flex-shrink: 0;
+  box-shadow: 0 0 0 2px rgba(255, 140, 0, 0.3);
+}
+
+/* Stat pills */
+.home-page .about-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  width: 100%;
+  margin: 0.5rem 0;
+  position: relative;
+  z-index: 3;
+}
+
+.home-page .about-stat {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--home-radius-md);
+  padding: 0.55rem 1rem;
+  transition: background 0.25s ease;
+}
+
+.home-page .about-stat:hover {
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.home-page .about-stat-value {
+  font-family: var(--home-font-display);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--home-accent);
+  letter-spacing: 0.04em;
+}
+
+.home-page .about-stat-label {
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.65);
+  letter-spacing: 0.03em;
+}
+
+/* Profile CTA button */
+.home-page .about-profile-btn {
+  width: 100%;
+  margin-top: 0.5rem;
+  text-align: center;
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+  position: relative;
+  z-index: 3;
+}
+
+/* ── Right — Content Panel ────────────────────────────────────────── */
+.home-page .about-content-panel {
+  padding: 3rem;
+  position: relative;
+  overflow: hidden;
+  z-index: 2;
+}
+
+/* Orange accent bar top-right corner */
+.home-page .about-content-topbar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--home-accent) 0%, transparent 80%);
+}
+
+/* Large ghost watermark */
+.home-page .about-watermark {
+  position: absolute;
+  bottom: -1rem;
+  right: -0.5rem;
+  font-family: var(--home-font-display);
+  font-size: 9rem;
+  font-weight: 900;
+  color: var(--home-primary);
+  opacity: 0.04;
+  pointer-events: none;
+  user-select: none;
+  line-height: 1;
+  letter-spacing: -0.05em;
+}
+
+/* Bio blocks */
+.home-page .about-bio-blocks {
+  display: flex;
+  flex-direction: column;
+  gap: 1.6rem;
+  margin-bottom: 2rem;
+  position: relative;
+  z-index: 2;
+}
+
+.home-page .about-bio-block {
+  display: flex;
+  gap: 1.1rem;
+  align-items: flex-start;
+  padding: 1.25rem 1.5rem;
+  background: var(--home-bg-dark);
+  border: 1px solid var(--home-border);
+  border-left: 3px solid var(--home-primary);
+  border-radius: var(--home-radius-md);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.home-page .about-bio-block:hover {
+  border-left-color: var(--home-accent);
+  box-shadow: var(--home-shadow-sm);
+  transform: translateX(4px);
+}
+
+.home-page .about-bio-icon {
+  font-size: 1.5rem;
+  line-height: 1;
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+}
+
+.home-page .about-bio-heading {
+  font-family: var(--home-font-display);
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--home-primary);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin: 0 0 0.4rem 0;
+}
+
+.home-page .about-bio-text {
+  font-family: var(--home-font-body);
+  font-size: 0.92rem;
+  line-height: 1.75;
+  color: var(--home-text-dim);
+  margin: 0;
+}
+
+/* Expertise tags */
+.home-page .about-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  position: relative;
+  z-index: 2;
+}
+
+.home-page .about-tag {
+  font-family: var(--home-font-display);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--home-primary);
+  background: #EFF6FF;
+  border: 1px solid rgba(0, 51, 102, 0.15);
+  border-radius: var(--home-radius-full);
+  padding: 0.3rem 0.85rem;
+  transition: background 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+  cursor: default;
+}
+
+.home-page .about-tag:hover {
+  background: var(--home-primary);
+  color: #ffffff;
+  border-color: var(--home-primary);
+}
+
+/* ── Responsive ─────────────────────────────── */
+@media (max-width: 900px) {
+  .home-page .about-engineer-card {
+    grid-template-columns: 1fr;
+  }
+
+  .home-page .about-identity-panel {
+    padding: 2.5rem 2rem;
+  }
+
+  .home-page .about-stats {
+    flex-direction: row;
+    justify-content: center;
+  }
+
+  .home-page .about-stat {
+    flex-direction: column;
+    align-items: center;
+    gap: 0.2rem;
+    flex: 1;
+    max-width: 120px;
+  }
+
+  .home-page .about-profile-btn {
+    max-width: 220px;
+    margin: 0.5rem auto 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .home-page .about-section-title {
+    font-size: 2rem;
+  }
+
+  .home-page .about-section-number {
+    font-size: 3rem;
+  }
+
+  .home-page .about-header-accent {
+    display: none;
+  }
+
+  .home-page .about-content-panel {
+    padding: 2rem 1.5rem;
+  }
+
+  .home-page .about-bio-block {
+    flex-direction: column;
+    gap: 0.6rem;
+    padding: 1rem 1.25rem;
+  }
+
+  .home-page .about-watermark {
+    font-size: 6rem;
+  }
+}

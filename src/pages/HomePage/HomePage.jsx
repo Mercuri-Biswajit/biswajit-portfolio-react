@@ -581,6 +581,170 @@ function HomePage() {
           </div>
         </section>
 
+        {/* ── About the Engineer ───────────────────────── */}
+        <section className="about-engineer">
+          {/* Diagonal stripe texture overlay */}
+          <div className="about-engineer-texture" aria-hidden="true" />
+
+          <div className="container">
+            {/* Section header — matches skills section pattern */}
+            <div className="about-engineer-header" data-aos="fade-up">
+              <div className="about-engineer-header-left">
+                <span className="about-section-number">04</span>
+                <div>
+                  <h2 className="about-section-title">ABOUT THE ENGINEER</h2>
+                  <p className="about-section-tagline">
+                    The mind and expertise behind every structure
+                  </p>
+                </div>
+              </div>
+              <div className="about-header-accent" aria-hidden="true" />
+            </div>
+
+            {/* Main card */}
+            <div
+              className="about-engineer-card"
+              data-aos="fade-up"
+              data-aos-delay="100"
+            >
+              {/* Left — identity panel */}
+              <div className="about-identity-panel">
+                {/* Avatar initials */}
+                <div className="about-avatar">
+                  <img
+                    src={`${process.env.PUBLIC_URL}/assets/icons/My__Logo.png`}
+                    alt="Er. Biswajit Deb Barman Logo"
+                    className="about-avatar-logo"
+                  />
+                  <div className="about-avatar-ring" aria-hidden="true" />
+                </div>
+
+                <h3 className="about-name">Er. Biswajit Deb Barman</h3>
+                <p className="about-designation">
+                  Civil Engineer &amp; Structural Designer
+                </p>
+
+                <div className="about-location-badge">
+                  <span className="about-location-dot" aria-hidden="true" />
+                  Raiganj, West Bengal
+                </div>
+
+                {/* Stat pills */}
+                <div className="about-stats">
+                  <div className="about-stat">
+                    <span className="about-stat-value">IS 456</span>
+                    <span className="about-stat-label">Compliant Design</span>
+                  </div>
+                  <div className="about-stat">
+                    <span className="about-stat-value">WB PWD</span>
+                    <span className="about-stat-label">SOR 2023–24</span>
+                  </div>
+                  <div className="about-stat">
+                    <span className="about-stat-value">8+</span>
+                    <span className="about-stat-label">Calc Modules</span>
+                  </div>
+                </div>
+
+                <Link to="/about" className="btn btn-primary about-profile-btn">
+                  FULL PROFILE
+                </Link>
+              </div>
+
+              {/* Right — bio content */}
+              <div className="about-content-panel">
+                {/* Accent top bar */}
+                <div className="about-content-topbar" aria-hidden="true" />
+
+                {/* Watermark */}
+                <span className="about-watermark" aria-hidden="true">
+                  CE
+                </span>
+
+                <div className="about-bio-blocks">
+                  <div
+                    className="about-bio-block"
+                    data-aos="fade-up"
+                    data-aos-delay="150"
+                  >
+                    <div className="about-bio-icon">🏗️</div>
+                    <div>
+                      <h4 className="about-bio-heading">Background</h4>
+                      <p className="about-bio-text">
+                        Er. Biswajit Deb Barman is a Civil Engineer and
+                        Structural Designer based in Chanditala, Raiganj, Uttar
+                        Dinajpur, West Bengal. He specialises in RCC structural
+                        design, IS 456:2000 compliance, and WB PWD Schedule of
+                        Rates — delivering end-to-end engineering solutions for
+                        residential and commercial projects across North Bengal.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div
+                    className="about-bio-block"
+                    data-aos="fade-up"
+                    data-aos-delay="200"
+                  >
+                    <div className="about-bio-icon">📐</div>
+                    <div>
+                      <h4 className="about-bio-heading">Expertise</h4>
+                      <p className="about-bio-text">
+                        His work spans the full project lifecycle — from site
+                        assessment and architectural planning through structural
+                        analysis, cost estimation, and Bill of Quantities
+                        preparation. He brings a rigorous, code-compliant
+                        approach to every project, balancing structural
+                        integrity with economy and client vision.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div
+                    className="about-bio-block"
+                    data-aos="fade-up"
+                    data-aos-delay="250"
+                  >
+                    <div className="about-bio-icon">💡</div>
+                    <div>
+                      <h4 className="about-bio-heading">Innovation</h4>
+                      <p className="about-bio-text">
+                        Beyond field engineering, Er. Biswajit has built a
+                        professional-grade suite of construction calculators —
+                        covering RCC slab, beam, and column design, brick
+                        masonry, paint estimation, and detailed BOQ generation —
+                        making precision engineering tools accessible to
+                        professionals and clients alike.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Expertise tags */}
+                <div
+                  className="about-tags"
+                  data-aos="fade-up"
+                  data-aos-delay="300"
+                >
+                  {[
+                    "RCC Structural Design",
+                    "IS 456:2000",
+                    "WB PWD BOQ",
+                    "Cost Estimation",
+                    "Vastu Planning",
+                    "Foundation Design",
+                    "Bar Bending Schedule",
+                    "North Bengal Projects",
+                  ].map((tag) => (
+                    <span key={tag} className="about-tag">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* ── Project Modal ────────────────────────────── */}
         {selectedProject && (
           <ProjectModal
