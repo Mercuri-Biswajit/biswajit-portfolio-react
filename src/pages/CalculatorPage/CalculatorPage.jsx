@@ -39,11 +39,14 @@ import { PaintEstimatorTab } from "./components/PaintEstimatorTab";
 
 import "./styles/CalculatorPage.css";
 import "./styles/design-calculator-styles.css";
+import { useSkeleton } from "../../hooks/useSkeleton";
+import { CalcTabSkeleton } from "../../components/ui/Skeleton";
 
 function CalculatorsPage() {
   const [mainTab, setMainTab] = useState("costing");
   const [costingResults, setCostingResults] = useState(null);
   const [costingSubTab, setCostingSubTab] = useState("cost");
+  const { isLoading } = useSkeleton(700);
 
   const { inputs, updateField, resetInputs } = useCostingInputs();
   const beam = useBeamDesign();
@@ -163,6 +166,10 @@ function CalculatorsPage() {
         <HeroSection mainTab={mainTab} onTabChange={handleTabChange} />
 
         <main className="calc-main">
+          {isLoading ? (
+            <CalcTabSkeleton />
+          ) : (
+          <>
           {/* ── COSTING ─────────────────────────────────────────────── */}
           {mainTab === "costing" && (
             <>
@@ -226,6 +233,8 @@ function CalculatorsPage() {
                 results={paint.results}
               />
             </section>
+          )}
+          </>
           )}
         </main>
       </div>

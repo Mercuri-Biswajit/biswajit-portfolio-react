@@ -7,8 +7,15 @@ import { education } from "../../data/education";
 import { SITE } from "../../config/constants";
 
 import "./AboutPage.css";
+import { useSkeleton } from "../../hooks/useSkeleton";
+import {
+  SkillCardSkeleton,
+  EducationItemSkeleton,
+} from "../../components/ui/Skeleton";
 
 function AboutPage() {
+  const { isLoading } = useSkeleton(800);
+
   useEffect(() => {
     if (window.AOS) window.AOS.init({ duration: 800, once: true });
   }, []);
@@ -52,9 +59,11 @@ function AboutPage() {
             <div className="about-section" data-aos="fade-right">
               <h2 className="section-subtitle">Core Skills</h2>
               <div className="skills-grid">
-                {skills.map((skill, i) => (
-                  <SkillCard key={i} {...skill} index={i} />
-                ))}
+                {isLoading
+                  ? [1, 2, 3, 4, 5, 6].map((i) => <SkillCardSkeleton key={i} />)
+                  : skills.map((skill, i) => (
+                      <SkillCard key={i} {...skill} index={i} />
+                    ))}
               </div>
             </div>
 
@@ -64,57 +73,158 @@ function AboutPage() {
                 Education &amp; Certifications
               </h2>
               <div className="education-timeline">
-                {education.map((item, i) => (
-                  <EducationItem key={i} {...item} index={i} />
-                ))}
+                {isLoading
+                  ? [1, 2, 3, 4].map((i) => <EducationItemSkeleton key={i} />)
+                  : education.map((item, i) => (
+                      <EducationItem key={i} {...item} index={i} />
+                    ))}
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ── Professional Summary ────────────────────────────── */}
-      <section className="contact-section">
+      {/* ── About the Engineer ────────────────────────────── */}
+      <section className="about-engineer-section">
+        <div className="about-engineer-texture" aria-hidden="true" />
         <div className="container">
-          <div className="about-grid">
-            {/* Professional Summary */}
-            <div className="about-main">
-              <div className="about-section" data-aos="fade-up">
-                <h2 className="section-subtitle">Professional Summary</h2>
-                <p className="about-text">
-                  Civil engineer with 5+ years of experience specializing in
-                  residential and commercial structural design. Completed B.Tech
-                  from Surendra Institute of Engineering and Management in 2020.
-                  Expert in AutoCAD 2D, structural analysis, and sustainable
-                  building practices.
-                </p>
-                <p className="about-text">
-                  My design philosophy combines traditional engineering
-                  principles with modern technologies like BIM and Vastu
-                  Shastra. Committed to delivering safe, cost-effective, and
-                  aesthetically pleasing structures.
+          {/* Section header */}
+          <div className="about-eng-header" data-aos="fade-up">
+            <div className="about-eng-header-left">
+              <span className="about-eng-number">02</span>
+              <div>
+                <h2 className="about-eng-title">ABOUT THE ENGINEER</h2>
+                <p className="about-eng-tagline">
+                  The mind and expertise behind every structure
                 </p>
               </div>
             </div>
+            <div className="about-eng-accent" aria-hidden="true" />
+          </div>
 
-            {/* Contact Card */}
-            <div className="about-sidebar">
-              <div className="contact-card" data-aos="flip-left">
-                <h3>Get In Touch</h3>
-                <div className="contact-info">
-                  <a href={`mailto:${SITE.email}`} className="contact-link">
-                    <span className="contact-icon">✉️</span>
-                    <span>{SITE.email}</span>
-                  </a>
-                  <a href={`tel:${SITE.phone}`} className="contact-link">
-                    <span className="contact-icon">📱</span>
-                    <span>{SITE.phone}</span>
-                  </a>
-                  <span className="contact-link">
-                    <span className="contact-icon">📍</span>
-                    <span>{SITE.location}</span>
-                  </span>
+          {/* Two-panel card */}
+          <div
+            className="about-eng-card"
+            data-aos="fade-up"
+            data-aos-delay="100"
+          >
+            {/* Left — identity panel */}
+            <div className="about-eng-identity">
+              <div className="about-eng-avatar">
+                <img
+                  src={`${process.env.PUBLIC_URL}/assets/icons/My__Logo.png`}
+                  alt="BDB Logo"
+                  className="about-eng-logo"
+                />
+              </div>
+              <h3 className="about-eng-name">Er. Biswajit Deb Barman</h3>
+              <p className="about-eng-designation">
+                Civil Engineer &amp; Structural Designer
+              </p>
+              <div className="about-eng-location-badge">
+                <span className="about-eng-location-dot" aria-hidden="true" />
+                Raiganj, West Bengal
+              </div>
+              <div className="about-eng-stats">
+                <div className="about-eng-stat">
+                  <span className="about-eng-stat-value">IS 456</span>
+                  <span className="about-eng-stat-label">Compliant Design</span>
                 </div>
+                <div className="about-eng-stat">
+                  <span className="about-eng-stat-value">WB PWD</span>
+                  <span className="about-eng-stat-label">SOR 2023–24</span>
+                </div>
+                <div className="about-eng-stat">
+                  <span className="about-eng-stat-value">8+</span>
+                  <span className="about-eng-stat-label">Calc Modules</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Right — bio content */}
+            <div className="about-eng-content">
+              <div className="about-eng-topbar" aria-hidden="true" />
+              <span className="about-eng-watermark" aria-hidden="true">
+                CE
+              </span>
+
+              <div className="about-eng-bio-blocks">
+                <div
+                  className="about-eng-bio-block"
+                  data-aos="fade-up"
+                  data-aos-delay="150"
+                >
+                  <div className="about-eng-bio-icon">🏗️</div>
+                  <div>
+                    <h4 className="about-eng-bio-heading">Background</h4>
+                    <p className="about-eng-bio-text">
+                      Er. Biswajit Deb Barman is a Civil Engineer and Structural
+                      Designer based in Chanditala, Raiganj, Uttar Dinajpur,
+                      West Bengal. He specialises in RCC structural design, IS
+                      456:2000 compliance, and WB PWD Schedule of Rates —
+                      delivering end-to-end engineering solutions for
+                      residential and commercial projects across North Bengal.
+                    </p>
+                  </div>
+                </div>
+                <div
+                  className="about-eng-bio-block"
+                  data-aos="fade-up"
+                  data-aos-delay="200"
+                >
+                  <div className="about-eng-bio-icon">📐</div>
+                  <div>
+                    <h4 className="about-eng-bio-heading">Expertise</h4>
+                    <p className="about-eng-bio-text">
+                      His work spans the full project lifecycle — from site
+                      assessment and architectural planning through structural
+                      analysis, cost estimation, and Bill of Quantities
+                      preparation. He brings a rigorous, code-compliant approach
+                      to every project, balancing structural integrity with
+                      economy and client vision.
+                    </p>
+                  </div>
+                </div>
+                <div
+                  className="about-eng-bio-block"
+                  data-aos="fade-up"
+                  data-aos-delay="250"
+                >
+                  <div className="about-eng-bio-icon">💡</div>
+                  <div>
+                    <h4 className="about-eng-bio-heading">Innovation</h4>
+                    <p className="about-eng-bio-text">
+                      Beyond field engineering, Er. Biswajit has built a
+                      professional-grade suite of construction calculators —
+                      covering RCC slab, beam, and column design, brick masonry,
+                      paint estimation, and detailed BOQ generation — making
+                      precision engineering tools accessible to professionals
+                      and clients alike.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Expertise tags */}
+              <div
+                className="about-eng-tags"
+                data-aos="fade-up"
+                data-aos-delay="300"
+              >
+                {[
+                  "RCC Structural Design",
+                  "IS 456:2000",
+                  "WB PWD BOQ",
+                  "Cost Estimation",
+                  "Vastu Planning",
+                  "Foundation Design",
+                  "Bar Bending Schedule",
+                  "North Bengal Projects",
+                ].map((tag) => (
+                  <span key={tag} className="about-eng-tag">
+                    {tag}
+                  </span>
+                ))}
               </div>
             </div>
           </div>
@@ -178,19 +288,12 @@ function AboutPage() {
                 data-aos="zoom-in"
                 data-aos-delay="300"
               >
-                <div className="method-icon">💼</div>
-                <h3 className="method-title">Connect on LinkedIn</h3>
+                <div className="method-icon">📍</div>
+                <h3 className="method-title">Visit / Address</h3>
                 <p className="method-description">
-                  View my professional profile and network
+                  Based in Raiganj, serving across North Bengal
                 </p>
-                <a
-                  href={SITE.linkedin}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="method-link"
-                >
-                  LinkedIn Profile
-                </a>
+                <span className="method-link">{SITE.location}</span>
               </div>
             </div>
 

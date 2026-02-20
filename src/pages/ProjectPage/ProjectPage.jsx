@@ -7,6 +7,8 @@ import { projects } from "../../data/projects"; // ← projects.js
 
 // ── Components ──────────────────────────────────────────────────
 import { ProjectCard } from "../../components/cards";
+import { useSkeleton } from "../../hooks/useSkeleton";
+import { ProjectCardSkeleton } from "../../components/ui/Skeleton";
 
 // ── Styles ──────────────────────────────────────────────────────
 import "./ProjectPage.css"; // ← ProjectPage.css
@@ -274,6 +276,7 @@ const FILTERS = ["all", "RESIDENTIAL", "COMMERCIAL"];
 function ProjectsPage() {
   const [activeFilter, setActiveFilter] = useState("all");
   const [selectedProject, setSelectedProject] = useState(null);
+  const { isLoading } = useSkeleton(900);
 
   useEffect(() => {
     if (window.AOS) window.AOS.init({ duration: 800, once: true });
@@ -339,13 +342,15 @@ function ProjectsPage() {
       <section className="projects">
         <div className="container">
           <div className="projects-grid">
-            {filteredProjects.map((project) => (
-              <ProjectCard
-                key={project.id}
-                project={project}
-                onClick={setSelectedProject}
-              />
-            ))}
+            {isLoading
+              ? [1, 2, 3, 4, 5, 6].map((i) => <ProjectCardSkeleton key={i} />)
+              : filteredProjects.map((project) => (
+                  <ProjectCard
+                    key={project.id}
+                    project={project}
+                    onClick={setSelectedProject}
+                  />
+                ))}
           </div>
         </div>
       </section>

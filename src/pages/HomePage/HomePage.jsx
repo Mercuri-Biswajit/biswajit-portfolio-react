@@ -7,6 +7,11 @@ import { skills } from "../../data/skills";
 import { projects } from "../../data/projects";
 import { SITE, MATERIAL_CONSTANTS } from "../../config/constants";
 import { formatCurrency, formatNumber, safeFloat } from "../../utils/helpers";
+import { useSkeleton } from "../../hooks/useSkeleton";
+import {
+  ProjectCardSkeleton,
+  SkillCardSkeleton,
+} from "../../components/ui/Skeleton";
 
 // STANDALONE CSS - No dependencies on other CSS files
 import "./HomePage.css";
@@ -254,6 +259,7 @@ function ProjectModal({ project, onClose }) {
 
 function HomePage() {
   const [selectedProject, setSelectedProject] = useState(null);
+  const { isLoading } = useSkeleton(900);
 
   // Calculator state
   const [calcArea, setCalcArea] = useState("");
@@ -537,13 +543,17 @@ function HomePage() {
               <h2 className="section-title">FEATURED WORK</h2>
             </div>
             <div className="projects-preview">
-              {sortedProjects.slice(0, 3).map((project) => (
-                <ProjectCard
-                  key={project.id}
-                  project={project}
-                  onClick={setSelectedProject}
-                />
-              ))}
+              {isLoading
+                ? [1, 2, 3].map((i) => <ProjectCardSkeleton key={i} />)
+                : sortedProjects
+                    .slice(0, 3)
+                    .map((project) => (
+                      <ProjectCard
+                        key={project.id}
+                        project={project}
+                        onClick={setSelectedProject}
+                      />
+                    ))}
             </div>
             <div className="section-cta" data-aos="fade-up">
               <Link to="/projects" className="btn btn-primary">
@@ -574,9 +584,11 @@ function HomePage() {
               data-aos="fade-up"
               data-aos-delay="100"
             >
-              {skills.map((skill, i) => (
-                <SkillCard key={i} {...skill} index={i} />
-              ))}
+              {isLoading
+                ? [1, 2, 3, 4].map((i) => <SkillCardSkeleton key={i} />)
+                : skills.map((skill, i) => (
+                    <SkillCard key={i} {...skill} index={i} />
+                  ))}
             </div>
           </div>
         </section>
