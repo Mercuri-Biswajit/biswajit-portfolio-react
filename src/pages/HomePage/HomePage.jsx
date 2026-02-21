@@ -288,7 +288,7 @@ function HomePage() {
   // Sort projects by ID (highest/latest first)
   const sortedProjects = [...projects].sort((a, b) => b.id - a.id);
 
-  // ── Calculator handlers ────────────────────────────────────────────────────
+  // ── Calculator handler — calculate + open popup in one click ────────────────
   const handleCalculate = () => {
     const { total, error } = computeTotal(calcArea, calcRate);
     if (error) {
@@ -296,15 +296,6 @@ function HomePage() {
       return;
     }
     setCalcTotal(total);
-    setShowMaterials(false);
-    setMaterials(null);
-  };
-
-  const handleShowMaterials = () => {
-    if (!calcTotal || safeFloat(calcArea, 0) <= 0) {
-      alert("Please calculate the total first.");
-      return;
-    }
     setMaterials(computeMaterials(calcArea));
     setShowMaterials(true);
   };
@@ -339,9 +330,9 @@ function HomePage() {
                 <Link to="/projects" className="btn btn-primary">
                   VIEW PROJECTS
                 </Link>
-                <Link to="/calculator" className="btn btn-secondary">
+                {/* <Link to="/calculator" className="btn btn-secondary">
                   Advanced Calculator
-                </Link>
+                </Link> */}
               </div>
             </div>
 
@@ -406,32 +397,10 @@ function HomePage() {
                   CALCULATE TOTAL
                 </button>
               </div>
-
-              {calcTotal !== null && (
-                <div className="calculator-results" data-aos="zoom-in">
-                  <div className="total-cost-display">
-                    <span className="total-label">Estimated Total Cost</span>
-                    <span className="total-amount">
-                      {formatCurrency(calcTotal)}
-                    </span>
-                    <span className="total-meta">
-                      {safeFloat(calcArea, 0).toLocaleString("en-IN")} sq.ft × ₹
-                      {safeFloat(calcRate, 0).toLocaleString("en-IN")}/sq.ft
-                    </span>
-
-                    <button
-                      className="btn btn-secondary calc-materials-btn"
-                      onClick={handleShowMaterials}
-                    >
-                      CLICK FOR MATERIAL
-                    </button>
-                  </div>
-                </div>
-              )}
             </div>
           </div>
 
-          {/* Material Popup Modal */}
+          {/* ── Combined Estimate + Material Popup Modal ── */}
           {showMaterials && materials && (
             <div className="materials-modal" role="dialog" aria-modal="true">
               <div
@@ -446,6 +415,23 @@ function HomePage() {
                 >
                   &times;
                 </button>
+
+                {/* ── Estimate Summary (top of popup) ── */}
+                <div className="materials-estimate-summary">
+                  <span className="materials-estimate-label">
+                    Estimated Total Cost
+                  </span>
+                  <span className="materials-estimate-amount">
+                    {formatCurrency(calcTotal)}
+                  </span>
+                  <span className="materials-estimate-meta">
+                    {safeFloat(calcArea, 0).toLocaleString("en-IN")} sq.ft
+                    &times; ₹{safeFloat(calcRate, 0).toLocaleString("en-IN")}
+                    /sq.ft
+                  </span>
+                </div>
+
+                <div className="materials-divider" />
 
                 <h3 className="materials-title">Material Requirements</h3>
 
@@ -621,7 +607,7 @@ function HomePage() {
                     thick M10 grade; footing concrete is an estimate for
                     isolated RCC footings (residential). For a detailed cost
                     breakdown, visit our{" "}
-                    <Link to="/calculator">Advanced Calculator</Link>.
+                    {/* <Link to="/calculator">Advanced Calculator</Link>. */}
                   </p>
                 </div>
               </div>
