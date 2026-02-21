@@ -1,16 +1,26 @@
 // ===========================
 // CALCULATOR CORE LOGIC
 // Building and slab calculation functions
+// Used by the Advanced Calculator page.
+//
+// NOTE: safeFloat is imported from HomePage/helpers.js
+// since the 3 calculator helpers live there now.
+// If core.js ever needs to be fully decoupled, copy
+// safeFloat inline or create a shared math-utils file.
 // ===========================
 
 import {
-  MATERIAL_CONSTANTS,
   DEFAULT_MATERIAL_RATES,
   FINISHING_RATES,
   SLAB_CONSTANTS,
   CONVERSIONS,
-} from '../config/constants.js';
-import { safeFloat } from './helpers.js';
+} from "../config/constants.js";
+
+// Calculator-specific constants now live in HomePage
+import { MATERIAL_CONSTANTS } from "../pages/HomePage/constants.js";
+
+// safeFloat moved to HomePage helpers
+import { safeFloat } from "../pages/HomePage/helpers.js";
 
 /**
  * Calculate building construction estimate
@@ -34,10 +44,19 @@ export function calcBuilding({
   const aggregate = area * MATERIAL_CONSTANTS.aggregate;
 
   // Material rates (use custom or default)
-  const cementRate = safeFloat(materialRates.cement, DEFAULT_MATERIAL_RATES.cement);
-  const steelRate = safeFloat(materialRates.steel, DEFAULT_MATERIAL_RATES.steel);
+  const cementRate = safeFloat(
+    materialRates.cement,
+    DEFAULT_MATERIAL_RATES.cement,
+  );
+  const steelRate = safeFloat(
+    materialRates.steel,
+    DEFAULT_MATERIAL_RATES.steel,
+  );
   const sandRate = safeFloat(materialRates.sand, DEFAULT_MATERIAL_RATES.sand);
-  const aggregateRate = safeFloat(materialRates.aggregate, DEFAULT_MATERIAL_RATES.aggregate);
+  const aggregateRate = safeFloat(
+    materialRates.aggregate,
+    DEFAULT_MATERIAL_RATES.aggregate,
+  );
 
   // Material cost
   const materialCost =
@@ -75,7 +94,7 @@ export function calcBuilding({
 
 /**
  * Calculate RCC slab requirements
- * @param {number} slabArea - Slab area in sq.ft
+ * @param {number} slabArea      - Slab area in sq.ft
  * @param {number} slabThickness - Slab thickness in feet
  * @returns {Object} - Slab material requirements
  */

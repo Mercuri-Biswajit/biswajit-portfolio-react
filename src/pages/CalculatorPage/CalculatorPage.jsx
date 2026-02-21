@@ -9,7 +9,7 @@ import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { SITE } from "../../config/constants";
 
-import { formatCurrency } from "../../utils/helpers";
+import { formatCurrency } from "./utils/formatHelpers";
 import {
   calcBuildingCost,
   calcStairDesign,

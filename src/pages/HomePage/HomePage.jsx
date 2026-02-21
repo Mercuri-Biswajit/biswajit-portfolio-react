@@ -5,16 +5,19 @@ import { Helmet } from "react-helmet-async";
 import { SkillCard, ProjectCard } from "../../components/cards";
 import { skills } from "../../data/skills";
 import { projects } from "../../data/projects";
-import { SITE, MATERIAL_CONSTANTS } from "../../config/constants";
-import { formatCurrency, formatNumber, safeFloat } from "../../utils/helpers";
+import { SITE } from "../../config/constants"; // ← global: only SITE needed
 import { useSkeleton } from "../../hooks/useSkeleton";
 import {
   ProjectCardSkeleton,
   SkillCardSkeleton,
 } from "../../components/ui/Skeleton";
 
+// ── HomePage-local imports (calculator) ─────────────────────────────────────
+import { formatCurrency, formatNumber, safeFloat } from "./utils/helpres";
+import { computeTotal, computeMaterials } from "./config/calculatorLogic";
+
 // STANDALONE CSS - No dependencies on other CSS files
-import "./HomePage.css";
+import "./styles/HomePage.css";
 
 // ════════════════════════════════════════════════════════════════
 // ProjectModal — inlined so HomePage.jsx is self-contained
@@ -250,9 +253,7 @@ function ProjectModal({ project, onClose }) {
             ))}
           </div>
         </div>
-        {/* /project-modal-body */}
       </div>
-      {/* /project-modal-content */}
     </div>
   );
 }
@@ -279,7 +280,6 @@ function HomePage() {
     } else {
       document.body.style.overflow = "";
     }
-
     return () => {
       document.body.style.overflow = "";
     };
@@ -288,45 +288,24 @@ function HomePage() {
   // Sort projects by ID (highest/latest first)
   const sortedProjects = [...projects].sort((a, b) => b.id - a.id);
 
-  // Calculator functions
+  // ── Calculator handlers ────────────────────────────────────────────────────
   const handleCalculate = () => {
-    const area = safeFloat(calcArea, 0);
-    const rate = safeFloat(calcRate, 0);
-
-    if (area <= 0 || rate <= 0) {
-      alert("Please enter valid area and rate values.");
+    const { total, error } = computeTotal(calcArea, calcRate);
+    if (error) {
+      alert(error);
       return;
     }
-
-    const total = area * rate;
     setCalcTotal(total);
     setShowMaterials(false);
     setMaterials(null);
   };
 
   const handleShowMaterials = () => {
-    const area = safeFloat(calcArea, 0);
-
-    if (area <= 0 || !calcTotal) {
+    if (!calcTotal || safeFloat(calcArea, 0) <= 0) {
       alert("Please calculate the total first.");
       return;
     }
-
-    const cementQty = area * MATERIAL_CONSTANTS.cement;
-    const steelQty = area * MATERIAL_CONSTANTS.steel;
-    const sandQty = area * MATERIAL_CONSTANTS.sand;
-    const aggregateQty = area * MATERIAL_CONSTANTS.aggregate;
-    // ── BRICK: ~8 bricks per sq.ft (standard 230×115×75 mm brick, 9" thick wall)
-    // Falls back gracefully if the constant isn't defined yet in constants.js
-    const brickQty = area * (MATERIAL_CONSTANTS.bricks ?? 8);
-
-    setMaterials({
-      cement: cementQty,
-      steel: steelQty,
-      sand: sandQty,
-      aggregate: aggregateQty,
-      bricks: brickQty,
-    });
+    setMaterials(computeMaterials(calcArea));
     setShowMaterials(true);
   };
 
@@ -399,6 +378,7 @@ function HomePage() {
                     value={calcArea}
                     onChange={(e) => setCalcArea(e.target.value)}
                     onKeyDown={(e) => e.key === "Enter" && handleCalculate()}
+                    onWheel={(e) => e.target.blur()}
                   />
                 </div>
 
@@ -413,6 +393,7 @@ function HomePage() {
                     value={calcRate}
                     onChange={(e) => setCalcRate(e.target.value)}
                     onKeyDown={(e) => e.key === "Enter" && handleCalculate()}
+                    onWheel={(e) => e.target.blur()}
                   />
                 </div>
               </div>
@@ -475,6 +456,15 @@ function HomePage() {
                       <span className="material-name">Cement</span>
                       <span className="material-qty">
                         {formatNumber(materials.cement, 0)} bags
+                        <span
+                          style={{
+                            fontSize: "0.75rem",
+                            color: "#64748B",
+                            marginLeft: "0.4rem",
+                          }}
+                        >
+                          (≈ {formatCurrency(materials.cementCost)})
+                        </span>
                       </span>
                     </div>
                   </div>
@@ -485,6 +475,15 @@ function HomePage() {
                       <span className="material-name">Steel</span>
                       <span className="material-qty">
                         {formatNumber(materials.steel, 0)} kg
+                        <span
+                          style={{
+                            fontSize: "0.75rem",
+                            color: "#64748B",
+                            marginLeft: "0.4rem",
+                          }}
+                        >
+                          (≈ {formatCurrency(materials.steelCost)})
+                        </span>
                       </span>
                     </div>
                   </div>
@@ -495,6 +494,15 @@ function HomePage() {
                       <span className="material-name">Sand</span>
                       <span className="material-qty">
                         {formatNumber(materials.sand, 2)} m³
+                        <span
+                          style={{
+                            fontSize: "0.75rem",
+                            color: "#64748B",
+                            marginLeft: "0.4rem",
+                          }}
+                        >
+                          (≈ {formatCurrency(materials.sandCost)})
+                        </span>
                       </span>
                     </div>
                   </div>
@@ -505,17 +513,99 @@ function HomePage() {
                       <span className="material-name">Aggregate</span>
                       <span className="material-qty">
                         {formatNumber(materials.aggregate, 2)} m³
+                        <span
+                          style={{
+                            fontSize: "0.75rem",
+                            color: "#64748B",
+                            marginLeft: "0.4rem",
+                          }}
+                        >
+                          (≈ {formatCurrency(materials.aggregateCost)})
+                        </span>
                       </span>
                     </div>
                   </div>
 
-                  {/* ── BRICKS ── */}
                   <div className="material-item">
                     <span className="material-icon">🧱</span>
                     <div className="material-info">
-                      <span className="material-name">Bricks</span>
+                      <span className="material-name">Bricks (Wall)</span>
                       <span className="material-qty">
                         {formatNumber(materials.bricks, 0)} nos
+                        <span
+                          style={{
+                            fontSize: "0.75rem",
+                            color: "#64748B",
+                            marginLeft: "0.4rem",
+                          }}
+                        >
+                          (≈ {formatCurrency(materials.bricksCost)})
+                        </span>
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="material-item">
+                    <span className="material-icon">🟫</span>
+                    <div className="material-info">
+                      <span className="material-name">
+                        PCC (Foundation Bed)
+                      </span>
+                      <span className="material-qty">
+                        {formatNumber(materials.pcc, 2)} m³
+                        <span
+                          style={{
+                            fontSize: "0.75rem",
+                            color: "#64748B",
+                            marginLeft: "0.4rem",
+                          }}
+                        >
+                          ({formatNumber(materials.pcc * 35.3147, 1)} cft · ≈{" "}
+                          {formatCurrency(materials.pccCost)})
+                        </span>
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="material-item">
+                    <span className="material-icon">🏛️</span>
+                    <div className="material-info">
+                      <span className="material-name">
+                        Footing Concrete (RCC)
+                      </span>
+                      <span className="material-qty">
+                        {formatNumber(materials.footing, 2)} m³
+                        <span
+                          style={{
+                            fontSize: "0.75rem",
+                            color: "#64748B",
+                            marginLeft: "0.4rem",
+                          }}
+                        >
+                          ({formatNumber(materials.footing * 35.3147, 1)} cft ·
+                          ≈ {formatCurrency(materials.footingCost)})
+                        </span>
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="material-item">
+                    <span className="material-icon">🧱</span>
+                    <div className="material-info">
+                      <span className="material-name">
+                        Foundation Brickwork
+                      </span>
+                      <span className="material-qty">
+                        {formatNumber(materials.foundationBricks, 0)} nos
+                        <span
+                          style={{
+                            fontSize: "0.75rem",
+                            color: "#64748B",
+                            marginLeft: "0.4rem",
+                          }}
+                        >
+                          (≈ {formatCurrency(materials.foundationBrickCost)})
+                        </span>
                       </span>
                     </div>
                   </div>
@@ -524,9 +614,13 @@ function HomePage() {
                 <div className="materials-note">
                   <p>
                     💡 <strong>Note:</strong> Material quantities are based on
-                    standard RCC construction. Brick quantity assumes 230×115×75
-                    mm modular bricks for 9″ external &amp; 4.5″ internal walls.
-                    For a detailed cost breakdown, visit our{" "}
+                    standard RCC construction. Wall bricks assume 230×115×75 mm
+                    modular bricks for 9″ external &amp; 4.5″ internal walls.
+                    Foundation brickwork assumes stepped brick masonry
+                    footing/plinth at ₹12/brick (premium). PCC bed assumes 50 mm
+                    thick M10 grade; footing concrete is an estimate for
+                    isolated RCC footings (residential). For a detailed cost
+                    breakdown, visit our{" "}
                     <Link to="/calculator">Advanced Calculator</Link>.
                   </p>
                 </div>
@@ -595,11 +689,9 @@ function HomePage() {
 
         {/* ── About the Engineer ───────────────────────── */}
         <section className="about-engineer">
-          {/* Diagonal stripe texture overlay */}
           <div className="about-engineer-texture" aria-hidden="true" />
 
           <div className="container">
-            {/* Section header — matches skills section pattern */}
             <div className="about-engineer-header" data-aos="fade-up">
               <div className="about-engineer-header-left">
                 <span className="about-section-number">04</span>
@@ -613,7 +705,6 @@ function HomePage() {
               <div className="about-header-accent" aria-hidden="true" />
             </div>
 
-            {/* Main card */}
             <div
               className="about-engineer-card"
               data-aos="fade-up"
@@ -621,7 +712,6 @@ function HomePage() {
             >
               {/* Left — identity panel */}
               <div className="about-identity-panel">
-                {/* Avatar initials */}
                 <div className="about-avatar">
                   <img
                     src={`${process.env.PUBLIC_URL}/assets/icons/My__Logo.png`}
@@ -641,7 +731,6 @@ function HomePage() {
                   Raiganj, West Bengal
                 </div>
 
-                {/* Stat pills */}
                 <div className="about-stats">
                   <div className="about-stat">
                     <span className="about-stat-value">IS 456</span>
@@ -664,10 +753,7 @@ function HomePage() {
 
               {/* Right — bio content */}
               <div className="about-content-panel">
-                {/* Accent top bar */}
                 <div className="about-content-topbar" aria-hidden="true" />
-
-                {/* Watermark */}
                 <span className="about-watermark" aria-hidden="true">
                   CE
                 </span>
@@ -731,7 +817,6 @@ function HomePage() {
                   </div>
                 </div>
 
-                {/* Expertise tags */}
                 <div
                   className="about-tags"
                   data-aos="fade-up"
