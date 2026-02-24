@@ -700,7 +700,7 @@ function HomePage() {
               <div className="about-identity-panel">
                 <div className="about-avatar">
                   <img
-                    src={`${process.env.PUBLIC_URL}/assets/icons/My__Logo.png`}
+                    src="/assets/icons/My__Logo.png"
                     alt="Er. Biswajit Deb Barman Logo"
                     className="about-avatar-logo"
                   />
