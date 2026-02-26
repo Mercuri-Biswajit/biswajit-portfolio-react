@@ -2,46 +2,46 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 
-import { SkillCard, ProjectCard } from "../../components/cards";
+// ── Shared components (skills only — ProjectCard removed) ────────
+import { SkillCard } from "../../components/cards";
 import { skills } from "../../data/skills";
 import { projects } from "../../data/projects";
-import { SITE } from "../../config/constants"; // ← global: only SITE needed
+import { SITE } from "../../config/constants";
 import { useSkeleton } from "../../hooks/useSkeleton";
 import {
   ProjectCardSkeleton,
   SkillCardSkeleton,
 } from "../../components/ui/Skeleton";
 
-// ── HomePage-local imports (calculator) ─────────────────────────────────────
+// ── Self-contained home card — NEVER affected by ProjectPage changes ──
+import { HomeProjectCard } from "./cards/HomeProjectCard";
+
+// ── HomePage-local imports (calculator) ─────────────────────────
 import { formatCurrency, formatNumber, safeFloat } from "./utils/helpres";
 import { computeTotal, computeMaterials } from "./config/calculatorLogic";
 
-// STANDALONE CSS - No dependencies on other CSS files
+// STANDALONE CSS
 import "./styles/HomePage.css";
 
 // ════════════════════════════════════════════════════════════════
-// ProjectModal — inlined so HomePage.jsx is self-contained
-// Includes Case Study tab alongside original Structural Specs tab
+// ProjectModal — inlined, self-contained
 // ════════════════════════════════════════════════════════════════
 
 function ProjectModal({ project, onClose }) {
   const [activeTab, setActiveTab] = useState("specs");
 
-  /* Lock body scroll + ESC listener */
   useEffect(() => {
     const handleKey = (e) => {
       if (e.key === "Escape") onClose();
     };
     document.addEventListener("keydown", handleKey);
     document.body.style.overflow = "hidden";
-
     return () => {
       document.removeEventListener("keydown", handleKey);
       document.body.style.overflow = "";
     };
   }, [onClose]);
 
-  /* Reset to Specs tab when a different project opens */
   useEffect(() => {
     setActiveTab("specs");
   }, [project?.id]);
@@ -64,7 +64,6 @@ function ProjectModal({ project, onClose }) {
       aria-label={project.title}
     >
       <div className="project-modal-content">
-        {/* Close button */}
         <button
           className="project-modal-close"
           onClick={onClose}
@@ -73,15 +72,7 @@ function ProjectModal({ project, onClose }) {
           ✕
         </button>
 
-        {/* Hero image */}
-        {/* <img
-          src={project.image}
-          alt={project.title}
-          className="project-modal-image"
-        /> */}
-
         <div className="project-modal-body">
-          {/* Header */}
           <div className="project-modal-header">
             <div>
               <div className="project-modal-id">
@@ -94,7 +85,6 @@ function ProjectModal({ project, onClose }) {
             </span>
           </div>
 
-          {/* Info grid — always visible */}
           <div className="project-modal-info-grid">
             <div className="project-modal-info-item">
               <span className="project-modal-info-label">Plot Area</span>
@@ -122,7 +112,6 @@ function ProjectModal({ project, onClose }) {
             </div>
           </div>
 
-          {/* Tab bar — only when caseStudy data exists */}
           {hasCaseStudy && (
             <div className="project-modal-tabs">
               <button
@@ -140,7 +129,6 @@ function ProjectModal({ project, onClose }) {
             </div>
           )}
 
-          {/* TAB — STRUCTURAL SPECS */}
           {activeTab === "specs" && (
             <div
               className="project-modal-description"
@@ -148,10 +136,8 @@ function ProjectModal({ project, onClose }) {
             />
           )}
 
-          {/* TAB — CASE STUDY */}
           {activeTab === "casestudy" && hasCaseStudy && (
             <div className="project-case-study">
-              {/* 1 · Problem Statement */}
               <div className="case-study-block">
                 <div className="case-study-block-header">
                   <span className="case-study-icon">🎯</span>
@@ -160,7 +146,6 @@ function ProjectModal({ project, onClose }) {
                 <p className="case-study-text">{caseStudy.problem}</p>
               </div>
 
-              {/* 2 · Solution Approach */}
               <div className="case-study-block">
                 <div className="case-study-block-header">
                   <span className="case-study-icon">💡</span>
@@ -169,7 +154,6 @@ function ProjectModal({ project, onClose }) {
                 <p className="case-study-text">{caseStudy.solution}</p>
               </div>
 
-              {/* 3 · Challenges Faced */}
               <div className="case-study-block">
                 <div className="case-study-block-header">
                   <span className="case-study-icon">⚠️</span>
@@ -184,7 +168,6 @@ function ProjectModal({ project, onClose }) {
                 </ul>
               </div>
 
-              {/* 4 · Results & Outcomes */}
               <div className="case-study-block">
                 <div className="case-study-block-header">
                   <span className="case-study-icon">✅</span>
@@ -212,7 +195,6 @@ function ProjectModal({ project, onClose }) {
                 </div>
               </div>
 
-              {/* 5 · Before & After */}
               <div className="case-study-block">
                 <div className="case-study-block-header">
                   <span className="case-study-icon">🔄</span>
@@ -244,7 +226,6 @@ function ProjectModal({ project, onClose }) {
             </div>
           )}
 
-          {/* Tags — always visible */}
           <div className="project-modal-tags">
             {project.tags.map((tag, i) => (
               <span key={i} className="project-modal-tag">
@@ -258,11 +239,14 @@ function ProjectModal({ project, onClose }) {
   );
 }
 
+// ════════════════════════════════════════════════════════════════
+// HomePage
+// ════════════════════════════════════════════════════════════════
+
 function HomePage() {
   const [selectedProject, setSelectedProject] = useState(null);
   const { isLoading } = useSkeleton(900);
 
-  // Calculator state
   const [calcArea, setCalcArea] = useState("");
   const [calcRate, setCalcRate] = useState("");
   const [calcTotal, setCalcTotal] = useState(null);
@@ -273,22 +257,15 @@ function HomePage() {
     if (window.AOS) window.AOS.init({ duration: 800, once: true, offset: 100 });
   }, []);
 
-  // Lock body scroll when materials modal is open
   useEffect(() => {
-    if (showMaterials) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
+    document.body.style.overflow = showMaterials ? "hidden" : "";
     return () => {
       document.body.style.overflow = "";
     };
   }, [showMaterials]);
 
-  // Sort projects by ID (highest/latest first)
   const sortedProjects = [...projects].sort((a, b) => b.id - a.id);
 
-  // ── Calculator handler — calculate + open popup in one click ────────────────
   const handleCalculate = () => {
     const { total, error } = computeTotal(calcArea, calcRate);
     if (error) {
@@ -307,8 +284,9 @@ function HomePage() {
         <meta name="description" content={SITE.seo.home.description} />
         <link rel="canonical" href={SITE.seo.home.canonical} />
       </Helmet>
+
       <div className="home-page">
-        {/* ── Hero ─────────────────────────────────────── */}
+        {/* ── Hero ─────────────────────────────────── */}
         <section className="hero">
           <div className="hero-background" />
           <div className="container">
@@ -330,9 +308,6 @@ function HomePage() {
                 <Link to="/projects" className="btn btn-primary">
                   VIEW PROJECTS
                 </Link>
-                {/* <Link to="/calculator" className="btn btn-secondary">
-                  Advanced Calculator
-                </Link> */}
               </div>
             </div>
 
@@ -350,7 +325,7 @@ function HomePage() {
           </div>
         </section>
 
-        {/* ── Quick Calculator ─────────────────────────── */}
+        {/* ── Quick Calculator ─────────────────────── */}
         <section className="quick-calculator">
           <div className="container">
             <div className="section-header" data-aos="fade-up">
@@ -372,7 +347,6 @@ function HomePage() {
                     onWheel={(e) => e.target.blur()}
                   />
                 </div>
-
                 <div className="calc-input-group">
                   <label className="calc-label">
                     Construction Rate (₹/sq.ft)
@@ -388,7 +362,6 @@ function HomePage() {
                   />
                 </div>
               </div>
-
               <div className="calc-btn-wrapper">
                 <button
                   className="btn btn-primary calc-btn"
@@ -400,7 +373,7 @@ function HomePage() {
             </div>
           </div>
 
-          {/* ── Combined Estimate + Material Popup Modal ── */}
+          {/* Materials modal */}
           {showMaterials && materials && (
             <div className="materials-modal" role="dialog" aria-modal="true">
               <div
@@ -416,7 +389,6 @@ function HomePage() {
                   &times;
                 </button>
 
-                {/* ── Estimate Summary (top of popup) ── */}
                 <div className="materials-estimate-summary">
                   <span className="materials-estimate-label">
                     Estimated Total Cost
@@ -432,169 +404,78 @@ function HomePage() {
                 </div>
 
                 <div className="materials-divider" />
-
                 <h3 className="materials-title">Material Requirements</h3>
 
                 <div className="materials-grid">
-                  <div className="material-item">
-                    <span className="material-icon">🏗️</span>
-                    <div className="material-info">
-                      <span className="material-name">Cement</span>
-                      <span className="material-qty">
-                        {formatNumber(materials.cement, 0)} bags
-                        <span
-                          style={{
-                            fontSize: "0.75rem",
-                            color: "#64748B",
-                            marginLeft: "0.4rem",
-                          }}
-                        >
-                          (≈ {formatCurrency(materials.cementCost)})
+                  {[
+                    [
+                      "🏗️",
+                      "Cement",
+                      `${formatNumber(materials.cement, 0)} bags`,
+                      materials.cementCost,
+                    ],
+                    [
+                      "⚙️",
+                      "Steel",
+                      `${formatNumber(materials.steel, 0)} kg`,
+                      materials.steelCost,
+                    ],
+                    [
+                      "🏖️",
+                      "Sand",
+                      `${formatNumber(materials.sand, 2)} m³`,
+                      materials.sandCost,
+                    ],
+                    [
+                      "🪨",
+                      "Aggregate",
+                      `${formatNumber(materials.aggregate, 2)} m³`,
+                      materials.aggregateCost,
+                    ],
+                    [
+                      "🧱",
+                      "Bricks (Wall)",
+                      `${formatNumber(materials.bricks, 0)} nos`,
+                      materials.bricksCost,
+                    ],
+                    [
+                      "🟫",
+                      "PCC (Foundation Bed)",
+                      `${formatNumber(materials.pcc, 2)} m³`,
+                      materials.pccCost,
+                    ],
+                    [
+                      "🏛️",
+                      "Footing Concrete",
+                      `${formatNumber(materials.footing, 2)} m³`,
+                      materials.footingCost,
+                    ],
+                    [
+                      "🧱",
+                      "Foundation Brickwork",
+                      `${formatNumber(materials.foundationBricks, 0)} nos`,
+                      materials.foundationBrickCost,
+                    ],
+                  ].map(([icon, name, qty, cost]) => (
+                    <div key={name} className="material-item">
+                      <span className="material-icon">{icon}</span>
+                      <div className="material-info">
+                        <span className="material-name">{name}</span>
+                        <span className="material-qty">
+                          {qty}
+                          <span
+                            style={{
+                              fontSize: "0.75rem",
+                              color: "#64748B",
+                              marginLeft: "0.4rem",
+                            }}
+                          >
+                            (≈ {formatCurrency(cost)})
+                          </span>
                         </span>
-                      </span>
+                      </div>
                     </div>
-                  </div>
-
-                  <div className="material-item">
-                    <span className="material-icon">⚙️</span>
-                    <div className="material-info">
-                      <span className="material-name">Steel</span>
-                      <span className="material-qty">
-                        {formatNumber(materials.steel, 0)} kg
-                        <span
-                          style={{
-                            fontSize: "0.75rem",
-                            color: "#64748B",
-                            marginLeft: "0.4rem",
-                          }}
-                        >
-                          (≈ {formatCurrency(materials.steelCost)})
-                        </span>
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="material-item">
-                    <span className="material-icon">🏖️</span>
-                    <div className="material-info">
-                      <span className="material-name">Sand</span>
-                      <span className="material-qty">
-                        {formatNumber(materials.sand, 2)} m³
-                        <span
-                          style={{
-                            fontSize: "0.75rem",
-                            color: "#64748B",
-                            marginLeft: "0.4rem",
-                          }}
-                        >
-                          (≈ {formatCurrency(materials.sandCost)})
-                        </span>
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="material-item">
-                    <span className="material-icon">🪨</span>
-                    <div className="material-info">
-                      <span className="material-name">Aggregate</span>
-                      <span className="material-qty">
-                        {formatNumber(materials.aggregate, 2)} m³
-                        <span
-                          style={{
-                            fontSize: "0.75rem",
-                            color: "#64748B",
-                            marginLeft: "0.4rem",
-                          }}
-                        >
-                          (≈ {formatCurrency(materials.aggregateCost)})
-                        </span>
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="material-item">
-                    <span className="material-icon">🧱</span>
-                    <div className="material-info">
-                      <span className="material-name">Bricks (Wall)</span>
-                      <span className="material-qty">
-                        {formatNumber(materials.bricks, 0)} nos
-                        <span
-                          style={{
-                            fontSize: "0.75rem",
-                            color: "#64748B",
-                            marginLeft: "0.4rem",
-                          }}
-                        >
-                          (≈ {formatCurrency(materials.bricksCost)})
-                        </span>
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="material-item">
-                    <span className="material-icon">🟫</span>
-                    <div className="material-info">
-                      <span className="material-name">
-                        PCC (Foundation Bed)
-                      </span>
-                      <span className="material-qty">
-                        {formatNumber(materials.pcc, 2)} m³
-                        <span
-                          style={{
-                            fontSize: "0.75rem",
-                            color: "#64748B",
-                            marginLeft: "0.4rem",
-                          }}
-                        >
-                          ({formatNumber(materials.pcc * 35.3147, 1)} cft · ≈{" "}
-                          {formatCurrency(materials.pccCost)})
-                        </span>
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="material-item">
-                    <span className="material-icon">🏛️</span>
-                    <div className="material-info">
-                      <span className="material-name">
-                        Footing Concrete (RCC)
-                      </span>
-                      <span className="material-qty">
-                        {formatNumber(materials.footing, 2)} m³
-                        <span
-                          style={{
-                            fontSize: "0.75rem",
-                            color: "#64748B",
-                            marginLeft: "0.4rem",
-                          }}
-                        >
-                          ({formatNumber(materials.footing * 35.3147, 1)} cft ·
-                          ≈ {formatCurrency(materials.footingCost)})
-                        </span>
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="material-item">
-                    <span className="material-icon">🧱</span>
-                    <div className="material-info">
-                      <span className="material-name">
-                        Foundation Brickwork
-                      </span>
-                      <span className="material-qty">
-                        {formatNumber(materials.foundationBricks, 0)} nos
-                        <span
-                          style={{
-                            fontSize: "0.75rem",
-                            color: "#64748B",
-                            marginLeft: "0.4rem",
-                          }}
-                        >
-                          (≈ {formatCurrency(materials.foundationBrickCost)})
-                        </span>
-                      </span>
-                    </div>
-                  </div>
+                  ))}
                 </div>
 
                 <div className="materials-note">
@@ -605,9 +486,7 @@ function HomePage() {
                     Foundation brickwork assumes stepped brick masonry
                     footing/plinth at ₹12/brick (premium). PCC bed assumes 50 mm
                     thick M10 grade; footing concrete is an estimate for
-                    isolated RCC footings (residential). For a detailed cost
-                    breakdown, visit our{" "}
-                    {/* <Link to="/calculator">Advanced Calculator</Link>. */}
+                    isolated RCC footings (residential).
                   </p>
                 </div>
               </div>
@@ -615,26 +494,33 @@ function HomePage() {
           )}
         </section>
 
-        {/* ── Featured Projects ────────────────────────── */}
+        {/* ── Featured Projects ────────────────────── */}
         <section className="recent-projects">
           <div className="container">
             <div className="section-header" data-aos="fade-up">
               <span className="section-number">02</span>
               <h2 className="section-title">FEATURED WORK</h2>
             </div>
+
+            {/*
+              ✅ HomeProjectCard — fully self-contained, zero dependency on
+              ProjectPage.css / ProjectPage.jsx.  Redesign the Projects page
+              freely and this section will never be affected.
+            */}
             <div className="projects-preview">
               {isLoading
                 ? [1, 2, 3].map((i) => <ProjectCardSkeleton key={i} />)
                 : sortedProjects
                     .slice(0, 3)
                     .map((project) => (
-                      <ProjectCard
+                      <HomeProjectCard
                         key={project.id}
                         project={project}
                         onClick={setSelectedProject}
                       />
                     ))}
             </div>
+
             <div className="section-cta" data-aos="fade-up">
               <Link to="/projects" className="btn btn-primary">
                 VIEW ALL PROJECTS
@@ -643,7 +529,7 @@ function HomePage() {
           </div>
         </section>
 
-        {/* ── Core Skills ──────────────────────────────── */}
+        {/* ── Core Skills ──────────────────────────── */}
         <section className="core-skills">
           <div className="container">
             <div className="skills-section-header" data-aos="fade-up">
@@ -658,7 +544,6 @@ function HomePage() {
               </div>
               <div className="skills-header-accent" aria-hidden="true" />
             </div>
-
             <div
               className="skills-grid-2col"
               data-aos="fade-up"
@@ -673,10 +558,9 @@ function HomePage() {
           </div>
         </section>
 
-        {/* ── About the Engineer ───────────────────────── */}
+        {/* ── About the Engineer ───────────────────── */}
         <section className="about-engineer">
           <div className="about-engineer-texture" aria-hidden="true" />
-
           <div className="container">
             <div className="about-engineer-header" data-aos="fade-up">
               <div className="about-engineer-header-left">
@@ -706,17 +590,14 @@ function HomePage() {
                   />
                   <div className="about-avatar-ring" aria-hidden="true" />
                 </div>
-
                 <h3 className="about-name">Er. Biswajit Deb Barman</h3>
                 <p className="about-designation">
                   Civil Engineer &amp; Structural Designer
                 </p>
-
                 <div className="about-location-badge">
                   <span className="about-location-dot" aria-hidden="true" />
                   Raiganj, West Bengal
                 </div>
-
                 <div className="about-stats">
                   <div className="about-stat">
                     <span className="about-stat-value">IS 456</span>
@@ -731,7 +612,6 @@ function HomePage() {
                     <span className="about-stat-label">Calc Modules</span>
                   </div>
                 </div>
-
                 <Link to="/about" className="btn btn-primary about-profile-btn">
                   FULL PROFILE
                 </Link>
@@ -743,66 +623,38 @@ function HomePage() {
                 <span className="about-watermark" aria-hidden="true">
                   CE
                 </span>
-
                 <div className="about-bio-blocks">
-                  <div
-                    className="about-bio-block"
-                    data-aos="fade-up"
-                    data-aos-delay="150"
-                  >
-                    <div className="about-bio-icon">🏗️</div>
-                    <div>
-                      <h4 className="about-bio-heading">Background</h4>
-                      <p className="about-bio-text">
-                        Er. Biswajit Deb Barman is a Civil Engineer and
-                        Structural Designer based in Chanditala, Raiganj, Uttar
-                        Dinajpur, West Bengal. He specialises in RCC structural
-                        design, IS 456:2000 compliance, and WB PWD Schedule of
-                        Rates — delivering end-to-end engineering solutions for
-                        residential and commercial projects across North Bengal.
-                      </p>
+                  {[
+                    [
+                      "🏗️",
+                      "Background",
+                      "Er. Biswajit Deb Barman is a Civil Engineer and Structural Designer based in Chanditala, Raiganj, Uttar Dinajpur, West Bengal. He specialises in RCC structural design, IS 456:2000 compliance, and WB PWD Schedule of Rates — delivering end-to-end engineering solutions for residential and commercial projects across North Bengal.",
+                    ],
+                    [
+                      "📐",
+                      "Expertise",
+                      "His work spans the full project lifecycle — from site assessment and architectural planning through structural analysis, cost estimation, and Bill of Quantities preparation. He brings a rigorous, code-compliant approach to every project, balancing structural integrity with economy and client vision.",
+                    ],
+                    [
+                      "💡",
+                      "Innovation",
+                      "Beyond field engineering, Er. Biswajit has built a professional-grade suite of construction calculators — covering RCC slab, beam, and column design, brick masonry, paint estimation, and detailed BOQ generation — making precision engineering tools accessible to professionals and clients alike.",
+                    ],
+                  ].map(([icon, heading, text], i) => (
+                    <div
+                      key={heading}
+                      className="about-bio-block"
+                      data-aos="fade-up"
+                      data-aos-delay={150 + i * 50}
+                    >
+                      <div className="about-bio-icon">{icon}</div>
+                      <div>
+                        <h4 className="about-bio-heading">{heading}</h4>
+                        <p className="about-bio-text">{text}</p>
+                      </div>
                     </div>
-                  </div>
-
-                  <div
-                    className="about-bio-block"
-                    data-aos="fade-up"
-                    data-aos-delay="200"
-                  >
-                    <div className="about-bio-icon">📐</div>
-                    <div>
-                      <h4 className="about-bio-heading">Expertise</h4>
-                      <p className="about-bio-text">
-                        His work spans the full project lifecycle — from site
-                        assessment and architectural planning through structural
-                        analysis, cost estimation, and Bill of Quantities
-                        preparation. He brings a rigorous, code-compliant
-                        approach to every project, balancing structural
-                        integrity with economy and client vision.
-                      </p>
-                    </div>
-                  </div>
-
-                  <div
-                    className="about-bio-block"
-                    data-aos="fade-up"
-                    data-aos-delay="250"
-                  >
-                    <div className="about-bio-icon">💡</div>
-                    <div>
-                      <h4 className="about-bio-heading">Innovation</h4>
-                      <p className="about-bio-text">
-                        Beyond field engineering, Er. Biswajit has built a
-                        professional-grade suite of construction calculators —
-                        covering RCC slab, beam, and column design, brick
-                        masonry, paint estimation, and detailed BOQ generation —
-                        making precision engineering tools accessible to
-                        professionals and clients alike.
-                      </p>
-                    </div>
-                  </div>
+                  ))}
                 </div>
-
                 <div
                   className="about-tags"
                   data-aos="fade-up"
@@ -828,7 +680,7 @@ function HomePage() {
           </div>
         </section>
 
-        {/* ── Project Modal ────────────────────────────── */}
+        {/* ── Project Modal ────────────────────────── */}
         {selectedProject && (
           <ProjectModal
             project={selectedProject}
