@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Helmet } from "react-helmet-async";
 import { SITE } from "../../config/constants";
 
@@ -40,6 +40,162 @@ function useScrollReveal(deps) {
     return () => observer.disconnect();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, deps);
+}
+
+// ════════════════════════════════════════════════════════════════
+// useCountUp — animates a number from 0 → target when visible
+// ════════════════════════════════════════════════════════════════
+
+function useCountUp(target, duration = 1400, decimals = 0) {
+  const [value, setValue] = useState(0);
+  const ref               = useRef(null);
+  const rafRef            = useRef(null);
+
+  useEffect(() => {
+    const node = ref.current;
+    if (!node) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        observer.disconnect();
+
+        const start     = performance.now();
+        const startVal  = 0;
+
+        const tick = (now) => {
+          const elapsed  = now - start;
+          const progress = Math.min(elapsed / duration, 1);
+          // ease-out cubic
+          const eased    = 1 - Math.pow(1 - progress, 3);
+          const current  = startVal + (target - startVal) * eased;
+          setValue(parseFloat(current.toFixed(decimals)));
+          if (progress < 1) rafRef.current = requestAnimationFrame(tick);
+        };
+
+        rafRef.current = requestAnimationFrame(tick);
+      },
+      { threshold: 0.3 }
+    );
+
+    observer.observe(node);
+    return () => {
+      observer.disconnect();
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
+  }, [target, duration, decimals]);
+
+  return [value, ref];
+}
+
+// ════════════════════════════════════════════════════════════════
+// StatsBanner — computed from ALL projects (not filtered)
+// ════════════════════════════════════════════════════════════════
+
+/**
+ * Parse a plot area string like "1,115 sq.ft" → number 1115
+ * or "2,400 sq.ft" → 2400
+ */
+function parseSqft(str = "") {
+  const n = parseFloat(str.replace(/[^0-9.]/g, ""));
+  return Number.isFinite(n) ? n : 0;
+}
+
+/**
+ * Parse a cost string like "₹22 Lakhs" → 22, "₹1.5 Cr" → 150
+ * Returns value in Lakhs for consistent summing.
+ */
+function parseLakhs(str = "") {
+  const lower = str.toLowerCase();
+  const n     = parseFloat(str.replace(/[^0-9.]/g, ""));
+  if (!Number.isFinite(n)) return 0;
+  if (lower.includes("cr")) return n * 100;
+  return n; // already in lakhs
+}
+
+function StatsBanner({ projects: allProjects }) {
+  const totalProjects  = allProjects.length;
+  const residential    = allProjects.filter((p) => p.category === "RESIDENTIAL").length;
+  const commercial     = allProjects.filter((p) => p.category === "COMMERCIAL").length;
+
+  const totalSqft = allProjects.reduce(
+    (sum, p) => sum + parseSqft(p.plotArea), 0
+  );
+
+  const totalLakhs = allProjects.reduce(
+    (sum, p) => sum + parseLakhs(p.estimatedCost), 0
+  );
+
+  // Animated counters
+  const [countProjects,  refProjects]  = useCountUp(totalProjects,  1200, 0);
+  const [countSqft,      refSqft]      = useCountUp(totalSqft,      1500, 0);
+  const [countLakhs,     refLakhs]     = useCountUp(totalLakhs,     1600, 1);
+  const [countRes,       refRes]       = useCountUp(residential,    1100, 0);
+  const [countCom,       refCom]       = useCountUp(commercial,     1100, 0);
+
+  const formatSqft = (n) =>
+    n >= 1000
+      ? (n / 1000).toFixed(1) + "K"
+      : Math.round(n).toLocaleString("en-IN");
+
+  return (
+    <div className="stats-banner">
+      {/* Left — headline */}
+      <div className="stats-banner-headline">
+        <span className="stats-banner-label">Portfolio at a glance</span>
+        <p className="stats-banner-sub">
+          Every number represents a real project,<br />a real client, a real structure.
+        </p>
+      </div>
+
+      {/* Divider */}
+      <div className="stats-banner-divider" aria-hidden="true" />
+
+      {/* Stats */}
+      <div className="stats-banner-grid">
+
+        <div className="stats-stat" ref={refProjects}>
+          <span className="stats-stat-value">{countProjects}</span>
+          <span className="stats-stat-label">Projects</span>
+          <div className="stats-stat-bar">
+            <div className="stats-stat-bar-res"
+              style={{ width: `${(residential / totalProjects) * 100}%` }} />
+            <div className="stats-stat-bar-com"
+              style={{ width: `${(commercial  / totalProjects) * 100}%` }} />
+          </div>
+        </div>
+
+        <div className="stats-stat" ref={refSqft}>
+          <span className="stats-stat-value">
+            {formatSqft(countSqft)}
+            <span className="stats-stat-unit">sq.ft</span>
+          </span>
+          <span className="stats-stat-label">Total Area Built</span>
+        </div>
+
+        <div className="stats-stat" ref={refLakhs}>
+          <span className="stats-stat-value">
+            ₹{countLakhs}
+            <span className="stats-stat-unit">L</span>
+          </span>
+          <span className="stats-stat-label">Est. Value Delivered</span>
+        </div>
+
+        <div className="stats-stat stats-stat-split">
+          <div className="stats-split-item" ref={refRes}>
+            <span className="stats-split-value stats-split-res">{countRes}</span>
+            <span className="stats-split-label">Residential</span>
+          </div>
+          <div className="stats-split-divider" aria-hidden="true" />
+          <div className="stats-split-item" ref={refCom}>
+            <span className="stats-split-value stats-split-com">{countCom}</span>
+            <span className="stats-split-label">Commercial</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  );
 }
 
 // ════════════════════════════════════════════════════════════════
@@ -418,6 +574,13 @@ function ProjectsPage() {
             A showcase of structural engineering projects demonstrating
             innovation, precision, and commitment to excellence.
           </p>
+        </div>
+      </section>
+
+      {/* Stats Banner — always uses ALL projects, not filtered */}
+      <section className="stats-banner-section">
+        <div className="container">
+          <StatsBanner projects={sorted} />
         </div>
       </section>
 

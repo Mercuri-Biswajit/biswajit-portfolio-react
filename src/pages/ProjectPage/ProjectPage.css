@@ -51,6 +51,237 @@
   background: #f2ede6;
 }
 
+.stats-banner-section {
+  background: var(--warm-text);
+  overflow: hidden;
+}
+
+/* ===========================
+   STATS BANNER
+   =========================== */
+
+.stats-banner {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  background: var(--warm-text);           /* deep warm dark */
+  padding: 2.25rem 0;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Subtle blueprint grid overlay */
+.stats-banner::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+  background-size: 28px 28px;
+  pointer-events: none;
+}
+
+/* Warm glow top-left */
+.stats-banner::after {
+  content: '';
+  position: absolute;
+  top: -60px;
+  left: -60px;
+  width: 260px;
+  height: 260px;
+  background: radial-gradient(circle, rgba(193,127,74,0.18) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+/* ── Headline ──────────────────────────────── */
+.stats-banner-headline {
+  flex: 0 0 auto;
+  padding: 0 2.5rem 0 0;
+  position: relative;
+  z-index: 1;
+}
+
+.stats-banner-label {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--warm-primary);
+  display: block;
+  margin-bottom: 0.45rem;
+}
+
+.stats-banner-sub {
+  font-family: 'Fraunces', serif;
+  font-size: 1.05rem;
+  font-weight: 400;
+  font-style: italic;
+  color: rgba(255,255,255,0.75);
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* ── Vertical divider ──────────────────────── */
+.stats-banner-divider {
+  width: 1px;
+  height: 64px;
+  background: rgba(255,255,255,0.12);
+  flex-shrink: 0;
+  margin-right: 2.5rem;
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Stats grid ────────────────────────────── */
+.stats-banner-grid {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  flex: 1;
+  position: relative;
+  z-index: 1;
+}
+
+.stats-stat {
+  flex: 1;
+  padding: 0 2rem;
+  border-right: 1px solid rgba(255,255,255,0.08);
+  position: relative;
+}
+
+.stats-stat:last-child { border-right: none; }
+
+/* Value */
+.stats-stat-value {
+  display: flex;
+  align-items: baseline;
+  gap: 0.25rem;
+  font-family: 'Fraunces', serif;
+  font-size: 2.4rem;
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1;
+  margin-bottom: 0.3rem;
+}
+
+.stats-stat-unit {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--warm-primary);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  align-self: flex-end;
+  margin-bottom: 0.1rem;
+}
+
+/* Label */
+.stats-stat-label {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.45);
+  display: block;
+}
+
+/* Mini category bar under "Projects" count */
+.stats-stat-bar {
+  display: flex;
+  height: 3px;
+  border-radius: 3px;
+  overflow: hidden;
+  margin-top: 0.55rem;
+  background: rgba(255,255,255,0.1);
+  width: 80px;
+}
+
+.stats-stat-bar-res {
+  background: var(--cat-residential);
+  border-radius: 3px 0 0 3px;
+  transition: width 1.5s cubic-bezier(0.4,0,0.2,1);
+}
+
+.stats-stat-bar-com {
+  background: var(--cat-commercial);
+  border-radius: 0 3px 3px 0;
+  transition: width 1.5s cubic-bezier(0.4,0,0.2,1);
+}
+
+/* ── Split stat (Residential / Commercial) ── */
+.stats-stat-split {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  padding: 0 2rem;
+}
+
+.stats-split-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  align-items: center;
+}
+
+.stats-split-divider {
+  width: 1px;
+  height: 44px;
+  background: rgba(255,255,255,0.12);
+  flex-shrink: 0;
+  margin: 0 1rem;
+}
+
+.stats-split-value {
+  font-family: 'Fraunces', serif;
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.stats-split-res { color: var(--cat-residential); }
+.stats-split-com { color: var(--cat-commercial); }
+
+.stats-split-label {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.63rem;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.4);
+}
+
+/* ── Responsive ────────────────────────────── */
+@media (max-width: 1100px) {
+  .stats-banner { flex-wrap: wrap; gap: 1.5rem; padding: 2rem 0; }
+  .stats-banner-headline { padding: 0; }
+  .stats-banner-divider  { display: none; }
+  .stats-banner-grid     { gap: 0; }
+  .stats-stat            { padding: 0 1.25rem; }
+  .stats-stat-value      { font-size: 1.9rem; }
+}
+
+@media (max-width: 768px) {
+  .stats-banner-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.25rem;
+    width: 100%;
+  }
+  .stats-stat { border-right: none; padding: 0; }
+  .stats-stat-split { padding: 0; }
+  .stats-banner-headline { width: 100%; }
+}
+
+@media (max-width: 480px) {
+  .stats-banner-grid { grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .stats-stat-value  { font-size: 1.6rem; }
+  .stats-split-value { font-size: 1.5rem; }
+}
+
 /* ===========================
    FILTER SECTION
    =========================== */
