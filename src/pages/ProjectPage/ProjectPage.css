@@ -38,6 +38,12 @@
   /* slate blue */
   --cat-commercial-bg: #eff6ff;
   --cat-commercial-ring: #93c5fd;
+
+  /* text color */
+  --color-text: #0c234e;
+  --color-text-dim: #666666;
+  --color-text-light: #999999;
+  --color-text-white: #FFFFFF;
 }
 
 /* ===========================
@@ -55,7 +61,7 @@
 }
 
 .stats-banner-section {
-  background: var(--warm-text);
+  background: var(--warm-spine);
   overflow: hidden;
 }
 
@@ -67,7 +73,7 @@
   display: flex;
   align-items: center;
   gap: 0;
-  background: var(--warm-text);
+  background: var(--warm-spine);
   /* deep warm dark */
   padding: 2.25rem 0;
   position: relative;
@@ -94,7 +100,6 @@
   left: -60px;
   width: 260px;
   height: 260px;
-  background: radial-gradient(circle, rgba(193, 127, 74, 0.18) 0%, transparent 70%);
   pointer-events: none;
 }
 
@@ -108,21 +113,20 @@
 
 .stats-banner-label {
   font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: 0.65rem;
+  font-size: 1rem;
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--warm-primary);
+  color: var(--color-text);
   display: block;
   margin-bottom: 0.45rem;
 }
 
 .stats-banner-sub {
-  font-family: 'Fraunces', serif;
-  font-size: 1.05rem;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.95rem;
   font-weight: 400;
-  font-style: italic;
-  color: rgba(255, 255, 255, 0.75);
+  color: var(--color-text-dim);
   line-height: 1.5;
   margin: 0;
 }
@@ -131,7 +135,7 @@
 .stats-banner-divider {
   width: 1px;
   height: 64px;
-  background: rgba(255, 255, 255, 0.12);
+  background: rgba(187, 187, 187, 0.12);
   flex-shrink: 0;
   margin-right: 2.5rem;
   position: relative;
@@ -167,7 +171,7 @@
   font-family: 'Fraunces', serif;
   font-size: 2.4rem;
   font-weight: 700;
-  color: #ffffff;
+  color: var(--color-text);
   line-height: 1;
   margin-bottom: 0.3rem;
 }
@@ -190,7 +194,7 @@
   font-weight: 500;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.45);
+  color: var(--color-text);
   display: block;
 }
 
@@ -262,7 +266,7 @@
   font-weight: 600;
   letter-spacing: 0.07em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.4);
+  color: var(--color-text-dim);
 }
 
 /* ── Responsive ────────────────────────────── */

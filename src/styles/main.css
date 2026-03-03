@@ -11,7 +11,7 @@
    Used across multiple pages
    =========================== */
 @import url("./components/buttons.css");
-@import url("./components/hero.css");
+@import url("../pages/HomePage/styles/hero.css");
 @import url("./components/services.css");
 @import url("./components/skills.css");
 

@@ -9,7 +9,7 @@
 
 .btn {
   /* Spacing */
-  padding: 1rem 2rem;
+  padding: 0.5rem 2rem;
   
   /* Typography */
   font-family: var(--font-display);
@@ -27,7 +27,7 @@
   
   /* Borders */
   border: 2px solid transparent;
-  border-radius: 30px;
+  border-radius: 10px;
   
   /* Cursor */
   cursor: pointer;
@@ -278,7 +278,7 @@
   border: 2px solid var(--btn-nav-cta-border);
   
   /* Border */
-  border-radius: 6px;
+  border-radius: 100px;
   
   /* Transition */
   transition: var(--transition);

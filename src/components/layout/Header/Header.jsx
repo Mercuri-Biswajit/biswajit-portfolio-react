@@ -52,8 +52,6 @@ function Header() {
           <Link to="/" className={getLinkClass('/')}>HOME</Link>
           <Link to="/projects" className={getLinkClass('/projects')}>PROJECTS</Link>
           <Link to="/about" className={getLinkClass('/about')}>ABOUT</Link>
-          {/* <Link to="/calculator" className={getLinkClass('/calculator')}>CALCULATORS</Link> */}
-          {/* <Link to="/vastu" className={getLinkClass('/vastu')}>VASTU</Link> */}
         </div>
 
         <a

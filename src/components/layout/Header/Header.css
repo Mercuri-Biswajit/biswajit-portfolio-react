@@ -39,7 +39,7 @@
 .nav-container {
   max-width: var(--container-max-width);
   margin: 0 auto;
-  padding: 0.5rem 2rem;
+  padding: 0.95rem 1rem;
   display: flex;
   justify-content: space-between;
   align-items: center;

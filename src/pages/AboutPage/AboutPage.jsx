@@ -112,7 +112,7 @@ function AboutPage() {
             <div className="about-eng-identity">
               <div className="about-eng-avatar">
                 <img
-                  src={`${process.env.PUBLIC_URL}/assets/icons/My__Logo.png`}
+                  src="/assets/icons/My__Logo.png"
                   alt="BDB Logo"
                   className="about-eng-logo"
                 />

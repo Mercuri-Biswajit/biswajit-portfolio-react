@@ -8,13 +8,13 @@
    =========================== */
 
 .hero {
-  min-height: 100dvh;
+  min-height: 90dvh;
   display: flex;
   align-items: center;
   position: relative;
   overflow: hidden;
-  padding-top: 80px;
-  padding-bottom: 40px;
+  padding-top: 40px;
+  padding-bottom: 10px;
 }
 
 /* ===========================
@@ -55,8 +55,8 @@
   position: relative;
   z-index: 2;
   display: grid;
-  grid-template-columns: 3fr 2fr;
-  gap: 2rem;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
   align-items: center;
 }
 
@@ -67,7 +67,7 @@
 .hero-content {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 0rem;
 }
 
 .hero-label {
@@ -76,7 +76,7 @@
   font-weight: var(--font-weight-medium);
   letter-spacing: 0.3em;
   color: var(--color-text-dim);
-  margin-bottom: 1rem;
+  margin-bottom: 0.2rem;
   animation: fadeInUp 0.8s ease-out;
   text-transform: uppercase;
 }
@@ -86,7 +86,7 @@
   font-size: clamp(2.5rem, 5vw, 4rem);
   font-weight: var(--font-weight-bold);
   line-height: var(--line-height-tight);
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
   color: var(--color-text);
 }
 
@@ -115,7 +115,7 @@
   font-size: clamp(0.95rem, 1.5vw, 1rem);
   color: var(--color-text-dim);
   max-width: 600px;
-  margin-bottom: 3rem;
+  margin-bottom: 1rem;
   animation: fadeInUp 0.8s ease-out 0.8s both;
   line-height: var(--line-height-relaxed);
 }
@@ -133,7 +133,7 @@
 
 .hero-visual {
   position: relative;
-  height: 500px;
+  height: auto;
   width: 100%;
   max-width: 100%;
   animation: fadeIn 1.2s ease-out 1.2s both;
@@ -150,8 +150,8 @@
 }
 
 .hero-image {
-  width: 100%;
-  height: 100%;
+  width: auto;
+  height: auto;
   object-fit: cover;
   display: block;
 }
