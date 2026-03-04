@@ -16,9 +16,9 @@
   --home-accent-dark: #E07B00;
 
   /* Backgrounds */
-  --home-bg-dark: #F4F4F4;
-  --home-bg-darker: #FFFFFF;
-  --home-bg-card: #FFFFFF;
+  --home-bg-dark: #f2ede3;
+  --home-bg-darker: #f8f5ef;
+  --home-bg-card: #ede8dc;
 
   /* Text */
   --home-text: #1E293B;
@@ -38,8 +38,8 @@
   --home-spacing-xl: 5rem;
 
   /* Typography */
-  --home-font-display: "lexend", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  --home-font-body: "popping", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --home-font-display: "Syne", sans-serif;
+  --home-font-body: "JetBrains Mono", monospace;
 
   /* Effects */
   --home-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
