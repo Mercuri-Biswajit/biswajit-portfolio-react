@@ -56,15 +56,4 @@ export const skills = [
       "Detailed project cost reports",
     ],
   },
-  {
-    icon: "🌱",
-    name: "Project Planning",
-    items: [
-      "Bar chart & Gantt scheduling",
-      "Construction sequence planning",
-      "Resource & manpower planning",
-      "Progress monitoring & reporting",
-      "Contract & tender documentation",
-    ],
-  },
 ];

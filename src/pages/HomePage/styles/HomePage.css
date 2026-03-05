@@ -256,35 +256,39 @@
    MATERIALS POPUP MODAL
    ═══════════════════════════════════════════════════════════════════════════ */
 
-   .materials-estimate-summary {
+.materials-estimate-summary {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 4px;
   padding: 1.25rem 1rem 1rem;
-  background: linear-gradient(135deg, rgba(59,130,246,0.07), transparent);
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.07), transparent);
   border-radius: 10px;
   text-align: center;
 }
+
 .materials-estimate-label {
   font-size: 0.72rem;
   text-transform: uppercase;
   letter-spacing: 0.1em;
   color: #64748b;
 }
+
 .materials-estimate-amount {
   font-size: 2rem;
   font-weight: 800;
   color: var(--home-primary);
   line-height: 1.1;
 }
+
 .materials-estimate-meta {
   font-size: 0.8rem;
   color: #64748b;
 }
+
 .materials-divider {
   height: 1px;
-  background: rgba(0,0,0,0.08);
+  background: rgba(0, 0, 0, 0.08);
   margin: 1rem 0 0.5rem;
 }
 
@@ -1793,41 +1797,30 @@
   z-index: 2;
 }
 
-/* Blueprint grid overlay inside identity panel */
+/* Blueprint grid overlay inside identity panel — removed */
 .home-page .about-identity-panel::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image:
-    linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
-  background-size: 24px 24px;
-  pointer-events: none;
+  display: none;
 }
 
 /* Avatar */
 .home-page .about-avatar {
   position: relative;
-  width: 96px;
-  height: 96px;
-  margin-bottom: 0.5rem;
-  z-index: 3;
-}
-
-.home-page .about-avatar {
-  position: relative;
   width: 140px;
-  height: 80px;
-  margin-bottom: 0.5rem;
+  height: auto;
+  margin-bottom: 1rem;
   z-index: 3;
+  display: inline-block;
 }
 
 .home-page .about-avatar-logo {
+  display: block;
   width: 140px;
-  height: 80px;
+  height: auto;
   object-fit: contain;
-  filter: brightness(0) invert(1);
   opacity: 0.92;
+  border-radius: 10px;
+  position: relative;
+  z-index: 2;
 }
 
 .home-page .about-avatar-initials {
@@ -1849,20 +1842,11 @@
 
 .home-page .about-avatar-ring {
   position: absolute;
-  inset: -5px;
-  border-radius: 50%;
-  border: 2px dashed rgba(255, 140, 0, 0.5);
-  animation: aboutRingSpin 12s linear infinite;
-}
-
-@keyframes aboutRingSpin {
-  from {
-    transform: rotate(0deg);
-  }
-
-  to {
-    transform: rotate(360deg);
-  }
+  inset: -10px;
+  border-radius: 16px;
+  border: 2px dashed rgba(255, 140, 0, 0.6);
+  pointer-events: none;
+  z-index: 1;
 }
 
 /* Name & designation */

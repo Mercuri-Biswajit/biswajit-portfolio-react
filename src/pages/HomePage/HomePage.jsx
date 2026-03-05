@@ -584,7 +584,7 @@ function HomePage() {
               <div className="about-identity-panel">
                 <div className="about-avatar">
                   <img
-                    src="/assets/icons/My__Logo.png"
+                    src="/assets/images/hero/dp.png"
                     alt="Er. Biswajit Deb Barman Logo"
                     className="about-avatar-logo"
                   />
@@ -633,7 +633,7 @@ function HomePage() {
                     [
                       "📐",
                       "Expertise",
-                      "His work spans the full project lifecycle — from site assessment and architectural planning through structural analysis, cost estimation, and Bill of Quantities preparation. He brings a rigorous, code-compliant approach to every project, balancing structural integrity with economy and client vision.",
+                      "I work spans the full project lifecycle — from site assessment and architectural planning through structural analysis, cost estimation, and Bill of Quantities preparation. I brings a rigorous, code-compliant approach to every project, balancing structural integrity with economy and client vision.",
                     ],
                     [
                       "💡",

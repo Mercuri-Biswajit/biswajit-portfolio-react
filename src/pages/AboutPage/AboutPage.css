@@ -1671,16 +1671,16 @@
   position: relative;
   width: 140px;
   height: 80px;
-  margin-bottom: 0.5rem;
+  margin-bottom: 3.5rem;
   z-index: 3;
 }
 
 .about-eng-logo {
   width: 140px;
-  height: 80px;
+  height: auto;
   object-fit: contain;
-  filter: brightness(0) invert(1);
   opacity: 0.92;
+  border-radius: 10px;
 }
 
 /* Name & designation */

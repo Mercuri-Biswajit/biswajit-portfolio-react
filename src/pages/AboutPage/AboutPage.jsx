@@ -112,7 +112,7 @@ function AboutPage() {
             <div className="about-eng-identity">
               <div className="about-eng-avatar">
                 <img
-                  src="/assets/icons/My__Logo.png"
+                  src="/assets/images/hero/dp.png"
                   alt="BDB Logo"
                   className="about-eng-logo"
                 />
