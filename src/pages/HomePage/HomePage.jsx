@@ -336,8 +336,9 @@ function HomePage() {
             <div className="calculator-card" data-aos="fade-up">
               <div className="calculator-inputs">
                 <div className="calc-input-group">
-                  <label className="calc-label">Built-up Area (sq.ft)</label>
+                  <label htmlFor="calc-area-input" className="calc-label">Built-up Area (sq.ft)</label>
                   <input
+                    id="calc-area-input"
                     type="number"
                     className="calc-input"
                     placeholder="Enter area in sq.ft"
@@ -348,10 +349,11 @@ function HomePage() {
                   />
                 </div>
                 <div className="calc-input-group">
-                  <label className="calc-label">
+                  <label htmlFor="calc-rate-input" className="calc-label">
                     Construction Rate (₹/sq.ft)
                   </label>
                   <input
+                    id="calc-rate-input"
                     type="number"
                     className="calc-input"
                     placeholder="Enter rate per sq.ft"
