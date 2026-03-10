@@ -48,10 +48,10 @@ function Header() {
           </Link>
         </div>
 
-        <div className={`nav-menu ${menuOpen ? 'active' : ''}`}>
-          <Link to="/" className={getLinkClass('/')}>HOME</Link>
-          <Link to="/projects" className={getLinkClass('/projects')}>PROJECTS</Link>
-          <Link to="/about" className={getLinkClass('/about')}>ABOUT</Link>
+        <div id="nav-menu" className={`nav-menu ${menuOpen ? 'active' : ''}`}>
+          <Link to="/" className={getLinkClass('/')} aria-current={location.pathname === '/' ? 'page' : undefined}>HOME</Link>
+          <Link to="/projects" className={getLinkClass('/projects')} aria-current={location.pathname === '/projects' ? 'page' : undefined}>PROJECTS</Link>
+          <Link to="/about" className={getLinkClass('/about')} aria-current={location.pathname === '/about' ? 'page' : undefined}>ABOUT</Link>
         </div>
 
         <a
@@ -65,7 +65,9 @@ function Header() {
         <button
           className={`hamburger ${menuOpen ? 'active' : ''}`}
           onClick={() => setMenuOpen((prev) => !prev)}
-          aria-label="Toggle navigation"
+          aria-label={menuOpen ? "Close navigation menu" : "Open navigation menu"}
+          aria-controls="nav-menu"
+          aria-expanded={menuOpen}
         >
           <span />
           <span />
