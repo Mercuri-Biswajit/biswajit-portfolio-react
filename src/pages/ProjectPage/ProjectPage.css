@@ -767,6 +767,16 @@
   border-color: var(--warm-primary);
 }
 
+.project-card:focus-visible {
+  outline: none;
+}
+
+.project-card:focus-visible .project-card-inner {
+  outline: 3px solid #FF8C00;
+  outline-offset: 2px;
+  border-radius: var(--card-radius);
+}
+
 /* warm left-edge accent strip */
 .project-card-inner::after {
   content: '';
