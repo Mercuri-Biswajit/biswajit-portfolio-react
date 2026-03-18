@@ -423,6 +423,7 @@ function TimelineCard({ project, onClick }) {
       tabIndex={0}
       onKeyDown={(e) => e.key === "Enter" && onClick(project)}
       aria-label={`Open ${project.title}`}
+      style={{ outlineColor: "#FF8C00" }}
     >
       {/* Pulse ring (CSS animation) */}
       <div className="project-card-dot-pulse" aria-hidden="true" />

@@ -1,0 +1,3 @@
+## 2024-05-18 - Explicit Focus Styles for Interactive Cards
+**Learning:** For keyboard accessibility, interactive elements built from composite `div`s with `tabIndex={0}` often fail to display clear default browser focus outlines, especially when custom border or box-shadow hover styles are applied. Depending on the element's layout (e.g., flex-containers), outlines must be precisely targeted.
+**Action:** Use the brand's accent color (`#FF8C00`) to provide explicit `:focus-visible` styles on interactive components. For complex structures like `.project-card`, ensure the outline is clearly visible and wraps the element neatly, adjusting `outline-offset` or `outlineColor` inline or in corresponding style blocks.
