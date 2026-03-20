@@ -48,7 +48,7 @@ export function ProjectCard({ project, onClick }) {
           tabIndex={0}
           title="Click to view image"
           onKeyDown={(e) => e.key === "Enter" && setLightboxOpen(true)}
-          style={{ cursor: "zoom-in" }}
+          style={{ cursor: "zoom-in", outlineOffset: "-4px" }}
         >
           <img src={image} alt={title} className="project-card-img" />
           <div className="project-card-image-overlay">
@@ -81,7 +81,7 @@ export function ProjectCard({ project, onClick }) {
           role="button"
           tabIndex={0}
           onKeyDown={(e) => e.key === "Enter" && onClick(project)}
-          style={{ cursor: "pointer" }}
+          style={{ cursor: "pointer", outlineOffset: "-4px" }}
         >
           {/* Header */}
           <div className="project-card-header">
