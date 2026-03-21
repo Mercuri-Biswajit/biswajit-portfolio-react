@@ -1650,3 +1650,17 @@
     font-size: 0.72rem;
   }
 }
+/* ── Accessibility: Focus Visible ───────────────────────── */
+.project-card:focus-visible {
+  outline: none;
+}
+.project-card:focus-visible .project-card-inner {
+  outline: 2px solid var(--color-accent);
+  outline-offset: -4px;
+}
+
+.project-card-image:focus-visible,
+.project-card-body:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: -4px;
+}
