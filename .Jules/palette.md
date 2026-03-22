@@ -1,0 +1,3 @@
+## 2024-05-24 - Keyboard Accessibility for Complex Flex-Container Cards
+**Learning:** For complex flex-container interactive elements (like `.project-card`), default outlines can look disjointed or be cut off. Standard `outline` on the outer wrapper may not align well with the inner visual boundaries of the card.
+**Action:** Apply `:focus-visible` styles to remove the default outline on the outer container, and instead apply an explicit outline (e.g., `3px solid var(--color-accent)`) with a negative `outline-offset` (e.g., `-4px`) to the inner visual wrapper (`.project-card-inner`) to ensure the outline tightly wraps the actual card content and remains fully visible.
