@@ -340,6 +340,7 @@ function HomePage() {
                   <input
                     id="calc-area"
                     type="number"
+                    min="0"
                     className="calc-input"
                     placeholder="Enter area in sq.ft"
                     value={calcArea}
@@ -355,6 +356,7 @@ function HomePage() {
                   <input
                     id="calc-rate"
                     type="number"
+                    min="0"
                     className="calc-input"
                     placeholder="Enter rate per sq.ft"
                     value={calcRate}
