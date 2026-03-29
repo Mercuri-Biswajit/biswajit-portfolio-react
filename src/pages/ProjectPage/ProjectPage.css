@@ -1650,3 +1650,16 @@
     font-size: 0.72rem;
   }
 }
+
+/* ===========================
+   ACCESSIBILITY
+   =========================== */
+
+.project-card:focus-visible {
+  outline: none;
+}
+
+.project-card:focus-visible .project-card-inner {
+  outline: 2px solid var(--color-accent);
+  outline-offset: -4px;
+}
