@@ -1,0 +1,3 @@
+## 2024-11-17 - Keyboard Focus on Complex Flex Cards
+**Learning:** Complex flex-container interactive elements (like `.project-card` and `.hpc-card`) using `tabIndex={0}` often suffer from their focus outlines being hidden or clipped if `overflow: hidden` is applied or if padding is structured tightly.
+**Action:** When adding `:focus-visible` styles to these types of components, apply a negative `outline-offset` (e.g., `-4px`) to the inner visual wrapper (or the card itself) to ensure the focus ring tightly wraps the content, remains visible within the flex container bounds, and does not get cut off.
