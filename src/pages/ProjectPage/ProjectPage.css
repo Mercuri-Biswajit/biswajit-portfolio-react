@@ -581,6 +581,21 @@
   }
 }
 
+.project-card:focus-visible {
+  outline: none;
+}
+
+.project-card:focus-visible .project-card-inner {
+  outline: 2px solid var(--warm-primary);
+  outline-offset: -4px;
+}
+
+.project-card-image:focus-visible,
+.project-card-body:focus-visible {
+  outline: 2px solid var(--warm-primary);
+  outline-offset: -4px;
+}
+
 /* Stagger pulse per card index */
 .project-card:nth-child(1) .project-card-dot-pulse {
   animation-delay: 0s;
