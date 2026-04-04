@@ -48,7 +48,7 @@ function Header() {
           </Link>
         </div>
 
-        <div className={`nav-menu ${menuOpen ? 'active' : ''}`}>
+        <div id="nav-menu" className={`nav-menu ${menuOpen ? 'active' : ''}`}>
           <Link to="/" className={getLinkClass('/')}>HOME</Link>
           <Link to="/projects" className={getLinkClass('/projects')}>PROJECTS</Link>
           <Link to="/about" className={getLinkClass('/about')}>ABOUT</Link>
@@ -66,6 +66,8 @@ function Header() {
           className={`hamburger ${menuOpen ? 'active' : ''}`}
           onClick={() => setMenuOpen((prev) => !prev)}
           aria-label="Toggle navigation"
+          aria-expanded={menuOpen}
+          aria-controls="nav-menu"
         >
           <span />
           <span />
