@@ -1055,6 +1055,16 @@
   display: none;
 }
 
+/* Accessibility Focus State */
+.project-card:focus-visible {
+  outline: none;
+}
+
+.project-card:focus-visible .project-card-inner {
+  outline: 3px solid #FF6B35;
+  outline-offset: -4px;
+}
+
 /* ===========================
    LOADING STATE
    =========================== */
