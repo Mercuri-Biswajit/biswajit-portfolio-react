@@ -515,6 +515,7 @@
   width: 100%;
   margin-bottom: 2.75rem;
   cursor: pointer;
+  outline: none; /* Let focus styling apply to .project-card-inner */
 
   /* reset old styles */
   min-height: unset;
@@ -524,6 +525,11 @@
   border-radius: 0;
   overflow: visible;
   transition: none;
+}
+
+.project-card:focus-visible .project-card-inner {
+  outline: 2px solid var(--color-accent);
+  outline-offset: -4px;
 }
 
 /* No shimmer on the row itself */
