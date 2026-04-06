@@ -767,6 +767,15 @@
   border-color: var(--warm-primary);
 }
 
+.project-card:focus-visible {
+  outline: none; /* Prevent outer outline */
+}
+
+.project-card:focus-visible .project-card-inner {
+  outline: 2px solid var(--color-accent, #FF6B35);
+  outline-offset: -4px;
+}
+
 /* warm left-edge accent strip */
 .project-card-inner::after {
   content: '';
