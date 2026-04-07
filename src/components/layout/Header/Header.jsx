@@ -66,6 +66,7 @@ function Header() {
           className={`hamburger ${menuOpen ? 'active' : ''}`}
           onClick={() => setMenuOpen((prev) => !prev)}
           aria-label="Toggle navigation"
+          aria-expanded={menuOpen}
         >
           <span />
           <span />
