@@ -65,11 +65,12 @@ function Header() {
         <button
           className={`hamburger ${menuOpen ? 'active' : ''}`}
           onClick={() => setMenuOpen((prev) => !prev)}
+          aria-expanded={menuOpen}
           aria-label="Toggle navigation"
         >
-          <span />
-          <span />
-          <span />
+          <span aria-hidden="true" />
+          <span aria-hidden="true" />
+          <span aria-hidden="true" />
         </button>
 
       </div>
