@@ -507,6 +507,16 @@
    TIMELINE ROW  (.project-card)
    =========================== */
 
+
+.project-card:focus-visible {
+  outline: none;
+}
+
+.project-card:focus-visible .project-card-inner {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
 .project-card {
   position: relative;
   display: flex;

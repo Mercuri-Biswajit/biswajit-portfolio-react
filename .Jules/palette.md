@@ -1,0 +1,3 @@
+## 2025-05-18 - Project Card Focus Visibility
+**Learning:** The interactive `.project-card` and `.hpc-card` elements have `tabIndex={0}` for keyboard navigation, but the default global `:focus-visible` styles are clipped or misaligned due to the flex layout and inner nested borders. When applying focus visible outlines to complex flex containers, they need explicit offsets or to be applied to the inner visual wrapper to look clean.
+**Action:** Always add explicit `:focus-visible` styling (preferably with `var(--color-accent)`) for complex interactive components, especially if they have negative margins or nested structural elements that could obscure default outlines.
