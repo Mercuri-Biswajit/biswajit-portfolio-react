@@ -1,0 +1,3 @@
+## 2024-05-01 - Improve Keyboard Focus Styles
+**Learning:** For complex flex-container interactive elements (like `.project-card`), applying `:focus-visible` styles correctly is important.
+**Action:** When implementing keyboard accessibility improvements for interactive components (such as those with `tabIndex={0}`), use the `var(--color-accent)` variable for explicit `:focus-visible` outlines. Apply `:focus-visible` styles to the inner visual wrapper (e.g., `.project-card-inner`) to ensure outlines tightly wrap the content. To prevent double outlines, explicitly set `outline: none;` on the outer container's `:focus-visible` state.
