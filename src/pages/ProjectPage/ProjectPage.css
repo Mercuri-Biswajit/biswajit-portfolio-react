@@ -526,6 +526,15 @@
   transition: none;
 }
 
+.project-card:focus-visible {
+  outline: none;
+}
+
+.project-card:focus-visible .project-card-inner {
+  outline: 3px solid var(--color-accent);
+  outline-offset: 4px;
+}
+
 /* No shimmer on the row itself */
 .project-card::before {
   display: none;
@@ -865,6 +874,13 @@
 }
 
 /* ── Content panel ────────────────────────── */
+.project-card-image:focus-visible,
+.project-card-body:focus-visible {
+  outline: 3px solid var(--color-accent);
+  outline-offset: -3px;
+  border-radius: var(--card-radius);
+}
+
 .project-card-body {
   display: flex;
   flex-direction: column;
