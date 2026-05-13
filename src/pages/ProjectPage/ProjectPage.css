@@ -864,6 +864,11 @@
   opacity: 1;
 }
 
+.project-card-image:focus-visible {
+  outline: 3px solid var(--color-accent);
+  outline-offset: 4px;
+}
+
 /* ── Content panel ────────────────────────── */
 .project-card-body {
   display: flex;
@@ -872,6 +877,11 @@
   padding: 1.25rem 1.5rem 1.1rem 1.25rem;
   position: relative;
   z-index: 2;
+}
+
+.project-card-body:focus-visible {
+  outline: 3px solid var(--color-accent);
+  outline-offset: -4px;
 }
 
 .project-card-header {

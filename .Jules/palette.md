@@ -1,0 +1,3 @@
+## 2024-05-18 - Keyboard Focus States for Complex Interactive Containers
+**Learning:** Complex interactive elements like `.project-card` often contain multiple clickable regions (e.g., an image that opens a lightbox and a body that opens a modal). In this project, `tabIndex={0}` is used on these regions, but no specific `:focus-visible` states were provided. This creates a confusing keyboard navigation experience as users tab through elements without any visual indication of focus.
+**Action:** Always explicitly define `:focus-visible` styles with a clear `outline` (using the system`s accent colour, `var(--color-accent)`) for all interactive regions within complex UI components. Ensure `outline-offset` is used to prevent the outline from feeling cramped.
