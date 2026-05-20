@@ -1,0 +1,3 @@
+## 2026-05-20 - Added :focus-visible outlines to interactive project cards
+**Learning:** For complex flex-container interactive elements (like `.project-card` and `.hpc-card`) using `tabIndex={0}`, the default focus state might be cut off or misaligned due to `overflow: hidden` or pseudo-elements covering boundaries. Applying `:focus-visible` correctly on outer containers while providing styling using inner elements or an appropriate `outline-offset` ensures clean visibility.
+**Action:** When creating new components that act as large interactive buttons ( and ), always provide an explicit `:focus-visible` style using the brand's primary accent color to maintain good keyboard navigation accessibility.
