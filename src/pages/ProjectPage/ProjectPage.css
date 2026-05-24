@@ -1650,3 +1650,12 @@
     font-size: 0.72rem;
   }
 }
+/* Keyboard Accessibility Focus States */
+.project-card:focus-visible {
+  outline: none;
+}
+.project-card:focus-visible .project-card-inner {
+  outline: 3px solid var(--color-accent);
+  outline-offset: 4px;
+  border-color: var(--color-accent);
+}
