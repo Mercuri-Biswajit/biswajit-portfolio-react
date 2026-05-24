@@ -2119,3 +2119,9 @@
     font-size: 6rem;
   }
 }
+/* Keyboard Accessibility Focus States */
+.home-page .project-card-image:focus-visible,
+.home-page .project-card-body:focus-visible {
+  outline: 3px solid var(--color-accent);
+  outline-offset: 4px;
+}
