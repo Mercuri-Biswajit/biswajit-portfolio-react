@@ -761,6 +761,16 @@
   left: 100%;
 }
 
+.project-card:focus-visible {
+  outline: none;
+}
+
+.project-card:focus-visible .project-card-inner {
+  outline: 2px solid var(--color-accent, #FF6B35);
+  outline-offset: 4px;
+  border-color: var(--warm-primary);
+}
+
 .project-card:hover .project-card-inner {
   transform: translateY(-5px) translateX(3px);
   box-shadow: var(--card-shadow-hov);
