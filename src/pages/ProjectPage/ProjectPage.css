@@ -507,6 +507,14 @@
    TIMELINE ROW  (.project-card)
    =========================== */
 
+.project-card:focus-visible {
+  outline: none;
+}
+
+.project-card:focus-visible .project-card-inner {
+  outline: 2px solid var(--color-accent);
+}
+
 .project-card {
   position: relative;
   display: flex;
@@ -799,6 +807,11 @@
 }
 
 /* ── Image panel ──────────────────────────── */
+.project-card-image:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: -2px;
+}
+
 .project-card-image {
   position: relative;
   flex: 0 0 260px;
@@ -865,6 +878,11 @@
 }
 
 /* ── Content panel ────────────────────────── */
+.project-card-body:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: -2px;
+}
+
 .project-card-body {
   display: flex;
   flex-direction: column;
