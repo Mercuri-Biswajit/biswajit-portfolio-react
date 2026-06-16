@@ -1,0 +1,4 @@
+
+## 2024-06-16 - Handling Focus outlines on flex container cards with hidden overflow
+**Learning:** For interactive flex-container components (like `.project-card` and `.hpc-card`) that use `tabIndex={0}` and contain child components with `overflow: hidden` or complex layouts, default browser `:focus-visible` outlines often get cut off or obscured. Applying the outline directly to the container may not look right or could be fully clipped.
+**Action:** Explicitly set `outline: none;` on the outer container's `:focus-visible` state, and apply the custom outline (`outline: 2px solid var(--color-accent); outline-offset: 3px;`) either directly to the relevant inner wrapper (e.g., `.project-card-inner`) or ensure the main container uses an adequate `outline-offset` to break outside the clipping context.
