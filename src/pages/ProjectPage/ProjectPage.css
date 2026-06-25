@@ -722,6 +722,19 @@
 }
 
 /* ===========================
+   CARD FOCUS (tabIndex=0 on parent)
+   =========================== */
+
+.project-card:focus-visible {
+  outline: none;
+}
+
+.project-card:focus-visible .project-card-inner {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 4px;
+}
+
+/* ===========================
    CARD INNER  (the visible box)
    =========================== */
 
@@ -808,6 +821,11 @@
   margin: 0;
 }
 
+.project-card-image:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: -2px; /* Inset to avoid clipping */
+}
+
 .project-card-img {
   width: 100%;
   height: 100%;
@@ -872,6 +890,11 @@
   padding: 1.25rem 1.5rem 1.1rem 1.25rem;
   position: relative;
   z-index: 2;
+}
+
+.project-card-body:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: -2px; /* Inset to avoid clipping */
 }
 
 .project-card-header {

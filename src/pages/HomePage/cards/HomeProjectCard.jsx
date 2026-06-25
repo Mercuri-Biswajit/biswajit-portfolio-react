@@ -59,6 +59,11 @@ function injectStyles() {
       border-color: #003366;
     }
 
+    .hpc-card:focus-visible {
+      outline: 2px solid #FF6B35;
+      outline-offset: 4px;
+    }
+
     /* Image */
     .hpc-image {
       position: relative;
