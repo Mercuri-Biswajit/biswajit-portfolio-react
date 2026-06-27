@@ -1,0 +1,3 @@
+## 2024-06-27 - Focus Visible on Cards
+**Learning:** React project cards with `tabIndex={0}` often lack `:focus-visible` styling when they rely heavily on nested `.project-card-inner` for visual borders and backgrounds. Adding it directly to the outer container might be clipped or misaligned, whereas adding styles to the inner container for the outer focus state provides a clean and visible focus outline for keyboard accessibility.
+**Action:** Add `:focus-visible` styles explicitly targeting the visual card element when its focusable parent is focused. Use `var(--color-accent)` mapped to the project orange `#FF6B35` as instructed by memory.

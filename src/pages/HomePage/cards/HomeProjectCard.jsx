@@ -53,6 +53,11 @@ function injectStyles() {
 
     .hpc-card:hover::before { left: 100%; }
 
+    .hpc-card:focus-visible {
+      outline: 2px solid var(--color-accent);
+      outline-offset: -2px;
+    }
+
     .hpc-card:hover {
       transform: translateY(-7px);
       box-shadow: 0 12px 32px rgba(0,51,102,0.12);

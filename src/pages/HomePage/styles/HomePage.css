@@ -2119,3 +2119,11 @@
     font-size: 6rem;
   }
 }
+.home-page .project-card-image:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: -2px;
+}
+.home-page .project-card-body:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: -2px;
+}
